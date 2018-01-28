@@ -1,0 +1,17 @@
+.navbar.nav_title .site_title {
+  font-size: 16px; }
+  .navbar.nav_title .site_title .img_logo {
+    width: 18%;
+    margin-right: 4px; }
+
+.main_menu_side .menu_section ul.nav li a {
+  color: #FFF; }
+
+.main_menu_side .menu_section ul.nav li:hover {
+  background-color: #374A5E; }
+
+#map {
+  width: 100%;
+  height: 400px; }
+
+/*# sourceMappingURL=style.css.map */

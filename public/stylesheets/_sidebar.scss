@@ -1,0 +1,28 @@
+.navbar{
+	&.nav_title{
+		.site_title{
+			font-size: 16px;
+			.img_logo{
+				width: 18%;
+				margin-right: 4px;
+			}
+		}
+	}
+}
+
+.main_menu_side{
+	.menu_section{
+		ul{
+			&.nav{
+				li{
+					a{
+						color: #FFF;
+					}
+					&:hover{
+						background-color: #374A5E;
+					}
+				}
+			}
+		}
+	}
+}

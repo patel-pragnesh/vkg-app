@@ -1,0 +1,5 @@
+#ignored packages installed by npm
+node_modules
+
+#any other files
+.DS_Store
