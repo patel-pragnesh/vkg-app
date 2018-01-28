@@ -1,4 +1,11 @@
 .nav_menu{
 	position: relative !important;
     z-index: 9;
+    .nav.navbar-nav.navbar-left{
+    	li{
+    		a{
+    			font-size: 30px;
+    		}
+    	}
+    }
 }

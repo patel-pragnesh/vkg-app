@@ -1,6 +1,8 @@
 .nav_menu {
   position: relative !important;
   z-index: 9; }
+  .nav_menu .nav.navbar-nav.navbar-left li a {
+    font-size: 30px; }
 
 .navbar.nav_title .site_title {
   font-size: 16px; }
