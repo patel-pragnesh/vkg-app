@@ -1,0 +1,24 @@
+/* ---------------------------------------------------
+    CONTENT STYLE
+    ----------------------------------------------------- */
+    #content {
+        width: calc(100% - 250px);
+        /*padding: 40px;*/
+        padding-top: 80px;
+        min-height: 100vh;
+        transition: all 0.3s;
+        position: absolute;
+        top: 0;
+        right: 0;
+        &.active {
+            width: 100%;
+        }
+    }
+
+    #map{
+        position: absolute !important;
+        height: calc(100% - 80px);
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
