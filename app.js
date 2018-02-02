@@ -5,9 +5,21 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var sassMiddleware = require('node-sass-middleware');
+var sqlConnection = require('tedious').Connection;
+var sqlConfig = {
+  userName: 'horcsa',
+  password: 'csacsa',
+  server: 'localhost\sqlexpress'
+};
+
+var connection = new sqlConnection(sqlConfig);
+connection.on('connect', function(err){
+  console.log("Connected to MSSQL EXPRESS");
+});
 
 var index = require('./routes/index');
 var users = require('./routes/users');
+var directorates = require('./routes/directorates');
 
 var app = express();
 
