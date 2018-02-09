@@ -5,17 +5,39 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var sassMiddleware = require('node-sass-middleware');
-var sqlConnection = require('tedious').Connection;
-var sqlConfig = {
-  userName: 'horcsa',
-  password: 'csacsa',
-  server: 'localhost\sqlexpress'
-};
-
-var connection = new sqlConnection(sqlConfig);
-connection.on('connect', function(err){
-  console.log("Connected to MSSQL EXPRESS");
+var Sequelize = require('sequelize');
+var Op = Sequelize.Op
+var sequelize = new Sequelize('vizkeszlet_gazdalkodas','horcsa', 'csacsa', {
+  host: 'localhost',
+  dialect: 'mssql',
+  pool:{
+    max: 5,
+    min: 0,
+    acquire: 30000,
+    idle: 10000
+  },
+  dialectOptions:{
+    instanceName: 'SQLEXPRESS',    
+  },
+  operatorsAliases: {
+      $and: Op.and,
+      $or: Op.or,
+      $eq: Op.eq,
+      $gt: Op.gt,
+      $lt: Op.lt,
+      $lte: Op.lte,
+      $like: Op.like
+    },
 });
+
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log('Connection has been established successfully to database.');
+  })
+  .catch(err => {
+    console.error('Unable to connect to the database:', err);
+  });
 
 var index = require('./routes/index');
 var users = require('./routes/users');
