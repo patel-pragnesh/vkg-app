@@ -11,6 +11,9 @@ html
 		link(rel="stylesheet" href="/stylesheets/style.css")
 		// Scrollbar Custom CSS
 		link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css")
+		// ArcGIS API
+		//link(rel="stylesheet" href="https://js.arcgis.com/4.6/esri/css/main.css")
+		link(rel="stylesheet" href="https://js.arcgis.com/3.23/esri/css/esri.css")
 	body
 		.wrapper.footer_fixed
 			// Sidebar Holder
@@ -77,41 +80,11 @@ html
 		script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js")
 		// jQuery Custom Scroller CDN
 		script(src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js")
-		script.
-			var map;
-			function initMap() {
-			map = new google.maps.Map(document.getElementById('map'), {
-			center: {lat: 47.330135, lng: 20.672682},
-			zoom: 12,
-			mapTypeId: 'terrain'
-			});
-			var myLatLng = {lat:47.33223806912348, lng:20.75589297795223};
-			var icon = {
-			url: "/images/inner-darkblue-circle-full-marker.png", // url
-			scaledSize: new google.maps.Size(20, 20), // scaled size
-			origin: new google.maps.Point(0,0), // origin
-			anchor: new google.maps.Point(0, 10) // anchor
-			};
-			var marker = new google.maps.Marker({
-			position: myLatLng,
-			map: map,
-			title: 'T 6547',
-			icon: icon
-			});
-			var nkiii_2_coordinates = [
-			{lng:20.76827662416827,lat:47.33211450473437},
-			{lng:20.75802544905323,lat:47.33213910371562}
-			];
-			var nkiii_2_path = new google.maps.Polyline({
-			path: nkiii_2_coordinates,
-			geodesic: true,
-			strokeColor: '#267CB5',
-			strokeOpacity: 1.0,
-			strokeWeight: 2
-			});
-			nkiii_2_path.setMap(map);
-			}
-		script(src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBaLMBmv1VbhuyfQPo-Q7jSAyBsI1rAvRY&callback=initMap" async="" defer="")
+		//script(src="/javascripts/init_map.js")
+		//script(src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBaLMBmv1VbhuyfQPo-Q7jSAyBsI1rAvRY&callback=initMap" async="" defer="")
+		//script(src="https://js.arcgis.com/4.6/")
+		script(src="https://js.arcgis.com/3.23/")
+		script(src="/javascripts/init_arcgis_map.js")
 		script(type="text/javascript").
 			$(document).ready(function () {
 			$("#sidebar").mCustomScrollbar({

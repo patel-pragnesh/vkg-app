@@ -1,0 +1,637 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"sqlCon",
+				"sqlConfig"
+			],
+			[
+				"sqlC",
+				"sqlConfig"
+			],
+			[
+				"sty",
+				"stylesheet"
+			],
+			[
+				"ma",
+				"margin-top"
+			],
+			[
+				"fl",
+				"float"
+			],
+			[
+				"margin",
+				"margin-right"
+			],
+			[
+				"pa",
+				"padding-left"
+			],
+			[
+				"lis",
+				"list-style"
+			],
+			[
+				"pos",
+				"position"
+			],
+			[
+				"console",
+				"console.log"
+			],
+			[
+				"style",
+				"stylesheet"
+			],
+			[
+				"m",
+				"mapLevel\tproperty"
+			],
+			[
+				"lat",
+				"latLng\tlet"
+			],
+			[
+				"s",
+				"sort\tmethod"
+			],
+			[
+				"map",
+				"mapLevel\tproperty"
+			],
+			[
+				"la",
+				"layers\tproperty"
+			],
+			[
+				"shape",
+				"shapeCoords\tlet"
+			],
+			[
+				"MapS",
+				"MapShapeData\talias"
+			],
+			[
+				"dr",
+				"drawSymbols\tmethod"
+			],
+			[
+				"bo",
+				"bottom"
+			],
+			[
+				"this",
+				"this_\tlet"
+			],
+			[
+				"AfterC",
+				"AfterContentInit\talias"
+			],
+			[
+				"onS",
+				"onStartDateChanged\tproperty"
+			],
+			[
+				"After",
+				"AfterViewInit\talias"
+			],
+			[
+				"sta",
+				"stationName\tproperty"
+			],
+			[
+				"Na",
+				"NavigationEnd\talias"
+			],
+			[
+				"na",
+				"navigation.service\tscript"
+			],
+			[
+				"pr",
+				"providers\tproperty"
+			],
+			[
+				"im",
+				"import\tkeyword"
+			],
+			[
+				"Stat",
+				"StationService\talias"
+			],
+			[
+				"l",
+				"lineTableData\tproperty"
+			],
+			[
+				"on",
+				"onSzelvenyChaged\tproperty"
+			],
+			[
+				"op",
+				"option\tTag"
+			],
+			[
+				"se",
+				"select\tTag"
+			],
+			[
+				"getV",
+				"getVizszintSzelveny\tmethod"
+			],
+			[
+				"r",
+				"round\tmethod"
+			],
+			[
+				"per",
+				"permanentLineTableLabels\tproperty"
+			],
+			[
+				"lin",
+				"lineTableLabels\tproperty"
+			],
+			[
+				"_",
+				"_startDate\tproperty"
+			],
+			[
+				"to",
+				"today\tproperty"
+			],
+			[
+				"over",
+				"overflow"
+			],
+			[
+				"chart",
+				"ChartData\tproperty"
+			],
+			[
+				"th",
+				"this\tkeyword"
+			],
+			[
+				"station",
+				"StationService\talias"
+			],
+			[
+				"ali",
+				"align-items"
+			],
+			[
+				"fun",
+				"function\tkeyword"
+			],
+			[
+				"p",
+				"push\tmethod"
+			],
+			[
+				"Map",
+				"MapData\talias"
+			],
+			[
+				"Ma",
+				"MapData\talias"
+			],
+			[
+				"li",
+				"lineChartData\tproperty"
+			],
+			[
+				"con",
+				"console\tvar"
+			],
+			[
+				"cha",
+				"_chart\tproperty"
+			],
+			[
+				"col",
+				"color"
+			],
+			[
+				"mar",
+				"margin-bottom"
+			],
+			[
+				"font-s",
+				"font-size"
+			],
+			[
+				"st",
+				"styleUrls\tproperty"
+			],
+			[
+				"cou",
+				"countBs"
+			],
+			[
+				"co",
+				"count"
+			],
+			[
+				"e",
+				"even"
+			],
+			[
+				"var",
+				"variable"
+			],
+			[
+				"poi",
+				"pointError"
+			],
+			[
+				"un",
+				"undefined"
+			],
+			[
+				"font",
+				"font-weight"
+			],
+			[
+				"tet",
+				"text-align"
+			],
+			[
+				"ba",
+				"background-color"
+			],
+			[
+				"a",
+				"auto"
+			],
+			[
+				"in",
+				"inline-block"
+			],
+			[
+				"ima",
+				"image-rendering"
+			],
+			[
+				"styl",
+				"stylesheet"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 209.0,
+		"last_filter": "install",
+		"selected_items":
+		[
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"Snippet: ",
+				"Snippet: html-html5"
+			],
+			[
+				"men",
+				"View: Toggle Menu"
+			],
+			[
+				"Package Control: ",
+				"Package Control: Install Package"
+			],
+			[
+				"Package C",
+				"Package Control: Install Package"
+			],
+			[
+				"in",
+				"Package Control: Install Package"
+			],
+			[
+				"pa",
+				"PackageResourceViewer: Extract Package"
+			],
+			[
+				"packagere",
+				"PackageResourceViewer: Extract Package"
+			],
+			[
+				"ins",
+				"Package Control: Install Package"
+			],
+			[
+				"install th",
+				"Colorsublime: Install Theme"
+			],
+			[
+				"install ",
+				"Colorsublime: Install Theme"
+			],
+			[
+				"insta",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 444.0
+	},
+	"console":
+	{
+		"height": 323.0,
+		"history":
+		[
+			"import urllib.request,os,hashlib; h = '6f4c264a24d933ce70df5dedcf1dcaee' + 'ebe013ee18cced0ef93d5f746d80ef60'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)",
+			"import urllib.request,os,hashlib; h = 'df21e130d211cfc94d9b0905775a7c0f' + '1e3d39e33b79698005270310898eea76'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)",
+			"import urllib.request,os,hashlib; h = '2915d1851351e5ee549c20394736b442' + '8bc59f460fa1548d1514676163dafc88'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app"
+	],
+	"file_history":
+	[
+		"/D/HorCsa/Programok/express-locallibrary-tutorial/bin/www",
+		"/D/HorCsa/Munka/DRV/Cikkszám CSV/Webshop_lista_Update.txt",
+		"/D/Munka/Programok/webSCADA5/KisBalaton/_Program_/KisBalaton/Driver/HardwareKisBalaton.cs",
+		"/D/Munka/Programok/webSCADA6/Jégelhárító rendszer/Server/Stage/WebServerRoot/pcsdk.js",
+		"/D/Munka/TMP/Program forrása/Valami fájl.txt",
+		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/routes/directorates.js",
+		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/views/layout.pug",
+		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/public/stylesheets/partials/_sidebar.scss",
+		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/public/stylesheets/partials/_content.scss",
+		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/public/stylesheets/style.scss",
+		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/public/stylesheets/style.css",
+		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/public/stylesheets/partials/_initial.scss",
+		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/views/index.pug",
+		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/public/stylesheets/partials/_variables.scss",
+		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/public/stylesheets/_footer.scss",
+		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/public/stylesheets/partials/_medaiqueries.scss",
+		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/public/css/style.css",
+		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/public/stylesheets/_sidebar.scss",
+		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/public/stylesheets/_header.scss",
+		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/public/stylesheets/_map.scss",
+		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/public/javascripts/init_map.js",
+		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/public/stylesheets/_point_data.scss",
+		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/public/javascripts/init_chart.js",
+		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/public/stylesheets/_graph.scss",
+		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/public/stylesheets/_layers.scss",
+		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/app.js",
+		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/BootstrapSidebarTemplate/index.html",
+		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/vizkeszlet-gazdalkodas-app/app.js",
+		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/views/_layout.pug",
+		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Template/gentelella-master/production/fixed_sidebar.html",
+		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Template/gentelella-master/production/fixed_footer.html",
+		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/package.json",
+		"/D/HorCsa/Programok/express-locallibrary-tutorial/views/layout.hbs",
+		"/D/HorCsa/Programok/express-locallibrary-tutorial/routes/index.js",
+		"/D/HorCsa/Programok/express-locallibrary-tutorial/routes/users.js",
+		"/D/HorCsa/Programok/express-locallibrary-tutorial/package.json",
+		"/D/HorCsa/Programok/express-locallibrary-tutorial/app.js",
+		"/D/Munka/TMP/__teszt_uj/test_file.txt",
+		"/D/Munka/Programok/webSCADA6/Jégelhárító rendszer/Server/Stage/WebServerRoot/app.js",
+		"/D/Munka/Programok/webSCADA6/Jégelhárító rendszer/Server/Stage/Logs/log.20180118_123120.txt",
+		"/D/Munka/Programok/webSCADA6/Jégelhárító rendszer/Server/Stage/Logs/log.20180118_124015.txt",
+		"/C/Controlsoft/Fejlesztés/PCSDK6/Forrás/PCSDK6/Main/Stage/WebServerRoot/pcsdk.js",
+		"/C/Controlsoft/Fejlesztés/PCSDK6/Forrás/PCSDK6/Main/Stage/customPcsmlTypes.json",
+		"/D/HorCsa/Programok/express-locallibrary-tutorial/models/author.js",
+		"/D/HorCsa/Programok/express-locallibrary-tutorial/models/book.js",
+		"/D/HorCsa/Programok/express-locallibrary-tutorial/models/bookinstance.js",
+		"/D/HorCsa/Programok/express-locallibrary-tutorial/models/genre.js",
+		"/D/HorCsa/Programok/express-locallibrary-tutorial/populatedb.js",
+		"/D/Munka/TMP/logd3/data.txt",
+		"/D/Munka/TMP/logd3/ftp-test.txt",
+		"/D/Munka/TMP/PLC proj/asd.txt",
+		"/C/Users/User/AppData/Roaming/Skype/My Skype Received Files/log.20180113_061015.txt",
+		"/D/Munka/TMP/___teszt/asdf/asdf.txt",
+		"/D/Munka/Programok/webSCADA6/Varpalota_futomu/TMP/logs/log.20180101_020822.txt",
+		"/C/Controlsoft/Fejlesztés/PCSDK6/Forrás/PCSDK6/Main/Stage/Logs/log.20171220_141622.txt",
+		"/C/Controlsoft/Fejlesztés/PCSDK6/Forrás/PCSDK6/Main/Stage/Logs/log.20171220_105741.txt",
+		"/D/Munka/Dokumentumok/Rendszerek_elérhetősége_információk/vasiviz.txt",
+		"/D/Munka/TMP/log.20171218_112344.txt",
+		"/D/HorCsa/Programok/express-locallibrary-tutorial/public/stylesheets/style.sass",
+		"/D/HorCsa/Programok/express-locallibrary-tutorial/public/javascripts/page.js",
+		"/D/Munka/Programok/webSCADA6/BerhidaTFK/Server/Stage/emailsmslist.txt",
+		"/D/Munka/Dokumentumok/Rendszerek/Várpalota/Fűtőmű/Telekont/Írás lefigyelés/Kommentezett/HKP24 írási csomagok 1. fűtés.txt",
+		"/D/Munka/Dokumentumok/Rendszerek/Várpalota/Fűtőmű/Telekont/Kommunikáció lefigyelés/D510 kommunikáció.txt",
+		"/C/Users/User/AppData/Roaming/Skype/My Skype Received Files/komm.txt",
+		"/E/Varpalota/Idő kiküldés/lefigyelés.txt",
+		"/D/Munka/Programok/webSCADA6/LentiAtem/Server/Stage/WebServerRoot/Views/dailyArchive.pcsml",
+		"/D/Munka/TMP/LentiIvoLogokDailyMentésHIBA/log.20171201_144026.txt",
+		"/D/Munka/TMP/LentiIvoLogokDailyMentésHIBA/log.20171109_124835.txt",
+		"/D/Munka/TMP/ZegivoLogokDailyMentésHIBA/log.20171124_084703.txt",
+		"/D/Munka/TMP/ZegivoLogokDailyMentésHIBA/log.20171206_204909.txt",
+		"/Z/Csizmadia Gábor/eplan/eplan 2.5.txt",
+		"/D/Munka/Programok/webSCADA6/Jégelhárító rendszer/Server/Stage/Logs/log.20171204_143557.txt",
+		"/D/Munka/Programok/webSCADA6/Varpalota_futomu/Server/Stage/Logs/log.20171204_091857.txt",
+		"/D/Munka/Programok/webSCADA6/ZegAtem/ZalaegerszegAtemelokTelefon.Drivers2/HardwareModbusRTU_VM.cs",
+		"/D/HorCsa/Programok/terkep_alkalmazas/views/users.hbs",
+		"/D/HorCsa/Programok/terkep_alkalmazas/views/user.hbs",
+		"/D/HorCsa/Programok/terkep_alkalmazas/views/user/special.hbs",
+		"/D/HorCsa/Programok/terkep_alkalmazas/views/user/regular.hbs",
+		"/D/HorCsa/Programok/terkep_alkalmazas/routes/user.js",
+		"/D/HorCsa/Programok/terkep_alkalmazas/routes/users.js",
+		"/D/HorCsa/Programok/terkep_alkalmazas/routes/tutorials.js",
+		"/D/Munka/Programok/webSCADA5/RSD/Driver/HardwareKisBalaton.cs",
+		"/D/HorCsa/Programok/terkep_alkalmazas/app.js",
+		"/D/HorCsa/Programok/terkep_alkalmazas/views/layout.hbs",
+		"/D/Munka/Programok/webSCADA6/Jégelhárító rendszer/Server/Stage/Logs/log.20171204_132600.txt",
+		"/D/HorCsa/Programok/terkep_alkalmazas/routes/user/regular.hbs",
+		"/D/HorCsa/Programok/terkep_alkalmazas/.gitignore",
+		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Template/gentelella-master/production/index.html",
+		"/D/HorCsa/Programok/terkep_program/views/index.hbs",
+		"/D/HorCsa/Programok/terkep_program/views/layout.hbs",
+		"/D/HorCsa/Programok/terkep_program/routes/index.js",
+		"/D/Munka/Dokumentumok/Rendszerek/Várpalota/Fűtőmű/Telekont/Írás lefigyelés/Telekont HKP24 lefigyelés/HKP24 1. Fűtés írás lefigyelés/Automata parancs küldés.txt",
+		"/D/Munka/Programok/webSCADA6/ZszentgrotIvo/Server/Stage/Logs/log.20171116_130755.txt",
+		"/D/Munka/Programok/webSCADA6/Varpalota_futomu/Server/Stage/Logs/log.20171115_122034.txt",
+		"/D/Munka/Programok/webSCADA6/Varpalota_futomu/Server/Stage/Logs/log.20171115_155356.txt",
+		"/D/Munka/Dokumentumok/Rendszerek/Zalavíz/Zalaszentgrót ivóvíz SaiaD leállás/Hibás kommunikáció lefigyelés 2017.11.15/Jó kommunikációó webSCADA üzenetek/Olvasott csomagok jó kommunikáció.txt",
+		"/D/Munka/Dokumentumok/Rendszerek/Zalavíz/Zalaszentgrót ivóvíz SaiaD leállás/Hibás kommunikáció lefigyelés 2017.11.15/PC kimenő Hex.txt",
+		"/D/Munka/Dokumentumok/Rendszerek/Zalavíz/Zalaszentgrót ivóvíz SaiaD leállás/Hibás kommunikáció lefigyelés 2017.11.15/alnoktól hex.txt",
+		"/D/Munka/Dokumentumok/Rendszerek/Várpalota/Fűtőmű/Telekont/Írás lefigyelés/Egy kör lefigyelés de ez természtesen nem teljes.txt",
+		"/D/Munka/Dokumentumok/Rendszerek/Várpalota/Fűtőmű/Telekont/Írás lefigyelés/Telekont HKP24 lefigyelés/HKP24 képre váltás lekérdezés.txt",
+		"/D/Munka/Dokumentumok/Rendszerek/Várpalota/Fűtőmű/Telekont/Írás lefigyelés/Telekont HKP24 lefigyelés/HKP24 1. Fűtés írás lefigyelés/Szab. beallitás/100% hiba küldés.txt",
+		"/D/Munka/Dokumentumok/Rendszerek/Várpalota/Fűtőmű/Telekont/Írás lefigyelés/Telekont HKP24 lefigyelés/HKP24 1. Fűtés írás lefigyelés/Csökkent küldés.txt",
+		"/D/Munka/Dokumentumok/Rendszerek/Várpalota/Fűtőmű/Hőmennyiség mérők/lefigyeles_sontex.txt",
+		"/D/Munka/Dokumentumok/Rendszerek/Jégelhárító rendszer/Magyarország/HUN_adm0/HUN_adm0.kml",
+		"/D/Munka/Dokumentumok/Rendszerek/Várpalota/Fűtőmű/Telekont/Kommunikáció lefigyelés/Éles rendszer tesztelés.txt",
+		"/D/Munka/Dokumentumok/Rendszerek/Várpalota/Fűtőmű/Telekont/Kommunikáció lefigyelés/D510 kommunikáció írás tesztelés.txt",
+		"/D/Munka/Programok/webSCADA6/Varpalota_futomu/TMP/Idovezerles grafikon/index.html",
+		"/D/Munka/TMP/log_636447022110390368.txt",
+		"/D/Munka/Programok/webSCADA6/Varpalota_futomu/Server/Stage/Logs/log.20171107_151118.txt",
+		"/D/Munka/Dokumentumok/Rendszerek/Várpalota/Fűtőmű/Telekont/Kommunikáció lefigyelés/D510 kommunikáció befigyelés.txt",
+		"/D/Munka/Dokumentumok/Rendszerek/Várpalota/Fűtőmű/Telekont/Kommunikáció lefigyelés/D510 gép felöli adások",
+		"/D/Munka/Dokumentumok/Rendszerek/Várpalota/Fűtőmű/Telekont/Várpalotai TSS rendszer kommunikáció/Varp-prot-info-lista.txt",
+		"/D/Munka/Dokumentumok/Rendszerek/Várpalota/Fűtőmű/Telekont/Kommunikáció lefigyelés/HKP01_éles_rendszer_kommunikáció.txt",
+		"/D/Munka/Dokumentumok/Rendszerek/Jégelhárító rendszer/JÉGER_talajgeneratorok.kml",
+		"/C/Users/User/Downloads/RGraph/demos/bar-3d-effect.html",
+		"/C/Controlsoft/Fejlesztés/PCSDK6/WebSCADA6_template_alkalmazas/Server/Stage/WebServerRoot/app.js",
+		"/D/Munka/Dokumentumok/Rendszerek/Várpalota/Fűtőmű/Hőmennyiség mérők/lefigyeles_scylar int8 Hydometer Type 548.txt",
+		"/D/Munka/Dokumentumok/Rendszerek/Várpalota/Fűtőmű/Hőmennyiség mérők/elszámolási/ascii lesz_megfejtés.txt",
+		"/Y/02_Aktív projektek/24_Várpalota Fűtőmű és hibás hőközpontok/Doc/Várpalota M-Bus lefigyelt inform/ascii lesz_megfejtés.txt",
+		"/Y/02_Aktív projektek/24_Várpalota Fűtőmű és hibás hőközpontok/Doc/Várpalota M-Bus lefigyelt inform/ascii lesz.txt",
+		"/Y/02_Aktív projektek/24_Várpalota Fűtőmű és hibás hőközpontok/Doc/Várpalota M-Bus lefigyelt inform/Text.txt",
+		"/D/Munka/Dokumentumok/Rendszerek/Várpalota/Fűtőmű/Actaris/Actaris lefigyelt kommunikáció HCs/GM1/Egy eszköz adási ciklus.txt",
+		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/VizkeszletgazdalkodasApp/src/index.html",
+		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/VizkeszletgazdalkodasApp/src/polyfills.ts",
+		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/VizkeszletgazdalkodasApp/src/app/station/station/station.component.ts",
+		"/C/Users/User/Microsoft JDBC Driver 6.0 for SQL Server/sqljdbc_6.0/enu/install.txt",
+		"/D/Munka/Dokumentumok/Rendszerek_elérhetősége_információk/delpest.txt",
+		"/C/Users/User/AppData/Local/Microsoft/Windows/INetCache/IE/45K73QLZ/license60.txt"
+	],
+	"find":
+	{
+		"height": 42.0
+	},
+	"find_in_files":
+	{
+		"height": 161.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": true,
+		"find_history":
+		[
+			"([0-9]{5});([0-9]{4})"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": true,
+		"replace_history":
+		[
+			"UPDATE [drv].[dbo].[OfferShop] SET [codeNumber] = '$2' WHERE [oldCodeNumber] = '$1';"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": false
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 29.0
+	},
+	"input":
+	{
+		"height": 46.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.doc":
+	{
+		"height": 0.0
+	},
+	"output.exec":
+	{
+		"height": 162.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.nodejs":
+	{
+		"height": 138.0
+	},
+	"pinned_build_system": "",
+	"project": "vizkeszlet-gazdalkodas-app.sublime-project",
+	"replace":
+	{
+		"height": 76.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 265.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
