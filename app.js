@@ -5,45 +5,30 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var sassMiddleware = require('node-sass-middleware');
-var Sequelize = require('sequelize');
-var Op = Sequelize.Op
-var sequelize = new Sequelize('vizkeszlet_gazdalkodas','horcsa', 'csacsa', {
-  host: 'localhost',
-  dialect: 'mssql',
-  pool:{
-    max: 5,
-    min: 0,
-    acquire: 30000,
-    idle: 10000
-  },
-  dialectOptions:{
-    instanceName: 'SQLEXPRESS',    
-  },
-  operatorsAliases: {
-      $and: Op.and,
-      $or: Op.or,
-      $eq: Op.eq,
-      $gt: Op.gt,
-      $lt: Op.lt,
-      $lte: Op.lte,
-      $like: Op.like
-    },
-});
+// var sql = require('mssql');
 
-sequelize
-  .authenticate()
-  .then(() => {
-    console.log('Connection has been established successfully to database.');
-  })
-  .catch(err => {
-    console.error('Unable to connect to the database:', err);
-  });
+// var sqlConfig = {
+//   user: 'horcsa',
+//   password: 'csacsa',
+//   server: 'localhost\\sqlexpress',
+//   database: 'vizkeszlet_gazdalkodas'
+// }
+
+// sql.connect(sqlConfig, function(err){
+//   if(err){
+//     console.log('Failed to connect to SQL server.');
+//   }else{
+//     console.log('Connected to SQL server!');
+//   }
+// });
 
 var index = require('./routes/index');
 var users = require('./routes/users');
-var directorates = require('./routes/directorates');
+var igazgatosag = require('./routes/igazgatosag');
 
 var app = express();
+
+//app.set('models', require('./models'));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -65,6 +50,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
 app.use('/users', users);
+app.use('/igazgatosag', igazgatosag);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
