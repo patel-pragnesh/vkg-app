@@ -1,8 +1,9 @@
 const Models = require('../models/');
-exports.list = Models.Igazgatosag
+
+exports.list = Models.Directorate
 .findAll({
 	order:[['id', 'DESC']]
 })
 .then((result)=>{
-	return result[0].name1;
+	return result;
 });

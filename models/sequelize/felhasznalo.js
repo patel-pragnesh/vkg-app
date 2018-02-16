@@ -1,11 +1,10 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  let Igazgatosag = sequelize.define('Igazgatosag', {
-    name: DataTypes.STRING,
-    name1: DataTypes.STRING
+  let User = sequelize.define('User', {
+    name: DataTypes.STRING
   });
   // Igazgatosag.associate = function(models) {
   //   // associations can be defined here
   // };
-  return Igazgatosag;
+  return User;
 };

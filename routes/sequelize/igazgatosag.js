@@ -7,13 +7,9 @@ var igazgatosag_controller = require('../controllers/igazgatosagController');
 // router.get('/', igazgatosag_controller.list);
 router.get('/', function(req, res, next) {
 
-	// igazgatosag_controller.list().then(function(result){
-	// 	console.log(result);
-	// })
 	igazgatosag_controller.list.then(function(value){
 		res.render('igazgatosag', {data: value});
-	})
-  	
+	});
 });
 
 module.exports = router;
