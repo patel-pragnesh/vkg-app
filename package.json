@@ -11,13 +11,15 @@
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
     "express": "~4.15.5",
+    "lodash": "^4.17.5",
     "morgan": "~1.9.0",
     "mssql": "^4.1.0",
     "node-sass-middleware": "0.9.8",
     "pug": "2.0.0-beta11",
     "sequelize": "^4.33.2",
     "sequelize-cli": "^4.0.0",
-    "serve-favicon": "~2.4.5"
+    "serve-favicon": "~2.4.5",
+    "tedious": "^2.2.4"
   },
   "devDependencies": {
     "nodemon": "^1.14.11"

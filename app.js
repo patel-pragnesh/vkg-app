@@ -5,22 +5,40 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var sassMiddleware = require('node-sass-middleware');
-// var sql = require('mssql');
+var sql = require('mssql');
 
-// var sqlConfig = {
-//   user: 'horcsa',
-//   password: 'csacsa',
-//   server: 'localhost\\sqlexpress',
-//   database: 'vizkeszlet_gazdalkodas'
-// }
+const util = require('util');
 
-// sql.connect(sqlConfig, function(err){
+Directorate = require("./models/directorate.js")
+
+global.sqlConfig = {
+  user: 'horcsa',
+  password: 'csacsa',
+  server: 'localhost\\sqlexpress',
+  database: 'vizkeszlet_gazdalkodas'
+}
+
+// sql.connect(global.sqlConfig, function(err){
 //   if(err){
 //     console.log('Failed to connect to SQL server.');
 //   }else{
 //     console.log('Connected to SQL server!');
 //   }
 // });
+
+var ig1 = new Directorate({id:1, name: "KÖTIVIZIG"});
+//console.log(util.inspect(ig1, false, null));
+//console.log(ig1.get('name')+', '+ig1.get('id'));
+//console.log(Directorate.getTotalObjects());
+Directorate.findById(4, function(err, directorate){
+  if(err)
+    console.log(err);
+  else
+    if(directorate)
+      console.log(directorate.get('name'));
+    else
+      console.log('No result for id: 1');
+});
 
 var index = require('./routes/index');
 var users = require('./routes/users');
