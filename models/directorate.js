@@ -42,13 +42,7 @@ Directorate.prototype.save = function(callback){
 
 	(async function () {
 	    try {
-	        let pool = await sql.connect(sqlConfig)
-	        //let result1 = await pool.request()
-	            //.input('input_parameter', sql.Int, value)
-	            //.query('select * from Directorates where id = 3');//@input_parameter')
-	            
-	        //console.dir(result1)
-
+	        let pool = await sql.connect(sqlConfig);
 	        const transaction = pool.transaction();
 	        const request = transaction.request();
 	        request.query('insert into Directorates () values ()', (err, result)=>{
