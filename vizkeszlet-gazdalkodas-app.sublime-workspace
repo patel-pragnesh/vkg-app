@@ -4,6 +4,10 @@
 		"selected_items":
 		[
 			[
+				"directorate",
+				"directorate_controller"
+			],
+			[
 				"igaz",
 				"igazgatosag_controller"
 			],
@@ -288,37 +292,11 @@
 	"buffers":
 	[
 		{
-			"file": "bin/www",
+			"file": "app.js",
 			"settings":
 			{
-				"buffer_size": 1702,
+				"buffer_size": 2610,
 				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "routes/directorates.js",
-			"settings":
-			{
-				"buffer_size": 238,
-				"encoding": "UTF-8",
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "controllers/directorateController.js",
-			"settings":
-			{
-				"buffer_size": 0,
-				"encoding": "UTF-8",
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "controllers/sequelize/igazgatosagController.js",
-			"settings":
-			{
-				"buffer_size": 148,
 				"line_ending": "Windows"
 			}
 		},
@@ -326,16 +304,43 @@
 			"file": "models/directorate.js",
 			"settings":
 			{
-				"buffer_size": 221,
+				"buffer_size": 2724,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"file": "views/directorate.pug",
+			"file": "controllers/databaseImportController.js",
 			"settings":
 			{
-				"buffer_size": 83,
+				"buffer_size": 375,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "views/layout.pug",
+			"settings":
+			{
+				"buffer_size": 3542,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "models/databaseImport.js",
+			"settings":
+			{
+				"buffer_size": 290,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "views/databaseImport.pug",
+			"settings":
+			{
+				"buffer_size": 933,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -427,20 +432,29 @@
 		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app",
 		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/bin",
 		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/controllers",
-		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/controllers/sequelize",
 		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/models",
 		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/routes",
 		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/views"
 	],
 	"file_history":
 	[
+		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/routes/index.js",
+		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/controllers/directorateController.js",
+		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/routes/databaseImport.js",
+		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/views/directorate.pug",
+		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/routes/directorates.js",
+		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/views/layout.pug",
+		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/models/schemas.js",
+		"/D/Munka/Programok/webSCADA6/Jégelhárító rendszer/Server/Stage/customPcsmlTypes.json",
+		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/bin/www",
+		"/D/Munka/Programok/webSCADA6/Jégelhárító rendszer/Server/Stage/WebServerRoot/kml/jeg.kml",
+		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/package.json",
 		"/D/Munka/Dokumentumok/Rendszerek/Várpalota/Fűtőmű/Telekont/Telekont időkiküldés/syscall_info.txt",
 		"/D/Munka/Programok/webSCADA6/Jégelhárító rendszer/Server/Stage/WebServerRoot/pcsdk.js",
 		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/app.js",
 		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/routes/igazgatosag.js",
 		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/controllers/igazgatosagController.js",
 		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/models/igazgatosag.js",
-		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/bin/www",
 		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/models/index.js",
 		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/models/felhasznalo.js",
 		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/views/igazgatosag.pug",
@@ -448,12 +462,10 @@
 		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/public/javascripts/init_map.js",
 		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/public/javascripts/init_arcgis_map.js",
 		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/config/config.json",
-		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/views/layout.pug",
 		"/D/HorCsa/Programok/express-locallibrary-tutorial/bin/www",
 		"/D/HorCsa/Munka/DRV/Cikkszám CSV/Webshop_lista_Update.txt",
 		"/D/Munka/Programok/webSCADA5/KisBalaton/_Program_/KisBalaton/Driver/HardwareKisBalaton.cs",
 		"/D/Munka/TMP/Program forrása/Valami fájl.txt",
-		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/routes/directorates.js",
 		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/public/stylesheets/partials/_sidebar.scss",
 		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/public/stylesheets/partials/_content.scss",
 		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/public/stylesheets/style.scss",
@@ -476,7 +488,6 @@
 		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/views/_layout.pug",
 		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Template/gentelella-master/production/fixed_sidebar.html",
 		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Template/gentelella-master/production/fixed_footer.html",
-		"/D/Munka/Programok/Vízkészletgazdálkodási modellezés/Vizkeszlet gazdalkodas alkalamzás/vizkeszlet-gazdalkodas-app/package.json",
 		"/D/HorCsa/Programok/express-locallibrary-tutorial/views/layout.hbs",
 		"/D/HorCsa/Programok/express-locallibrary-tutorial/routes/index.js",
 		"/D/HorCsa/Programok/express-locallibrary-tutorial/routes/users.js",
@@ -554,14 +565,7 @@
 		"/D/Munka/Programok/webSCADA6/Varpalota_futomu/TMP/Idovezerles grafikon/index.html",
 		"/D/Munka/TMP/log_636447022110390368.txt",
 		"/D/Munka/Programok/webSCADA6/Varpalota_futomu/Server/Stage/Logs/log.20171107_151118.txt",
-		"/D/Munka/Dokumentumok/Rendszerek/Várpalota/Fűtőmű/Telekont/Kommunikáció lefigyelés/D510 kommunikáció befigyelés.txt",
-		"/D/Munka/Dokumentumok/Rendszerek/Várpalota/Fűtőmű/Telekont/Kommunikáció lefigyelés/D510 gép felöli adások",
-		"/D/Munka/Dokumentumok/Rendszerek/Várpalota/Fűtőmű/Telekont/Várpalotai TSS rendszer kommunikáció/Varp-prot-info-lista.txt",
-		"/D/Munka/Dokumentumok/Rendszerek/Várpalota/Fűtőmű/Telekont/Kommunikáció lefigyelés/HKP01_éles_rendszer_kommunikáció.txt",
-		"/D/Munka/Dokumentumok/Rendszerek/Jégelhárító rendszer/JÉGER_talajgeneratorok.kml",
-		"/C/Users/User/Downloads/RGraph/demos/bar-3d-effect.html",
-		"/C/Controlsoft/Fejlesztés/PCSDK6/WebSCADA6_template_alkalmazas/Server/Stage/WebServerRoot/app.js",
-		"/D/Munka/Dokumentumok/Rendszerek/Várpalota/Fűtőmű/Hőmennyiség mérők/lefigyeles_scylar int8 Hydometer Type 548.txt"
+		"/D/Munka/Dokumentumok/Rendszerek/Várpalota/Fűtőmű/Telekont/Kommunikáció lefigyelés/D510 kommunikáció befigyelés.txt"
 	],
 	"find":
 	{
@@ -580,6 +584,7 @@
 		"case_sensitive": true,
 		"find_history":
 		[
+			"name",
 			"Binding.addBinding",
 			"onValueChange",
 			"Igazgatosag",
@@ -603,24 +608,24 @@
 	"groups":
 	[
 		{
-			"selected": 4,
+			"selected": 5,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "bin/www",
+					"file": "app.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1702,
+						"buffer_size": 2610,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								488,
-								488
+								2101,
+								2101
 							]
 						],
 						"settings":
@@ -630,7 +635,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 693.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 5,
@@ -638,19 +643,105 @@
 				},
 				{
 					"buffer": 1,
-					"file": "routes/directorates.js",
+					"file": "models/directorate.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 238,
+						"buffer_size": 2724,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								202,
-								202
+								22,
+								22
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "controllers/databaseImportController.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 375,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								181,
+								181
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "views/layout.pug",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3542,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								205,
+								205
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Pug/Syntaxes/Pug.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "models/databaseImport.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 290,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								96,
+								96
 							]
 						],
 						"settings":
@@ -665,104 +756,20 @@
 					"type": "text"
 				},
 				{
-					"buffer": 2,
-					"file": "controllers/directorateController.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 0,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 2,
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "controllers/sequelize/igazgatosagController.js",
-					"semi_transient": true,
-					"settings":
-					{
-						"buffer_size": 148,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 4,
-					"file": "models/directorate.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 221,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								111,
-								111
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
 					"buffer": 5,
-					"file": "views/directorate.pug",
+					"file": "views/databaseImport.pug",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 83,
+						"buffer_size": 933,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								39,
-								39
+								931,
+								931
 							]
 						],
 						"settings":
@@ -770,10 +777,10 @@
 							"syntax": "Packages/Pug/Syntaxes/Pug.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 252.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
+					"stack_index": 0,
 					"type": "text"
 				}
 			]

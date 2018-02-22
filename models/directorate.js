@@ -16,6 +16,35 @@ Directorate.getTotalObjects = function(){
 	return total;
 }
 
+Directorate.all = function(callback){
+	(async function () {
+	    try {
+	    	let pool = await sql.connect(sqlConfig);
+	        let result = await pool.request()
+	            //.input('input_parameter', sql.Int, id)
+	            .query('select * from Directorates')
+	        sql.close();
+	        pool.close();
+	        if(result.recordset.length != 0){
+	        	let returnArray = [];
+	        	for(let r of result.recordset){
+	        		returnArray.push({id:r.id, name: r.name});
+	        	}
+	        	callback(null, returnArray);
+	        }
+	        else
+	        	callback(null, null);
+
+	    } catch (err) {
+	        console.log(err);
+	    }
+	})()
+ 
+	sql.on('error', err => {
+	    // ... error handler
+	})
+}
+
 Directorate.prototype.data = {}
 
 Directorate.prototype.changeName = function (name){
@@ -63,18 +92,14 @@ Directorate.prototype.save = function(callback){
 
 //static method to find directorate
 Directorate.findById = function(id, callback){
-	//TODO: mssql hívás
-	//var self = this;
-	//TODO: mssql hívás
-
 	(async function () {
 	    try {
 	    	let pool = await sql.connect(sqlConfig);
 	        let result = await pool.request()
 	            .input('input_parameter', sql.Int, id)
 	            .query('select * from Directorates where id = @input_parameter')
-	            
-	        //console.dir(result)
+	        sql.close();    
+	        pool.close();
 	        if(result.recordset.length != 0)
 	        	callback(null, new Directorate({id:result.recordset[0]['id'], name: result.recordset[0]['name']}));
 	        else

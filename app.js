@@ -7,9 +7,9 @@ var bodyParser = require('body-parser');
 var sassMiddleware = require('node-sass-middleware');
 var sql = require('mssql');
 
-const util = require('util');
+//const util = require('util');
 
-Directorate = require("./models/directorate.js")
+//Directorate = require("./models/directorate");
 
 global.sqlConfig = {
   user: 'horcsa',
@@ -26,23 +26,24 @@ global.sqlConfig = {
 //   }
 // });
 
-var ig1 = new Directorate({id:1, name: "KÖTIVIZIG"});
+// var ig1 = new Directorate({id:1, name: "KÖTIVIZIG"});
 //console.log(util.inspect(ig1, false, null));
 //console.log(ig1.get('name')+', '+ig1.get('id'));
 //console.log(Directorate.getTotalObjects());
-Directorate.findById(4, function(err, directorate){
-  if(err)
-    console.log(err);
-  else
-    if(directorate)
-      console.log(directorate.get('name'));
-    else
-      console.log('No result for id: 1');
-});
+// Directorate.findById(4, function(err, directorate){
+//   if(err)
+//     console.log(err);
+//   else
+//     if(directorate)
+//       console.log(directorate.get('name'));
+//     else
+//       console.log('No result for id: 1');
+// });
 
 var index = require('./routes/index');
 var users = require('./routes/users');
 var directorates = require('./routes/directorates');
+var databaseImport = require('./routes/databaseImport');
 
 var app = express();
 
@@ -69,6 +70,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', index);
 app.use('/users', users);
 app.use('/directorates', directorates);
+app.use('/databaseImport', databaseImport);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
