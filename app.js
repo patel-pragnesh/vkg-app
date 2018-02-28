@@ -9,7 +9,8 @@ var sql = require('mssql');
 
 //const util = require('util');
 
-//Directorate = require("./models/directorate");
+Directorate = require("./models/directorate");
+//DatabaseHandler = require("./models/database_handler");
 
 global.sqlConfig = {
   user: 'horcsa',
@@ -17,6 +18,9 @@ global.sqlConfig = {
   server: 'localhost\\sqlexpress',
   database: 'vizkeszlet_gazdalkodas'
 }
+
+//var dh = new DatabaseHandler('table1',{id: 'integer', name: 'string'});
+//dh.create();
 
 // sql.connect(global.sqlConfig, function(err){
 //   if(err){
@@ -26,7 +30,9 @@ global.sqlConfig = {
 //   }
 // });
 
-// var ig1 = new Directorate({id:1, name: "KÖTIVIZIG"});
+var ig1 = new Directorate("VALAMI");
+//console.log(ig1.name);
+ig1.save();
 //console.log(util.inspect(ig1, false, null));
 //console.log(ig1.get('name')+', '+ig1.get('id'));
 //console.log(Directorate.getTotalObjects());
