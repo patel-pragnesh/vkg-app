@@ -1,12 +1,16 @@
-"use strict";
 /** directorate.js **/
 const sql = require('mssql');
-var schemas = require("./schemas.js");
-var _ = require("lodash");
+// var schemas = require("./schemas.js");
+// var _ = require("lodash");
+const moment = require('moment');
+moment.locale('hu');
 
 class Directorate{
 	constructor(name){
+		this.id = null;
 		this.name = name;
+		this.createdAt = moment().format("YYYY-MM-DD HH:mm:ss");
+		this.updatedAt = moment().format("YYYY-MM-DD HH:mm:ss");
 	}
 
 	static all(callback){
@@ -61,129 +65,88 @@ class Directorate{
 	}
 
 	save(){
-		// Insert data - Start
-		var dbConn = new sql.connect(sqlConfig,
+		return new Promise((resolve, reject) => {
+	      let that = this;
+		//let now_data_time = moment().format("YYYY-MM-DD HH:mm:ss");
+		let dbConn = new sql.connect(sqlConfig,
 		    function (err) {
-		        var myTransaction = new sql.Transaction(dbConn);
-		        myTransaction.begin(function (error) {
-		            var rollBack = false;
-		            myTransaction.on('rollback',
+		        let transaction = new sql.Transaction(dbConn);
+		        transaction.begin(function (error) {
+		            let rollBack = false;
+		            transaction.on('rollback',
 		                function (aborted) {
 		                    rollBack = true;
 		                });
-		            new sql.Request(myTransaction)
-		                .query("INSERT INTO Directorate (Name) VALUES ('Node js')",
-		                function (err, recordset) {
+		            new sql.Request(transaction)
+		            	.input('name', sql.NVarChar, that.name)
+		            	.input('createdAt', sql.NVarChar, that.createdAt)
+		            	.input('updatedAt', sql.NVarChar, that.updatedAt)
+		                .query("INSERT INTO Directorate (Name, createdAt, updatedAt) VALUES (@name, @createdAt, @updatedAt);SELECT SCOPE_IDENTITY() AS id;",
+		                function (err, recordset, affected) {
+
+		                	that.id = recordset.recordset[0]['id'];
 		                    if (err) {
 		                        if (!rollBack) {
-		                            myTransaction.rollback(function (err) {
-		                                console.dir(err);
+		                            transaction.rollback(function (err) {
+		                                console.log(err);
 		                            });
 		                        }
 		                    } else {
-		                        myTransaction.commit().then(function (recordset) {
-		                            console.dir('Data is inserted successfully!');
+		                        transaction.commit().then(function (recordset) {
+		                        	console.log('Database insert operation:');
+		                            console.dir(that);
+		                            sql.close();
+		                            resolve(that);
 		                        }).catch(function (err) {
-		                            console.dir('Error in transaction commit ' + err);
+		                            console.log('Error in transaction commit ' + err);
 		                        });
 		                    }
 		                });
 		        });
 		    });
-		// Insert data - End
-		// var connection = sql.connect(sqlConfig, function(err) {
-		//     var transaction = new sql.Transaction(connection);
-		//     transaction.begin(function(err) {
-		//         console.log('begin transaction');
-  //   			    const request = new connection.Request(transaction);
-		// 		    request.query('insert into `Directorate` (`name`) values ("Teszt")', (err, result) => {
-		// 		        // ... error checks
-		// 		 		console.log(result);
-		// 		        transaction.commit(err => {
-		// 		            // ... error checks
+	    });
 
-		// 		            if(err)
-		// 		            	console.log("2: "+err);
-		// 		 			else
-		// 		            	console.log("Transaction committed.")
-		// 		        })
-		// 		    });
-		//     });
-		// });
-		// (async function () {
-		//     try {
-		//         let pool = await sql.connect(sqlConfig);
-		//         const transaction = new sql.Transaction(pool/* [pool] */);
-		// 		transaction.begin(err => {
-		// 		    // ... error checks
-		// 		 	if(err)
-		//             	console.log("1: "+err);
-		//             else{
-		// 			    // const request = new sql.Request(transaction);
-		// 			    // request.query('insert into Directorate (name) values ("Teszt")', (err, result) => {
-		// 			    //     // ... error checks
-					 
-		// 			    //     transaction.commit(err => {
-		// 			    //         // ... error checks
+	}
 
-		// 			    //         if(err)
-		// 			    //         	console.log("2: "+err);
-		// 			 			// else
-		// 			    //         	console.log("Transaction committed.")
-		// 			    //     })
-		// 			    // });
-		// 			}
-		// 		})
-		//         // const transaction = pool.transaction();
-		//         // const request = transaction.request();
-		//         // request.input('name', sql.NVarChar, 'teszt');
-		//         // request.query('INSERT INTO Directorate (name) values (@name)', (err, result)=>{
-	 //        	// 	transaction.commit
-		//         // });
-		//         sql.close();    
-		//         pool.close();
-		//         //callback(null, self);
-
-		//     } catch (err) {
-		//         console.log(err);
-		//     }
-		// })()
-	 
-		// sql.on('error', err => {
-		//     // ... error handler
-		// })
+	update(){
+		return new Promise((resolve, reject) => {
+	      	let that = this;
+	      	that.updatedAt = moment().format("YYYY-MM-DD HH:mm:ss");
+			let dbConn = new sql.connect(sqlConfig,
+		    function (err) {
+		        let transaction = new sql.Transaction(dbConn);
+		        transaction.begin(function (error) {
+		            let rollBack = false;
+		            transaction.on('rollback',
+		                function (aborted) {
+		                    rollBack = true;
+		                });
+		            new sql.Request(transaction)
+		            	.input('id', sql.NVarChar, that.id)
+		            	.input('name', sql.NVarChar, that.name)
+		            	.input('updatedAt', sql.NVarChar, that.updatedAt)
+		                .query("UPDATE Directorate SET Name=@name, updatedAt=@updatedAt WHERE id=@id;",
+		                function (err) {
+		                    if (err) {
+		                        if (!rollBack) {
+		                            transaction.rollback(function (err) {
+		                                console.log(err);
+		                            });
+		                        }
+		                    } else {
+		                        transaction.commit().then(function () {
+		                        	console.log('Database update operation:');
+		                            console.dir(that);
+		                            sql.close();
+		                            resolve(that);
+		                        }).catch(function (err) {
+		                            console.log('Error in transaction commit ' + err);
+		                        });
+		                    }
+		                });
+		        });
+		    });
+	    });
 	}
 }
-
-// Directorate.prototype.sanitize = function (data) {
-//     data = data || {};
-//     schema = schemas.directorate;
-//     return _.pick(_.defaults(data, schema), _.keys(schema)); 
-// }
-
-// Directorate.prototype.save = function(callback){
-// 	var self = this;
-// 	//TODO: mssql hívás
-
-// 	(async function () {
-// 	    try {
-// 	        let pool = await sql.connect(sqlConfig);
-// 	        const transaction = pool.transaction();
-// 	        const request = transaction.request();
-// 	        request.query('insert into Directorates () values ()', (err, result)=>{
-//         		transaction.commit
-// 	        });
-
-// 	        //callback(null, self);
-
-// 	    } catch (err) {
-// 	        console.log(err);
-// 	    }
-// 	})()
- 
-// 	sql.on('error', err => {
-// 	    // ... error handler
-// 	})
-// }
-
 module.exports = Directorate;

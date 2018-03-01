@@ -30,9 +30,15 @@ global.sqlConfig = {
 //   }
 // });
 
-var ig1 = new Directorate("VALAMI");
-//console.log(ig1.name);
-ig1.save();
+let ig1 = new Directorate("VALAMI");
+ig1.save().then(function(d){
+  ig1 = d;
+  ig1.name = "Hááááá";
+  ig1.update().then(function(d){
+    //console.log(d);
+  })
+});
+
 //console.log(util.inspect(ig1, false, null));
 //console.log(ig1.get('name')+', '+ig1.get('id'));
 //console.log(Directorate.getTotalObjects());
