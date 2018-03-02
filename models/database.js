@@ -15,19 +15,19 @@ class Database
     let storedServer = null;
     let storedDatabase = null;
 
-    try {
-      fs.accessSync(__dirname + '/../../config.js');
+    // try {
+    //   fs.accessSync(__dirname + '/../../config.js');
 
-      let config = require(__dirname + '/../../config')
+    //   let config = require(__dirname + '/../../config')
 
-      storedUsername = config.sql.username;
-      storedPassword = config.sql.password;
-      storedServer = config.sql.server;
-      storedDatabase = config.sql.database;
+    //   storedUsername = config.sql.username;
+    //   storedPassword = config.sql.password;
+    //   storedServer = config.sql.server;
+    //   storedDatabase = config.sql.database;
 
-    } catch (err) {
-      console.log(err);
-    }
+    // } catch (err) {
+    //   console.log(err);
+    // }
 
     let configuration = {
       user: username || storedUsername || '',

@@ -30,14 +30,24 @@ global.sqlConfig = {
 //   }
 // });
 
-let ig1 = new Directorate("VALAMI");
-ig1.save().then(function(d){
-  ig1 = d;
-  ig1.name = "Hááááá";
-  ig1.update().then(function(d){
-    //console.log(d);
-  })
-});
+// Directorate.findById(3, function(err, directorate){
+//   console.log(directorate);
+  
+// });
+Directorate.findById(4, function(err, directorate){
+    console.log(directorate);
+  });
+
+let ig1 = new Directorate(null, "name");
+// console.log(ig1);
+ig1 = ig1.save().then(console.log(ig1));
+// ig1.save().then(function(d){
+//   console.log(d);
+// });
+// let ig2 = new Directorate(null, "MÁSODIK");
+// ig2.save().then(function(d){
+//   console.log(d);
+// });
 
 //console.log(util.inspect(ig1, false, null));
 //console.log(ig1.get('name')+', '+ig1.get('id'));
