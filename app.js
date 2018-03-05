@@ -9,7 +9,8 @@ var sql = require('mssql');
 
 //const util = require('util');
 
-Directorate = require("./models/directorate");
+// Directorate = require("./models/directorate");
+// Modelling = require("./models/modelling");
 //DatabaseHandler = require("./models/database_handler");
 
 global.sqlConfig = {
@@ -19,48 +20,26 @@ global.sqlConfig = {
   database: 'vizkeszlet_gazdalkodas'
 }
 
+// Modelling.all().then(result => {
+//   console.log(result);
+// });
 //var dh = new DatabaseHandler('table1',{id: 'integer', name: 'string'});
 //dh.create();
-
-// sql.connect(global.sqlConfig, function(err){
-//   if(err){
-//     console.log('Failed to connect to SQL server.');
-//   }else{
-//     console.log('Connected to SQL server!');
+// let a;
+//Directorate.findById(3).then(r => console.log(r));
+// Directorate.findById(82).then(r => {
+//   if(r){
+//     a = r; 
+//     console.log(a); 
+//     a.name = "új név";
+//     console.log(a);
+//     a.update().then(d => console.log(d))
 //   }
 // });
 
-// Directorate.findById(3, function(err, directorate){
-//   console.log(directorate);
-  
-// });
-Directorate.findById(4, function(err, directorate){
-    console.log(directorate);
-  });
-
-let ig1 = new Directorate(null, "name");
-// console.log(ig1);
-ig1 = ig1.save().then(console.log(ig1));
-// ig1.save().then(function(d){
-//   console.log(d);
-// });
-// let ig2 = new Directorate(null, "MÁSODIK");
-// ig2.save().then(function(d){
-//   console.log(d);
-// });
-
-//console.log(util.inspect(ig1, false, null));
-//console.log(ig1.get('name')+', '+ig1.get('id'));
-//console.log(Directorate.getTotalObjects());
-// Directorate.findById(4, function(err, directorate){
-//   if(err)
-//     console.log(err);
-//   else
-//     if(directorate)
-//       console.log(directorate.get('name'));
-//     else
-//       console.log('No result for id: 1');
-// });
+// let ig1 = new Directorate(null, "name");
+// ig1.save().then(result => ig1 = result);
+// ig1.save().then(result => {ig1 = result;console.log(ig1);});
 
 var index = require('./routes/index');
 var users = require('./routes/users');

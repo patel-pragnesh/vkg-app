@@ -6,5 +6,6 @@ var databaseImport_controller = require('../controllers/databaseImportController
 
 /* GET directorates listing. */
 router.get('/', databaseImport_controller.index);
+router.get('/new', databaseImport_controller.new);
 
 module.exports = router;

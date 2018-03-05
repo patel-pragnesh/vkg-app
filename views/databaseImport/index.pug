@@ -1,0 +1,28 @@
+extends ../layout
+
+block content
+	div.container-fluid
+		div.row
+			div.col-md-10
+				h1=title
+			div.col-md-2
+				a(href="/databaseImport/new" class="btn btn-primary pull-right btn-new") Új adatbetöltés
+		each m in modellings
+			div(class="row")
+				div(class="col-md-3")=m.name
+				div(class="col-md-4")=m.description
+				div(class="col-md-2")=m.date_for
+				div(class="col-md-2")=m.river_id
+				div(class="col-md-1") Módosít
+		div.row.pull-right
+			div.col-md-12
+				ul.pagination
+					li
+						a(href="/databaseImport?page=1") 1
+					li
+						a(href="/databaseImport?page=2") 2
+					li
+						a(href="/databaseImport?page=3") 3
+			
+			
+	
