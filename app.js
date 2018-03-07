@@ -20,31 +20,12 @@ global.sqlConfig = {
   database: 'vizkeszlet_gazdalkodas'
 }
 
-// Modelling.all().then(result => {
-//   console.log(result);
-// });
-//var dh = new DatabaseHandler('table1',{id: 'integer', name: 'string'});
-//dh.create();
-// let a;
-//Directorate.findById(3).then(r => console.log(r));
-// Directorate.findById(82).then(r => {
-//   if(r){
-//     a = r; 
-//     console.log(a); 
-//     a.name = "új név";
-//     console.log(a);
-//     a.update().then(d => console.log(d))
-//   }
-// });
-
-// let ig1 = new Directorate(null, "name");
-// ig1.save().then(result => ig1 = result);
-// ig1.save().then(result => {ig1 = result;console.log(ig1);});
-
-var index = require('./routes/index');
-var users = require('./routes/users');
-var directorates = require('./routes/directorates');
-var databaseImport = require('./routes/databaseImport');
+const common = require('./controllers/commonController');
+const index = require('./routes/index');
+const users = require('./routes/users');
+const directorates = require('./routes/directorates');
+const rivers = require('./routes/rivers');
+const modelling_import = require('./routes/modelling_import');
 
 var app = express();
 
@@ -68,10 +49,13 @@ app.use(sassMiddleware({
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(common.directorates);
+
 app.use('/', index);
 app.use('/users', users);
 app.use('/directorates', directorates);
-app.use('/databaseImport', databaseImport);
+app.use('/rivers', rivers);
+app.use('/modelling-import', modelling_import);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

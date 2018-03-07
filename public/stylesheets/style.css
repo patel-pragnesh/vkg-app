@@ -1,4 +1,7 @@
 @import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
+.mr5 {
+  margin-right: 5px; }
+
 .btn-new {
   margin-top: 20px; }
 
@@ -34,7 +37,12 @@ a, a:hover, a:focus {
   border-radius: 0;
   margin-left: 250px;
   margin-bottom: 40px;
-  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1); }
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+  -webkit-transition: all 0.3s;
+  /* Safari */
+  transition: all 0.3s; }
+  .navbar.nav-expand {
+    margin-left: 0; }
 
 .navbar-btn {
   box-shadow: none;

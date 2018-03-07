@@ -1,0 +1,85 @@
+extends ../layout
+
+block content
+	div.container-fluid
+		div.row
+			div.col-md-10
+				h1=title
+			div.col-md-2
+				a(href="/modelling-import/modelling" class="btn btn-primary pull-right btn-new") Vissza
+		div.row
+			div.col-md-12
+				form(action="/modelling-import/modelling/create", method="post")
+					div.form-group
+						label(for="directorate") Igazgatóság
+						select(id="directorate" name="directorate" class="form-control")
+							option(value=null) Válasszon
+							each d in directorates
+								option(value=d.id selected=(undefined===modelling ? false : d.id == modelling.directorate))=d.name
+						if errors
+							for error in errors
+								if error.param == 'directorate'
+									div.text-danger=error.msg
+					div.form-group
+						label(for="river") Vízfolyás
+						select(id="river", name="river" class="form-control" disabled=(rivers ? false : true))
+							if rivers
+								option(value=null) Válasszon
+								each r in rivers
+									option(value=r.id selected=(r.id == modelling.river))=r.name
+							else
+								option(value=null) Nincs megjelenítendő adat
+						if errors
+							for error in errors
+								if error.param == 'river'
+									div.text-danger=error.msg
+					div.form-group
+						label(for="name") Megnevezés
+						input(type="text" name="name" placeholder="Modellezés megnevezése" class="form-control" value=(undefined===modelling ? '' : modelling.name))
+						if errors
+							for error in errors
+								if error.param == 'name'
+									div.text-danger=error.msg
+					div.form-group
+						label(for="description") Leírás
+						input(type="text" name="description" placeholder="Rövid megjegyzés a modellezésről" class="form-control" value=(undefined===modelling ? '' : modelling.description))
+						if errors
+							for error in errors
+								if error.param == 'description'
+									div.text-danger=error.msg
+					div.form-group
+						label(for="date_for") Modellezés időszaka
+						input(type="text" name="date_for" placeholder="pl: Év Hónap" class="form-control" value=(undefined===modelling ? '' : modelling.date_for))
+						if errors
+							for error in errors
+								if error.param == 'date_for'
+									div.text-danger=error.msg
+					div.form-group
+						input(type="submit" name="submit_button" class="btn btn-primary pull-right" value="Mentés")
+						a(href="/modelling-import/modelling" class="btn btn-default pull-right mr5") Mégse
+							
+block scripts
+	script(type="text/javascript").
+		$(document).ready(function () {
+			$('#directorate').change(function(){
+				var directorate_id = this.value;
+				// Korábban betöltött elemek eltávolítása
+				$('#river option').remove();
+				$('#river').attr('disabled', true);
+				// AJAX hívás a folyók lekérdezésére
+				$.post( "/rivers/directorate", 
+					{id: directorate_id},
+					function( data ) {
+					if(data){
+						$('<option>', {value: null}).text('Válasszon').appendTo($('#river'));
+						$.each(data, function(i, v){
+							var o = $('<option>', {value: v.id}).text(v.name);
+							o.appendTo($('#river'));
+						});
+						$('#river').removeAttr('disabled');
+					}else{
+						$('<option>', {value: null}).text('Nincs megjelenítendő adat').appendTo($('#river'));
+					}			
+				});
+			})
+		});

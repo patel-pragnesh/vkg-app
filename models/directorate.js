@@ -19,25 +19,25 @@ class Directorate{
 	}
 
 	static async all(){
-		    try {
-		    	let pool = new sql.ConnectionPool(sqlConfig);
-		    	await pool.connect();
-		        let result = await pool.request().query('select * from Directorate');
-		        pool.close();
-		        if(result.recordset.length != 0){
-		        	let returnArray = [];
-		        	for(let r of result.recordset){
-		        		returnArray.push(new Directorate(r.id, r.name, r.full_name, r.city, r.address, r.phone, r.email));
-		        	}
-		        	return returnArray;
-		        }
-		        else
-		        	return null;
+	    try {
+	    	let pool = new sql.ConnectionPool(sqlConfig);
+	    	await pool.connect();
+	        let result = await pool.request().query('select * from Directorate');
+	        pool.close();
+	        if(result.recordset.length != 0){
+	        	let returnArray = [];
+	        	for(let r of result.recordset){
+	        		returnArray.push(new Directorate(r.id, r.name, r.full_name, r.city, r.address, r.phone, r.email));
+	        	}
+	        	return returnArray;
+	        }
+	        else
+	        	return null;
 
-		    } catch (err) {
-		    	callback(err, null);
-		    	pool.close();
-		    }
+	    } catch (err) {
+	    	callback(err, null);
+	    	pool.close();
+	    }
 	}
 
 	static async findById(id){

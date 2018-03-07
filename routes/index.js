@@ -4,10 +4,8 @@ var router = express.Router();
 var Directorate = require('../models/directorate');
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-	Directorate.all(function(err, directorates){
-  		res.render('index', { title: 'Igazgatóságok', directorates: directorates });
-	});
+router.get('/', async function(req, res, next) {
+	res.render('index', { title: 'Igazgatóságok'});
 });
 
 module.exports = router;

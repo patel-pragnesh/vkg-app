@@ -65,7 +65,7 @@ html
 						#bs-example-navbar-collapse-1.collapse.navbar-collapse
 							ul.nav.navbar-nav.navbar-right
 								li
-									a(href="/databaseImport") Adat betöltés
+									a(href="/modelling-import/modelling") Adat betöltés
 								//- li
 								//- 	a(href="#") Page
 								//- li
@@ -82,21 +82,17 @@ html
 		script(src="https://code.jquery.com/jquery-1.12.0.min.js")
 		// Bootstrap Js CDN
 		script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js")
-		// jQuery Custom Scroller CDN
 		script(src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js")
-		//script(src="/javascripts/init_map.js")
-		//script(src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBaLMBmv1VbhuyfQPo-Q7jSAyBsI1rAvRY&callback=initMap" async="" defer="")
-		//script(src="https://js.arcgis.com/4.6/")
-		script(src="https://js.arcgis.com/3.23/")
-		script(src="/javascripts/init_arcgis_map.js")
 		script(type="text/javascript").
 			$(document).ready(function () {
-			$("#sidebar").mCustomScrollbar({
-			theme: "minimal"
-			});
-			$('#sidebarCollapse').on('click', function () {
-			$('#sidebar, #content').toggleClass('active');
-			$('.collapse.in').toggleClass('in');
-			$('a[aria-expanded=true]').attr('aria-expanded', 'false');
-			});
-			});
+				$("#sidebar").mCustomScrollbar({
+					theme: "minimal"
+				});
+				$('#sidebarCollapse').on('click', function () {
+					$('#sidebar, #content').toggleClass('active');
+					$('.collapse.in').toggleClass('in');
+					$('a[aria-expanded=true]').attr('aria-expanded', 'false');
+					$('.navbar.navbar-fixed-top').toggleClass('nav-expand');
+				});
+			});	
+		block scripts
