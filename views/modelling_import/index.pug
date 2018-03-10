@@ -6,7 +6,7 @@ block content
 			div.col-md-10
 				h1=title
 			div.col-md-2
-				a(href="/modelling-import/modelling/create" class="btn btn-primary pull-right btn-new") Új modellezés
+				a(href="/modelling_import/create" class="btn btn-primary pull-right btn-new") Új modellezés
 		table.table.table-striped
 			thead
 				tr
@@ -21,28 +21,18 @@ block content
 						td=m.name
 						td=m.description
 						td=m.date_for
-						td=m.river_id
+						td=m.river_name
 						td
-							a(href="#" class="btn btn-info pull-right")
+							a(href="/modelling_import/"+m.id+"/data" class="btn btn-info pull-right")
 								span.glyphicon.glyphicon-cloud-upload
-							a(href="/modelling-import/modelling/edit/"+m.id class="btn btn-info pull-right mr5")
+							a(href="/modelling_import/"+m.id+"/update" class="btn btn-info pull-right mr5")
 								span.glyphicon.glyphicon-edit
-					//- div(class="row")
-					//- 	div(class="col-md-2")=m.name
-					//- 	div(class="col-md-3")=m.description
-					//- 	div(class="col-md-2")=m.date_for
-					//- 	div(class="col-md-2")=m.river_id
-					//- 	div(class="col-md-3")
-					//- 		a(href="#" class="btn btn-info pull-right")
-					//- 			span.glyphicon.glyphicon-cloud-upload
-					//- 		a(href="#" class="btn btn-info pull-right mr5")
-					//- 			span.glyphicon.glyphicon-edit
 		div.row.pull-right
 			div.col-md-12
 				ul.pagination
 					- for(var i = 1; i < page_count+1; i++)
 						li
-							a(href="/modelling-import?page="+i)=i
+							a(href="/modelling_import?page="+i)=i
 					
 			
 			

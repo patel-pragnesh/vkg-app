@@ -4,10 +4,28 @@ var router = express.Router();
 // Require controller modules
 var modellingImportcontroller = require('../controllers/modellingImportcontroller');
 
-/* GET directorates listing. */
-router.get('/modelling', modellingImportcontroller.index);
-router.get('/modelling/create', modellingImportcontroller.create_get);
-router.post('/modelling/create', modellingImportcontroller.create_post);
-router.get('/modelling/edit/:id', modellingImportcontroller.edit_get);
+/* GET request for list of all Modellings. */
+router.get('/', modellingImportcontroller.index);
+
+/* GET request for creating a Modelling. */
+router.get('/create', modellingImportcontroller.create_get);
+
+/* POST request for creating a Modelling. */
+router.post('/create', modellingImportcontroller.create_post);
+
+/* GET request to update a Modelling. */
+router.get('/:id/update', modellingImportcontroller.update_get);
+
+/* POST request to update a Modelling. */
+router.post('/:id/update', modellingImportcontroller.update_post);
+
+/* GET request for one Modelling. */
+router.get('/:id', modellingImportcontroller.modelling_detail);
+
+/* GET request to update data for Modelling. */
+router.get('/:id/data', modellingImportcontroller.data_get);
+
+/* POST request to update data for Modelling. */
+router.post('/:id/data', modellingImportcontroller.data_post);
 
 module.exports = router;

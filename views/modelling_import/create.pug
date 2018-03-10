@@ -6,10 +6,10 @@ block content
 			div.col-md-10
 				h1=title
 			div.col-md-2
-				a(href="/modelling-import/modelling" class="btn btn-primary pull-right btn-new") Vissza
+				a(href="/modelling_import" class="btn btn-primary pull-right btn-new") Vissza
 		div.row
 			div.col-md-12
-				form(action="/modelling-import/modelling/create", method="post")
+				form(action=form_link, method="post")
 					div.form-group
 						label(for="directorate") Igazgatóság
 						select(id="directorate" name="directorate" class="form-control")
@@ -21,12 +21,12 @@ block content
 								if error.param == 'directorate'
 									div.text-danger=error.msg
 					div.form-group
-						label(for="river") Vízfolyás
-						select(id="river", name="river" class="form-control" disabled=(rivers ? false : true))
+						label(for="river_id") Vízfolyás
+						select(id="river", name="river_id" class="form-control" disabled=(rivers ? false : true))
 							if rivers
 								option(value=null) Válasszon
 								each r in rivers
-									option(value=r.id selected=(r.id == modelling.river))=r.name
+									option(value=r.id selected=(r.id == modelling.river_id))=r.name
 							else
 								option(value=null) Nincs megjelenítendő adat
 						if errors
@@ -56,7 +56,9 @@ block content
 									div.text-danger=error.msg
 					div.form-group
 						input(type="submit" name="submit_button" class="btn btn-primary pull-right" value="Mentés")
-						a(href="/modelling-import/modelling" class="btn btn-default pull-right mr5") Mégse
+						a(href="/modelling_import" class="btn btn-default pull-right mr5") Mégse
+					if modelling
+						input(type="hidden" name="id" value=modelling.id)
 							
 block scripts
 	script(type="text/javascript").

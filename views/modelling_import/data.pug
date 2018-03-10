@@ -1,0 +1,14 @@
+extends ../layout
+
+block content
+	div.container-fluid
+		div.row
+			div.col-md-10
+				h1=title
+			div.col-md-2
+				a(href="/modelling_import" class="btn btn-primary pull-right btn-new") Vissza
+		div.row
+			div.col-md-12
+				form(action=form_link, method="post", enctype="multipart/form-data")
+					input(type="file" name="fileUploaded")
+					input(type="submit")

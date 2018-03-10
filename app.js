@@ -55,7 +55,7 @@ app.use('/', index);
 app.use('/users', users);
 app.use('/directorates', directorates);
 app.use('/rivers', rivers);
-app.use('/modelling-import', modelling_import);
+app.use('/modelling_import', modelling_import);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
