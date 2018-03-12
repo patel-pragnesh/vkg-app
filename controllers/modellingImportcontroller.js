@@ -2,10 +2,15 @@ const { body,validationResult } = require('express-validator/check');
 const { sanitizeBody } = require('express-validator/filter');
 const formidable = require('formidable');
 const fs = require('fs');
+const mv = require('mv');
+const moment = require('moment');
+moment.locale('hu');
 
 const Directorate = require('../models/directorate');
 const Modelling = require('../models/modelling');
 const River = require('../models/river');
+
+const DataLoader = require('../logic/dataloader');
 
 exports.index = async function(req, res, next){
 	let countPerPage = 15;
@@ -127,10 +132,15 @@ exports.data_post = async function(req, res, next){
     let form = new formidable.IncomingForm();
     form.parse(req, function (err, fields, files) {
       let oldpath = files.fileUploaded.path;
-      let newpath = __dirname +'/../public/DSS/' + files.fileUploaded.name;
-      fs.rename(oldpath, newpath, function (err) {
-        if (err) throw err;
-        console.log('File uploaded and moved!');
+      let oldFileName = files.fileUploaded.name;
+      let oldFileNameArray = oldFileName.split('.');
+      oldFileNameArray.pop();
+      let newFileName = oldFileNameArray.join('.');
+      let newpath = __dirname +'/../public/DSS/' + newFileName + '_' + moment().format("YYYY-MM-DD_HHmmssSSS") + '.csv';
+      mv(oldpath, newpath, function(err){
+        console.log('File moved...');
+        let dataloader = new DataLoader(newpath);
+        dataloader.readFile();
       });
     });
     res.send('TODO Modelling data import page');
