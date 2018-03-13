@@ -11,4 +11,5 @@ block content
 			div.col-md-12
 				form(action=form_link, method="post", enctype="multipart/form-data")
 					input(type="file" name="fileUploaded")
+					input(type="hidden" name="modelling" value=modelling.id)
 					input(type="submit")

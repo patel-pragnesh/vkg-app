@@ -131,17 +131,27 @@ exports.data_get = async function(req, res, next){
 exports.data_post = async function(req, res, next){
     let form = new formidable.IncomingForm();
     form.parse(req, function (err, fields, files) {
+      let modelling = fields.modelling;
       let oldpath = files.fileUploaded.path;
       let oldFileName = files.fileUploaded.name;
       let oldFileNameArray = oldFileName.split('.');
       oldFileNameArray.pop();
       let newFileName = oldFileNameArray.join('.');
       let newpath = __dirname +'/../public/DSS/' + newFileName + '_' + moment().format("YYYY-MM-DD_HHmmssSSS") + '.csv';
-      mv(oldpath, newpath, function(err){
+      mv(oldpath, newpath, async function(err){
         console.log('File moved...');
         let dataloader = new DataLoader(newpath);
-        dataloader.readFile();
+        await dataloader.readFile();
+        await dataloader.saveData(modelling);
+        console.log('ok');
+        res.send('TODO Modelling data import page');
+        // await dataloader.readFile().then(d=>{
+        //     console.log('ok');
+        //     console.log(d.saveData());
+        //     res.send('TODO Modelling data import page');
+        // });
+        
       });
     });
-    res.send('TODO Modelling data import page');
+    
 }
