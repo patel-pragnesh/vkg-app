@@ -3,7 +3,7 @@ const sql = require('mssql');
 const moment = require('moment');
 moment.locale('hu');
 
-class Flow{
+class Stage{
 	constructor(id, date_time_for, value, data_meta_id, flow_meta_projekt_name=null, createdAt=null, updatedAt=null){
 		this.id = id;
 		this.date_time_for = date_time_for;
@@ -18,12 +18,12 @@ class Flow{
 	    try {
 	    	let pool = new sql.ConnectionPool(sqlConfig);
 	    	await pool.connect();
-	        let result = await pool.request().query('SELECT Flow.*, Data_meta.projekt_name as projekt_name FROM Flow LEFT JOIN Data_meta ON Flow.data_meta_id=Data_meta.id');
+	        let result = await pool.request().query('SELECT Stage.*, Data_meta.projekt_name as projekt_name FROM Stage LEFT JOIN Data_meta ON Stage.data_meta_id=Data_meta.id');
 	        pool.close();
 	        if(result.recordset.length != 0){
 	        	let returnArray = [];
 	        	for(let r of result.recordset){
-	        		returnArray.push(new Flow(r.id, r.date_time_for, r.value, r.data_meta_id, r.projekt_name));
+	        		returnArray.push(new Stage(r.id, r.date_time_for, r.value, r.data_meta_id, r.projekt_name));
 	        	}
 	        	return returnArray;
 	        }
@@ -41,13 +41,13 @@ class Flow{
 	    	await pool.connect();
 	        let result = await pool.request()
 	            .input('input_parameter', sql.Int, id)
-	            .query('SELECT Flow.*, Data_meta.projekt_name as projekt_name FROM Flow '+
-	            	'LEFT JOIN Data_meta ON Flow.data_meta_id=Data_meta.id '+
-	            	'WHERE Flow.id = @input_parameter');
+	            .query('SELECT Stage.*, Data_meta.projekt_name as projekt_name FROM Stage '+
+	            	'LEFT JOIN Data_meta ON Stage.data_meta_id=Data_meta.id '+
+	            	'WHERE Stage.id = @input_parameter');
 	        pool.close();
 	        // console.log(result.recordset[0]);
 	        if(result.recordset.length != 0)
-	        	return new Flow(result.recordset[0]['id'], 
+	        	return new Stage(result.recordset[0]['id'], 
 	        			result.recordset[0]['date_time_for'],
 	        			result.recordset[0]['value'],
 	        			result.recordset[0]['data_meta_id'],
@@ -73,7 +73,7 @@ class Flow{
 			request.input('data_meta_id', sql.NVarChar, that.data_meta_id);
 			request.input('createdAt', sql.NVarChar, that.createdAt);
 			request.input('updatedAt', sql.NVarChar, that.updatedAt);
-			let result = await request.query('INSERT INTO Flow (date_time_for, value, data_meta_id, createdAt, updatedAt) '
+			let result = await request.query('INSERT INTO Stage (date_time_for, value, data_meta_id, createdAt, updatedAt) '
 				+'OUTPUT Inserted.id VALUES (@date_time_for, @value, @data_meta_id, @createdAt, @updatedAt);');
 			that.id = result.recordset[0]['id'];
 			await transaction.commit();
@@ -98,7 +98,7 @@ class Flow{
 			request.input('value', sql.Float, that.value);
 			request.input('data_meta_id', sql.NVarChar, that.data_meta_id);
 			request.input('updatedAt', sql.NVarChar, that.updatedAt);
-			let result = await request.query('UPDATE Flow SET '
+			let result = await request.query('UPDATE Stage SET '
 				+'date_time_for=@date_time_for, value=@value, data_meta_id=@data_meta_id, updatedAt=@updatedAt WHERE id=@id;');
 			//console.log(result);
 			await transaction.commit();
@@ -109,4 +109,4 @@ class Flow{
 		}
 	}
 }
-module.exports = Flow;
+module.exports = Stage;

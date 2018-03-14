@@ -3,12 +3,11 @@ const sql = require('mssql');
 const moment = require('moment');
 moment.locale('hu');
 
-class Profile{
-	constructor(id, name, river_id, river_name, createdAt=null, updatedAt=null){
+class TimeInterval{
+	constructor(id, name, sort=null, createdAt=null, updatedAt=null){
 		this.id = id;
 		this.name = name;
-		this.river_id = river_id;
-		this.river_name = river_name;
+		this.sort = sort;
 		createdAt ? this.createdAt = createdAt : this.createdAt = moment().format("YYYY-MM-DD HH:mm:ss");
 		updatedAt ? this.updatedAt = updatedAt : this.updatedAt = moment().format("YYYY-MM-DD HH:mm:ss");
 	}
@@ -17,12 +16,12 @@ class Profile{
 	    try {
 	    	let pool = new sql.ConnectionPool(sqlConfig);
 	    	await pool.connect();
-	        let result = await pool.request().query('SELECT Profile.*, River.name as river_name FROM Profile LEFT JOIN River ON Profile.river_id=River.id');
+	        let result = await pool.request().query('select * from Time_interval');
 	        pool.close();
 	        if(result.recordset.length != 0){
 	        	let returnArray = [];
 	        	for(let r of result.recordset){
-	        		returnArray.push(new Flow(r.id, r.name, r.river_id, r.river_name));
+	        		returnArray.push(new TimeInterval(r.id, r.name, r.sort));
 	        	}
 	        	return returnArray;
 	        }
@@ -40,16 +39,12 @@ class Profile{
 	    	await pool.connect();
 	        let result = await pool.request()
 	            .input('input_parameter', sql.Int, id)
-	            .query('SELECT Profile.*, River.name as river_name FROM Profile '+
-	            	'LEFT JOIN River ON Profile.river_id=River.id '+
-	            	'WHERE Profile.id = @input_parameter');
+	            .query('select * from Time_interval where id = @input_parameter')
 	        pool.close();
-	        // console.log(result.recordset[0]);
 	        if(result.recordset.length != 0)
-	        	return new Profile(result.recordset[0]['id'], 
+	        	return new TimeInterval(result.recordset[0]['id'], 
 	        			result.recordset[0]['name'],
-	        			result.recordset[0]['river_id'],
-	        			result.recordset[0]['river_name']);
+	        			result.recordset[0]['sort']);
 	        else
 	        	return null;
 
@@ -58,23 +53,19 @@ class Profile{
 	    }
 	}
 
-	static async findByNameRiver(n, r_id){
+	static async findByName(n){
 	    try {
 	    	let pool = new sql.ConnectionPool(sqlConfig);
 	    	await pool.connect();
 	        let result = await pool.request()
-	            .input('input_parameter1', sql.NVarChar, n)
-	            .input('input_parameter2', sql.Int, r_id)
-	            .query('SELECT Profile.*, River.name as river_name FROM Profile '+
-	            	'LEFT JOIN River ON Profile.river_id=River.id '+
-	            	'WHERE Profile.name = @input_parameter1 AND Profile.river_id = @input_parameter2');
+	            .input('input_parameter', sql.NVarChar, n)
+	            .query('select * from Time_interval where name = @input_parameter')
 	        pool.close();
-	        //console.log(result.recordset[0]);
+	        // console.log(result);
 	        if(result.recordset.length != 0)
-	        	return new Profile(result.recordset[0]['id'], 
+	        	return new TimeInterval(result.recordset[0]['id'], 
 	        			result.recordset[0]['name'],
-	        			result.recordset[0]['river_id'],
-	        			result.recordset[0]['river_name']);
+	        			result.recordset[0]['sort']);
 	        else
 	        	return null;
 
@@ -92,11 +83,12 @@ class Profile{
 			await transaction.begin();
 			const request = new sql.Request(transaction);
 			request.input('name', sql.NVarChar, that.name);
-			request.input('river_id', sql.NVarChar, that.river_id);
+			request.input('sort', sql.NVarChar, that.sort);
 			request.input('createdAt', sql.NVarChar, that.createdAt);
 			request.input('updatedAt', sql.NVarChar, that.updatedAt);
-			let result = await request.query('INSERT INTO Profile (name, river_id, createdAt, updatedAt) '
-				+'OUTPUT Inserted.id VALUES (@name, @river_id, @createdAt, @updatedAt);');
+			let result = await request.query('INSERT INTO Time_interval (name, sort, createdAt, updatedAt) '
+				+'OUTPUT Inserted.id VALUES (@name, @sort, @createdAt, @updatedAt);');
+			console.log(result);
 			that.id = result.recordset[0]['id'];
 			await transaction.commit();
 			pool.close();
@@ -117,11 +109,11 @@ class Profile{
 			const request = new sql.Request(transaction);
 			request.input('id', sql.NVarChar, that.id);
 			request.input('name', sql.NVarChar, that.name);
-			request.input('river_id', sql.NVarChar, that.river_id);
+			request.input('sort', sql.NVarChar, that.sort);
 			request.input('updatedAt', sql.NVarChar, that.updatedAt);
-			let result = await request.query('UPDATE Profile SET '
-				+'name=@name, river_id=@river_id, updatedAt=@updatedAt WHERE id=@id;');
-			//console.log(result);
+			let result = await request.query('UPDATE Time_interval SET '
+				+'name=@name, sort=@sort, updatedAt=@updatedAt WHERE id=@id;');
+			console.log(result);
 			await transaction.commit();
 			pool.close();
 			return that;
@@ -130,4 +122,4 @@ class Profile{
 		}
 	}
 }
-module.exports = Profile;
+module.exports = TimeInterval;
