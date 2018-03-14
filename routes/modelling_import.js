@@ -29,6 +29,6 @@ router.get('/:id/data', modellingImportcontroller.data_get);
 router.post('/:id/data', modellingImportcontroller.data_post);
 
 /* GET request to delete meta_data for Modelling. */
-router.get('meta_data/:id/delete', modellingImportcontroller.meta_data_delete_get);
+router.get('/meta_data/:id/delete', modellingImportcontroller.meta_data_delete_get);
 
 module.exports = router;

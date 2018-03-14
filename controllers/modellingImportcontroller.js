@@ -162,5 +162,6 @@ exports.data_post = async function(req, res, next){
 exports.meta_data_delete_get = async function(req, res, next){
     let meta_data = await DataMeta.findById(req.params.id);
     let modelling_id = meta_data.modelling_id;
+    meta_data.delete();
     res.redirect('/modelling_import/'+modelling_id+'/data');
 }

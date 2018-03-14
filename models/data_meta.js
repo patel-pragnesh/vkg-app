@@ -162,5 +162,24 @@ class DataMeta{
 			console.log(err);
 		}
 	}
+
+	async delete(){
+		let that = this;
+		try{
+			let pool = new sql.ConnectionPool(sqlConfig);
+			let dbConn = await pool.connect();
+			let transaction = new sql.Transaction(dbConn);
+			await transaction.begin();
+			const request = new sql.Request(transaction);
+			request.input('id', sql.NVarChar, that.id);
+			let result = await request.query('DELETE FROM Data_meta WHERE id=@id;');
+			//console.log(result);
+			await transaction.commit();
+			pool.close();
+			return that;
+		}catch (err){
+			console.log(err);
+		}
+	}
 }
 module.exports = DataMeta;
