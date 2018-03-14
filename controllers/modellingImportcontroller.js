@@ -9,6 +9,7 @@ moment.locale('hu');
 const Directorate = require('../models/directorate');
 const Modelling = require('../models/modelling');
 const River = require('../models/river');
+const DataMeta = require('../models/data_meta');
 
 const DataLoader = require('../logic/dataloader');
 
@@ -123,9 +124,17 @@ exports.modelling_detail = async function(req, res, next){
 }
 
 exports.data_get = async function(req, res, next){
+
+    let countPerPage = 15;
+    let page = req.query.page ? req.query.page - 1 : 0;
+    let meta_datas = await DataMeta.findByModelling(req.params.id);
+    console.log(meta_datas);
+    let page_count = meta_datas ? meta_datas.length/countPerPage : 0;
+    let meta_datas_page = meta_datas ? meta_datas.slice(page, page + countPerPage) : [];
+
     const m = await Modelling.findById(req.params.id);
     const form_link = "/modelling_import/"+m.id+"/data";
-    res.render('modelling_import/data', { title: 'Modellezés adatbetöltés', modelling: m, form_link: form_link });
+    res.render('modelling_import/data', { title: 'Modellezés adatok', modelling: m, form_link: form_link, meta_datas: meta_datas_page, page_count: page_count });
 }
 
 exports.data_post = async function(req, res, next){
@@ -144,14 +153,14 @@ exports.data_post = async function(req, res, next){
         await dataloader.readFile();
         await dataloader.saveData(modelling);
         console.log('ok');
-        res.send('TODO Modelling data import page');
-        // await dataloader.readFile().then(d=>{
-        //     console.log('ok');
-        //     console.log(d.saveData());
-        //     res.send('TODO Modelling data import page');
-        // });
-        
+        res.redirect('/modelling_import/'+modelling+'/data');
       });
     });
     
+}
+
+exports.meta_data_delete_get = async function(req, res, next){
+    let meta_data = await DataMeta.findById(req.params.id);
+    let modelling_id = meta_data.modelling_id;
+    res.redirect('/modelling_import/'+modelling_id+'/data');
 }

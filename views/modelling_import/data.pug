@@ -9,7 +9,83 @@ block content
 				a(href="/modelling_import" class="btn btn-primary pull-right btn-new") Vissza
 		div.row
 			div.col-md-12
+					div.panel.panel-default
+						div.panel-heading
+							h3.panel-title Alapadatok
+						div.panel-body
+							div.row
+								div.col-md-12
+									div.form-group
+										div.col-md-2
+											label(class="") Megnevezés:
+										div.col-md-10
+											span(class="")=modelling.name
+								div.col-md-12
+									div.form-group
+										div.col-md-2
+											label(class="") Leírás:
+										div.col-md-10
+											span(class="")=modelling.description
+								div.col-md-12
+									div.form-group
+										div.col-md-2
+											label(class="") Időszak:
+										div.col-md-10
+											span(class="")=modelling.date_for
+								div.col-md-12
+									div.form-group
+										div.col-md-2
+											label(class="") Vízfolyás:
+										div.col-md-10
+											span(class="")=modelling.river_name
+			div.col-md-12
 				form(action=form_link, method="post", enctype="multipart/form-data")
-					input(type="file" name="fileUploaded")
-					input(type="hidden" name="modelling" value=modelling.id)
-					input(type="submit")
+					div.panel.panel-default
+						div.panel-heading
+							h3.panel-title Új adat betöltés
+						div.panel-body
+							div.row
+								div.col-md-12
+									div.form-group.fileContainer
+										input(type="file" name="fileUploaded" id="fileUploaded" class="inputFile")
+										label(for="fileUploaded" class="btn btn-primary file-label") Fájl kiválasztása
+						div.panel-footer
+							input(type="hidden" name="modelling" value=modelling.id)
+							input(type="submit" class="btn btn-primary pull-right" value="Mentés")
+							div.clearfix
+			div.col-md-12
+					div.panel.panel-default
+						div.panel-heading
+							h3.panel-title Betöltött adatok
+						div.panel-body
+							table.table.table-striped
+								thead
+									tr
+										th Projekt
+										th -tól
+										th -ig
+										th Típus
+										th Időintervallum
+										th Mértékegység
+										th Szelvény
+										th.text-right Műveletek
+								tbody
+									each m_d in meta_datas
+										tr
+											td=m_d.projekt_name
+											td=m_d.date_from
+											td=m_d.date_to
+											td=m_d.type
+											td=m_d.time_interval_name
+											td=m_d.unit
+											td=m_d.profile_name
+											td
+												a(href="/modelling_import/meta_data/"+m_d.id+"/delete" class="btn btn-info pull-right mr5")
+													span.glyphicon.glyphicon-erase
+						div.panel-footer
+							ul.pagination.m0.pull-right
+								- for(var i = 1; i < page_count+1; i++)
+									li
+										a(href="/modelling_import/"+modelling.id+"/data?page="+i)=i
+							div.clearfix
+

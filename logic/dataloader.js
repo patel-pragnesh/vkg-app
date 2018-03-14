@@ -95,7 +95,7 @@ class DataLoader{
 				//console.log(p);
 				let ti = await TimeInterval.findByName(that.data[i].E);
 				//console.log(ti);
-				let fm = new DataMeta(null, that.data[i].A, null, null, ti.id, that.data[i].unit, modelling_id, p.id, that.data[i].F);
+				let fm = new DataMeta(null, that.data[i].A, null, null, ti.id, that.data[i].unit, modelling_id, p.id, that.data[i].F, that.data[i].C);
 				fm = await fm.save();
 				let date_from = moment("3000-01-01 01:01", "YYYY-MM-DD HH:mm");
 				let date_to = moment("1900-01-01 01:01", "YYYY-MM-DD HH:mm");

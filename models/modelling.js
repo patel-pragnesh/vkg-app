@@ -56,7 +56,7 @@ class Modelling{
 	        			result.recordset[0]['description'],
 	        			result.recordset[0]['date_for'],
 	        			result.recordset[0]['river_id'],
-	        			result.recordset[0]['river_named'],
+	        			result.recordset[0]['river_name'],
 	        			result.recordset[0]['directorate'],
 	        			result.recordset[0]['directorate_name']);
 	        else

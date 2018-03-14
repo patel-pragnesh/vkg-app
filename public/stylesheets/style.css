@@ -1,9 +1,36 @@
 @import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
+.m0 {
+  margin: 0px; }
+
 .mr5 {
   margin-right: 5px; }
 
+.panel-default > .panel-heading {
+  color: #fff;
+  background-color: #47748b;
+  border-color: #47748b; }
+
 .btn-new {
   margin-top: 20px; }
+
+.inputFile {
+  padding-left: 18px;
+  padding-top: 6px;
+  width: 80%;
+  height: 34px;
+  opacity: 1;
+  overflow: hidden;
+  position: absolute;
+  z-index: 1;
+  outline: none; }
+  .inputFile + .file-label {
+    position: relative;
+    z-index: 2; }
+
+@-moz-document url-prefix() {
+  .inputFile {
+    padding-left: 58px;
+    padding-top: 0px; } }
 
 /*
     DEMO STYLE
@@ -138,6 +165,7 @@ a.article, a.article:hover {
   width: calc(100% - 250px);
   /*padding: 40px;*/
   padding-top: 80px;
+  padding-bottom: 30px;
   min-height: 100vh;
   transition: all 0.3s;
   position: absolute;

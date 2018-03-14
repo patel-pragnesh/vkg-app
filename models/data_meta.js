@@ -4,7 +4,7 @@ const moment = require('moment');
 moment.locale('hu');
 
 class DataMeta{
-	constructor(id, projekt_name, date_from, date_to, time_interval_id, unit, modelling_id, profile_id, additional_description, createdAt=null, updatedAt=null){
+	constructor(id, projekt_name, date_from, date_to, time_interval_id, unit, modelling_id, profile_id, additional_description, type=null, time_interval_name=null, profile_name=null, createdAt=null, updatedAt=null){
 		this.id = id;
 		this.projekt_name = projekt_name;
 		this.date_from = date_from;
@@ -14,6 +14,9 @@ class DataMeta{
 		this.modelling_id = modelling_id;
 		this.profile_id = profile_id;
 		this.additional_description = additional_description;
+		this.type = type;
+		this.time_interval_name = time_interval_name;
+		this.profile_name = profile_name;
 		createdAt ? this.createdAt = createdAt : this.createdAt = moment().format("YYYY-MM-DD HH:mm:ss");
 		updatedAt ? this.updatedAt = updatedAt : this.updatedAt = moment().format("YYYY-MM-DD HH:mm:ss");
 	}
@@ -27,7 +30,7 @@ class DataMeta{
 	        if(result.recordset.length != 0){
 	        	let returnArray = [];
 	        	for(let r of result.recordset){
-	        		returnArray.push(new Data_meta(r.id, r.projekt_name, r.date_from, r.date_to, r.time_interval_id, r.unit, r.modelling_id, r.profile_id, r.additional_description));
+	        		returnArray.push(new DataMeta(r.id, r.projekt_name, r.date_from, r.date_to, r.time_interval_id, r.unit, r.modelling_id, r.profile_id, r.additional_description, r.type));
 	        	}
 	        	return returnArray;
 	        }
@@ -50,15 +53,46 @@ class DataMeta{
 	        pool.close();
 	        // console.log(result.recordset[0]);
 	        if(result.recordset.length != 0)
-	        	return new Data_meta(result.recordset[0]['id'], 
+	        	return new DataMeta(result.recordset[0]['id'], 
 	        			result.recordset[0]['projekt_name'],
-	        			result.recordset[0]['date_from'],
-	        			result.recordset[0]['date_to'],
+	        			moment(result.recordset[0]['date_from'], "YYYY-MM-DD HH:mm:ss").format("YYYY-MM-DD HH:mm"),
+	        			moment(result.recordset[0]['date_to'], "YYYY-MM-DD HH:mm:ss").format("YYYY-MM-DD HH:mm"),
 	        			result.recordset[0]['time_interval_id'],
 	        			result.recordset[0]['unit'],
 	        			result.recordset[0]['modelling_id'],
 	        			result.recordset[0]['profile_id'],
-	        			result.recordset[0]['additional_description']);
+	        			result.recordset[0]['additional_description'],
+	        			result.recordset[0]['type']);
+	        else
+	        	return null;
+
+	    } catch (err) {
+	        console.log(err);
+	    }
+	}
+
+	static async findByModelling(modelling_id){
+	    try {
+	    	let pool = new sql.ConnectionPool(sqlConfig);
+	    	await pool.connect();
+	        let result = await pool.request()
+	            .input('input_parameter', sql.Int, modelling_id)
+	            .query('SELECT Data_meta.*, Time_interval.name as time_interval_name, Profile.name as profile_name FROM Data_meta '+
+	            	'LEFT JOIN Time_interval ON Data_meta.time_interval_id=Time_interval.id '+
+	            	'LEFT JOIN Profile ON Data_meta.profile_id=Profile.id '+
+	            	'WHERE Data_meta.modelling_id = @input_parameter');
+	        pool.close();
+	        // console.log(result.recordset[0]);
+	        if(result.recordset.length != 0){
+	        	let returnArray = [];
+	        	for(let r of result.recordset){
+	        		returnArray.push(new DataMeta(r.id, r.projekt_name, 
+	        			moment(r.date_from, "YYYY-MM-DD HH:mm:ss").format("YYYY-MM-DD HH:mm"), 
+	        			moment(r.date_to, "YYYY-MM-DD HH:mm:ss").format("YYYY-MM-DD HH:mm"), 
+	        			r.time_interval_id, r.unit, r.modelling_id, r.profile_id, r.additional_description, r.type, r.time_interval_name, r.profile_name));
+	        	}
+	        	return returnArray;
+	        }
 	        else
 	        	return null;
 
@@ -83,10 +117,11 @@ class DataMeta{
 			request.input('modelling_id', sql.NVarChar, that.modelling_id);
 			request.input('profile_id', sql.NVarChar, that.profile_id);
 			request.input('additional_description', sql.NVarChar, that.additional_description);
+			request.input('type', sql.NVarChar, that.type);
 			request.input('createdAt', sql.NVarChar, that.createdAt);
 			request.input('updatedAt', sql.NVarChar, that.updatedAt);
-			let result = await request.query('INSERT INTO Data_meta (projekt_name, date_from, date_to, time_interval_id, unit, modelling_id, profile_id, additional_description, createdAt, updatedAt) '
-				+'OUTPUT Inserted.id VALUES (@projekt_name, @date_from, @date_to, @time_interval_id, @unit, @modelling_id, @profile_id, @additional_description, @createdAt, @updatedAt);');
+			let result = await request.query('INSERT INTO Data_meta (projekt_name, date_from, date_to, time_interval_id, unit, modelling_id, profile_id, additional_description, type, createdAt, updatedAt) '
+				+'OUTPUT Inserted.id VALUES (@projekt_name, @date_from, @date_to, @time_interval_id, @unit, @modelling_id, @profile_id, @additional_description, @type, @createdAt, @updatedAt);');
 			that.id = result.recordset[0]['id'];
 			await transaction.commit();
 			pool.close();
@@ -114,10 +149,11 @@ class DataMeta{
 			request.input('modelling_id', sql.NVarChar, that.modelling_id);
 			request.input('profile_id', sql.NVarChar, that.profile_id);
 			request.input('additional_description', sql.NVarChar, that.additional_description);
+			request.input('type', sql.NVarChar, that.type);
 			request.input('updatedAt', sql.NVarChar, that.updatedAt);
 			let result = await request.query('UPDATE Data_meta SET '
 				+'projekt_name=@projekt_name, date_from=@date_from, date_to=@date_to, time_interval_id=@time_interval_id, '
-				+'unit=@unit, modelling_id=@modelling_id, profile_id=@profile_id, additional_description=@additional_description, updatedAt=@updatedAt WHERE id=@id;');
+				+'unit=@unit, modelling_id=@modelling_id, profile_id=@profile_id, additional_description=@additional_description, type=@type, updatedAt=@updatedAt WHERE id=@id;');
 			//console.log(result);
 			await transaction.commit();
 			pool.close();
