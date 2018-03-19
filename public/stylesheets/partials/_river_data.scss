@@ -1,0 +1,24 @@
+.river{
+	position: absolute;
+	width: 100%;
+	height: calc(100% - 150px);
+	&-map{
+		height: calc(100% - 300px);
+	}
+	&-filter{
+		height: calc(100% - 300px);
+		i{
+			position: absolute;
+		    bottom: 24px;
+		    right: 24px;
+		    top: auto;
+		    cursor: pointer;
+		}
+	}
+	&-data{
+		height: calc(100% - 300px);
+	}
+	&-trend{
+		height: calc(300px);
+	}
+}

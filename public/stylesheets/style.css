@@ -98,11 +98,25 @@ a, a:hover, a:focus {
   #sidebar.active {
     margin-left: -250px; }
   #sidebar .sidebar-header {
-    padding: 20px;
-    background: #2A3F54; }
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    padding: 10px;
+    background-color: #fff;
+    color: #000;
+    padding-top: 22px;
+    padding-bottom: 20px;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1); }
+    #sidebar .sidebar-header h3 {
+      margin-top: 10px;
+      margin-left: 5px;
+      display: inline-block;
+      font-size: 16px; }
   #sidebar ul.components {
     padding: 20px 0;
-    border-bottom: 1px solid #47748b; }
+    border-bottom: 1px solid #47748b;
+    padding-top: 100px; }
   #sidebar ul p {
     color: #fff;
     padding: 10px; }
@@ -180,6 +194,25 @@ a.article, a.article:hover {
   width: 100%;
   margin: 0;
   padding: 0; }
+
+.river {
+  position: absolute;
+  width: 100%;
+  height: calc(100% - 150px); }
+  .river-map {
+    height: calc(100% - 300px); }
+  .river-filter {
+    height: calc(100% - 300px); }
+    .river-filter i {
+      position: absolute;
+      bottom: 24px;
+      right: 24px;
+      top: auto;
+      cursor: pointer; }
+  .river-data {
+    height: calc(100% - 300px); }
+  .river-trend {
+    height: calc(300px); }
 
 /* ---------------------------------------------------
     FOOTER STYLE

@@ -42,7 +42,7 @@ class River{
 	            .query('select * from River where id = @input_parameter')
 	        pool.close();
 	        if(result.recordset.length != 0)
-	        	return new Directorate(result.recordset[0]['id'], 
+	        	return new River(result.recordset[0]['id'], 
 	        			result.recordset[0]['name'],
 	        			result.recordset[0]['directorate_id']);
 	        else

@@ -19,7 +19,7 @@ exports.index = async function(req, res, next){
     let modellings = await Modelling.all();
     let page_count = modellings.length/countPerPage;
     let modellings_page = modellings.slice(page, page + countPerPage);
-    res.render('modelling_import/index', {title: 'Modellezések', modellings: modellings_page, page_count: page_count});
+    res.render('modelling_import/index', {title: 'Adatbetöltések', modellings: modellings_page, page_count: page_count});
 	
 }
 
@@ -128,7 +128,7 @@ exports.data_get = async function(req, res, next){
     let countPerPage = 15;
     let page = req.query.page ? req.query.page - 1 : 0;
     let meta_datas = await DataMeta.findByModelling(req.params.id);
-    console.log(meta_datas);
+    //console.log(meta_datas);
     let page_count = meta_datas ? meta_datas.length/countPerPage : 0;
     let meta_datas_page = meta_datas ? meta_datas.slice(page, page + countPerPage) : [];
 
@@ -152,7 +152,7 @@ exports.data_post = async function(req, res, next){
         let dataloader = new DataLoader(newpath);
         await dataloader.readFile();
         await dataloader.saveData(modelling);
-        console.log('ok');
+        //console.log('ok');
         res.redirect('/modelling_import/'+modelling+'/data');
       });
     });

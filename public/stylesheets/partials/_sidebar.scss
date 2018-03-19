@@ -16,13 +16,28 @@
             margin-left: -250px;
         }
         .sidebar-header {
-            padding: 20px;
-            background: $dark_blue;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            padding: 10px;
+            background-color: #fff;
+            color: #000;
+            padding-top: 22px;
+            padding-bottom: 20px;
+            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+            h3{
+                margin-top: 10px;
+                margin-left: 5px;
+                display:inline-block;
+                font-size: 16px;
+            }
         }
         ul{
             &.components {
                 padding: 20px 0;
                 border-bottom: 1px solid #47748b;
+                padding-top: 100px;
             }
             p {
                 color: #fff;

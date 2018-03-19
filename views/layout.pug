@@ -11,6 +11,7 @@ html
 		link(rel="stylesheet" href="/stylesheets/style.css")
 		// Scrollbar Custom CSS
 		link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css")
+		link(rel="stylesheet" type="text/css" media="all" href="/css/daterangepicker.css")
 		// ArcGIS API
 		//link(rel="stylesheet" href="https://js.arcgis.com/4.6/esri/css/main.css")
 		link(rel="stylesheet" href="https://js.arcgis.com/3.23/esri/css/esri.css")
@@ -19,16 +20,34 @@ html
 			// Sidebar Holder
 			nav#sidebar
 				.sidebar-header
+					img(src="/images/ovf_logo.png", alt="OVF" width="35")
 					a(href="/")
 						h3 Vízkészlet-gazdálkodás
 				ul.list-unstyled.components
-					//p= title
-					li.active
-						a(href="#homeSubmenu" data-toggle="collapse" aria-expanded="false") Igazgatóságok
-						ul#homeSubmenu.collapse.list-unstyled
-							each d in directorates
-								li
-									a(href="#")=d.name
+					if !river_page
+						p Igazgatóságok
+						each d in directorates
+							li
+								if d.rivers
+									a(href="#homeSubmenu_"+d.id data-toggle="collapse" aria-expanded="false")=d.name
+								else
+									a(href="#homeSubmenu_"+d.id data-toggle="collapse")=d.name
+								if d.rivers
+									ul(id="homeSubmenu_"+d.id, class="collapse list-unstyled")
+										each r in d.rivers
+											li
+												a(href="/rivers/"+r.id)=r.name
+					else
+						p Adat típusok
+						each data_type in data_types
+							li
+								a(href="#")=data_type.name
+					//- li.active
+					//- 	a(href="#homeSubmenu" data-toggle="collapse" aria-expanded="false") Igazgatóságok
+					//- 	ul#homeSubmenu.collapse.list-unstyled
+					//- 		each d in directorates
+					//- 			li
+					//- 				a(href="#")=d.name
 							//- li
 							//- 	a(href="/map") Map
 							//- li
@@ -49,7 +68,10 @@ html
 					//- 	a(href="#") Portfolio
 					//- li
 					//- 	a(href="#") Contact
-				//ul.list-unstyled.CTAs
+				ul.list-unstyled.CTAs
+					li
+						a.download(href="/modelling_import") Adat betöltés
+				//- ul.list-unstyled.CTAs
 					li
 						a.download(href="https://bootstrapious.com/tutorial/files/sidebar.zip") Download source
 					li
@@ -61,11 +83,11 @@ html
 						.navbar-header
 							button#sidebarCollapse.btn.btn-info.navbar-btn(type="button")
 								i.glyphicon.glyphicon-align-left
-								span 
+								span
 						#bs-example-navbar-collapse-1.collapse.navbar-collapse
 							ul.nav.navbar-nav.navbar-right
 								li
-									a(href="/modelling_import") Adat betöltés
+									a(href="/modelling_import") Horváth Csaba
 								//- li
 								//- 	a(href="#") Page
 								//- li
@@ -83,6 +105,8 @@ html
 		// Bootstrap Js CDN
 		script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js")
 		script(src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js")
+		script(src="/js/moment.js")
+		script(src="/js/daterangepicker.js")
 		script(type="text/javascript").
 			$(document).ready(function () {
 				$("#sidebar").mCustomScrollbar({

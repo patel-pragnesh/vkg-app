@@ -1,0 +1,65 @@
+extends ../layout
+
+block content
+	div.container-fluid
+		div.row
+			div.col-md-10
+				h1=title
+			div.col-md-2
+				a(href="#" class="btn btn-primary pull-right btn-new") Modellezések
+		div.row.river
+			div.col-md-4.river-map
+				div.panel.panel-default
+					div.panel-heading
+						h3.panel-title Térkép
+					div.panel-body
+						div.row
+							div.col-md-12
+					div.panel-footer
+						div.clearfix
+			div.col-md-4.river-filter
+				//- div.river-filter__content Lekérdezés
+				div.panel.panel-default
+					div.panel-heading
+						h3.panel-title Szűrés
+					div.panel-body
+						div.row
+							div.col-md-12
+								div.form-group
+									label(for="profile") Szelvény
+									select(name="profile" id="profile" class="form-control")
+										option(value="1") szelvény érték
+									label(for="datetimeselect") Időintervallum
+									input(type="text" name="datetimeselect" id="datetimeselect" class="form-control")
+									i.glyphicon.glyphicon-calendar.fa.fa-calendar
+					div.panel-footer
+						input(type="button" class="btn btn-primary pull-right" value="Lekérdezés")
+						div.clearfix
+			div.col-md-4.river-data
+				div.panel.panel-default
+					div.panel-heading
+						h3.panel-title Adatok
+					div.panel-body
+						div.row
+							div.col-md-12
+					div.panel-footer
+						div.clearfix
+			div.col-md-12.river-trend
+				div.panel.panel-default
+					div.panel-heading
+						h3.panel-title Grafikon
+					div.panel-body
+						div.row
+							div.col-md-12
+					div.panel-footer
+						div.clearfix
+block scripts
+	script(type="text/javascript").
+		$(document).ready(function () {
+			$('input[name="datetimeselect"]').daterangepicker();
+		});
+
+					
+			
+			
+	
