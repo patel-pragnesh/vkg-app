@@ -27,8 +27,13 @@ block content
 							div.col-md-12
 								div.form-group
 									label(for="profile") Szelvény
-									select(name="profile" id="profile" class="form-control")
-										option(value="1") szelvény érték
+									select(name="profile" id="profile" class="form-control" disabled=(profiles ? false : true))
+										if profiles
+											each p in profiles
+												option(value=p.id)=p.name
+										else
+											option(value="null") Nincs megjelenítendő adat
+								div.form-group
 									label(for="datetimeselect") Időintervallum
 									input(type="text" name="datetimeselect" id="datetimeselect" class="form-control")
 									i.glyphicon.glyphicon-calendar.fa.fa-calendar
@@ -56,7 +61,87 @@ block content
 block scripts
 	script(type="text/javascript").
 		$(document).ready(function () {
-			$('input[name="datetimeselect"]').daterangepicker();
+			moment.locale('hu');
+			var format = 'YYYY. MM. DD.';
+			var today = moment().format('YYYY. MM. DD.');
+			var yesterday = moment().subtract(1, 'days').format(format);
+			var last7day = moment().subtract(7, 'days').format(format);
+			var last30day = moment().subtract(30, 'days').format(format);
+			var thisMonthFirstDay = moment().startOf('month').format(format);
+			var thisMonthLastDay = moment().endOf('month').format(format);
+			var lastMonthFirstDay = moment().subtract(1, 'month').startOf('month').format(format);
+			var lastMonthLastDay = moment().subtract(1, 'month').endOf('month').format(format);
+
+			$('input[name="datetimeselect"]').daterangepicker({
+				"timePicker24Hour": true,
+				"ranges": {
+			        "Ma": [
+			            today,
+			            today
+			        ],
+			        "Tegnap": [
+			            yesterday,
+			            yesterday
+			        ],
+			        "Elmúlt 7 nap": [
+			            last7day,
+			            today
+			        ],
+			        "Elmúlt 30 nap": [
+			            last30day,
+			            today
+			        ],
+			        "Ez a hónap": [
+			            thisMonthFirstDay,
+			            thisMonthLastDay
+			        ],
+			        "Múlt hónap": [
+			            lastMonthFirstDay,
+			            lastMonthLastDay
+			        ]
+			    },
+			    "locale": {
+			        "direction": "ltr",
+			        "format": "YYYY. MM. DD. HH:mm",
+			        "separator": " - ",
+			        "applyLabel": "Ok",
+			        "cancelLabel": "Mégse",
+			        "fromLabel": "Tól",
+			        "toLabel": "Ig",
+			        "customRangeLabel": "Egyedi",
+			        "daysOfWeek": [
+			            "V",
+			            "H",
+			            "K",
+			            "Sze",
+			            "Cs",
+			            "P",
+			            "Szo"
+			        ],
+			        "monthNames": [
+			            "Január",
+			            "Február",
+			            "Március",
+			            "Április",
+			            "Május",
+			            "Június",
+			            "Július",
+			            "Augusztus",
+			            "Szeptember",
+			            "Október",
+			            "November",
+			            "December"
+			        ],
+			        "firstDay": 1
+			    },
+			    "startDate": thisMonthFirstDay,
+			    "endDate": thisMonthLastDay,
+			    "opens": "center",
+			    "buttonClasses": "btn",
+			    "applyClass": "btn btn-primary"
+			}, function(start, end, label) {
+			  //console.log("New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')");
+			});
 		});
 
 					

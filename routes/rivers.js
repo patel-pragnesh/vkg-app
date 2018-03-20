@@ -7,7 +7,7 @@ var river_controller = require('../controllers/riverController');
 router.get('/', river_controller.index);
 
 /* GET request for one Modelling. */
-router.get('/:id', river_controller.river_detail);
+router.get('/:id/data-type/:data_type', river_controller.river_detail);
 
 /* GET rivers by directorate */
 router.post('/directorate', river_controller.get_by_directorate_post)

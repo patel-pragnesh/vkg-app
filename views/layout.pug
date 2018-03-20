@@ -36,12 +36,12 @@ html
 									ul(id="homeSubmenu_"+d.id, class="collapse list-unstyled")
 										each r in d.rivers
 											li
-												a(href="/rivers/"+r.id)=r.name
+												a(href="/rivers/"+r.id+"/data-type/0")=r.name
 					else
 						p Adat típusok
 						each data_type in data_types
-							li
-								a(href="#")=data_type.name
+							li(class=(act_data_type==data_type.id ? 'active' : ''))
+								a(href="/rivers/"+river.id+"/data-type/"+data_type.id)=data_type.name
 					//- li.active
 					//- 	a(href="#homeSubmenu" data-toggle="collapse" aria-expanded="false") Igazgatóságok
 					//- 	ul#homeSubmenu.collapse.list-unstyled

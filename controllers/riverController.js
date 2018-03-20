@@ -1,4 +1,5 @@
 const River = require('../models/river');
+const Profile = require('../models/profile');
 
 exports.index = function(req, res){
 	res.send('TODO: vízfolyások megjelenítése');
@@ -6,25 +7,27 @@ exports.index = function(req, res){
 
 exports.river_detail = async function(req, res, next){
 	let river = await River.findById(req.params.id);
+	let profiles = await Profile.findByRiver(req.params.id);
+	let act_data_type = req.params.data_type;
 	data_types = [
-		{name: "Vízhozam idősor"},
-		{name: "Vízszint idősor"},
-		{name: "Vízszint hossz-szelvény"},
-		{name: "Vízhozam hossz-szelvény"},
-		{name: "Vízkészlet"},
-		{name: "Vízkivételek hozamok"},
-		{name: "Vízbeeresztés hozamok"},
-		{name: "Beszivárgás a mederbe"},
-		{name: "Elszivárgás a mederből"},
-		{name: "Csapadékátlag"},
-		{name: "Párolgás"},
-		{name: "Evapotranspiráció"},
-		{name: "Hőmérséklet"},
-		{name: "Zsilipadatok"},
-		{name: "Vízkészlet változása idősor grafikon"},
-		{name: "Vízkészlet változás hossz-szelvény"},
+		{id: 0, name: "Vízhozam idősor"},
+		{id: 1, name: "Vízszint idősor"},
+		{id: 2, name: "Vízszint hossz-szelvény"},
+		{id: 3, name: "Vízhozam hossz-szelvény"},
+		{id: 4, name: "Vízkészlet"},
+		{id: 5, name: "Vízkivételek hozamok"},
+		{id: 6, name: "Vízbeeresztés hozamok"},
+		{id: 7, name: "Beszivárgás a mederbe"},
+		{id: 8, name: "Elszivárgás a mederből"},
+		{id: 9, name: "Csapadékátlag"},
+		{id: 10, name: "Párolgás"},
+		{id: 11, name: "Evapotranspiráció"},
+		{id: 12, name: "Hőmérséklet"},
+		{id: 13, name: "Zsilipadatok"},
+		{id: 14, name: "Vízkészlet változása idősor grafikon"},
+		{id: 15, name: "Vízkészlet változás hossz-szelvény"},
 	];
-	res.render('river/index', {title: river.name, river_page: true, data_types: data_types});
+	res.render('river/index', {title: river.name, river: river, river_page: true, data_types: data_types, profiles: profiles, act_data_type: act_data_type});
 }
 
 exports.get_by_directorate_post = async function(req, res){

@@ -4,7 +4,7 @@ const moment = require('moment');
 moment.locale('hu');
 
 class Profile{
-	constructor(id, name, river_id, river_name, createdAt=null, updatedAt=null){
+	constructor(id, name, river_id, river_name=null, createdAt=null, updatedAt=null){
 		this.id = id;
 		this.name = name;
 		this.river_id = river_id;
@@ -22,7 +22,7 @@ class Profile{
 	        if(result.recordset.length != 0){
 	        	let returnArray = [];
 	        	for(let r of result.recordset){
-	        		returnArray.push(new Flow(r.id, r.name, r.river_id, r.river_name));
+	        		returnArray.push(new Profile(r.id, r.name, r.river_id, r.river_name));
 	        	}
 	        	return returnArray;
 	        }
@@ -80,6 +80,30 @@ class Profile{
 
 	    } catch (err) {
 	        console.log(err);
+	    }
+	}
+
+	static async findByRiver(id){		
+	    try {
+	    	let pool = new sql.ConnectionPool(sqlConfig);
+	    	await pool.connect();
+	        // let result = await pool.request().query('SELECT Profile.*, River.name as river_name FROM Profile LEFT JOIN River ON Profile.river_id=River.id');
+	        let result = await pool.request()
+	        	.input('input_parameter', sql.Int, id)
+	        	.query('SELECT Profile.* FROM Profile WHERE Profile.river_id = @input_parameter');
+	        pool.close();
+	        if(result.recordset.length != 0){
+	        	let returnArray = [];
+	        	for(let r of result.recordset){
+	        		returnArray.push(new Profile(r.id, r.name, r.river_id));
+	        	}
+	        	return returnArray;
+	        }
+	        else
+	        	return null;
+
+	    } catch (err) {
+	    	console.log(err);
 	    }
 	}
 
