@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var sassMiddleware = require('node-sass-middleware');
 var sql = require('mssql');
+var mongoose = require('mongoose');
 
 //const util = require('util');
 
@@ -28,6 +29,13 @@ const rivers = require('./routes/rivers');
 const modelling_import = require('./routes/modelling_import');
 
 var app = express();
+
+//Set up mongoose connection
+var mongoDB = 'mongodb://localhost:27017/vizkeszlet_gazdalkodas';
+mongoose.connect(mongoDB);
+mongoose.Promise = global.Promise;
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 //app.set('models', require('./models'));
 
