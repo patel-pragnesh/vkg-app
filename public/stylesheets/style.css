@@ -211,6 +211,10 @@ a.article, a.article:hover {
       cursor: pointer; }
   .river-data {
     height: calc(100% - 300px); }
+    .river-data #data_table {
+      overflow: hidden;
+      overflow-y: auto;
+      height: 400px; }
   .river-trend {
     height: calc(300px); }
 

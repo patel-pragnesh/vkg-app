@@ -103,13 +103,15 @@ class DataMeta{
 
 	static async findByDate(profile_id, type, date_from, date_to){
 	    try {
+	    	let d_from = moment(date_from, "YYYY. MM. DD.").format("YYYY-MM-DD HH:mm");
+	    	let d_to = moment(date_to, "YYYY. MM. DD.").format("YYYY-MM-DD HH:mm");
 	    	let pool = new sql.ConnectionPool(sqlConfig);
 	    	await pool.connect();
 	        let result = await pool.request()
 	            .input('profile_id', sql.Int, profile_id)
 	            .input('type', sql.NVarChar, type)
-	            .input('date_from', sql.NVarChar, date_from)
-				.input('date_to', sql.NVarChar, date_from)
+	            .input('date_from', sql.NVarChar, d_from)
+				.input('date_to', sql.NVarChar, d_to)
 	            .query('SELECT Data_meta.*, Time_interval.name as time_interval_name, Profile.name as profile_name FROM Data_meta '+
 	            	'LEFT JOIN Time_interval ON Data_meta.time_interval_id=Time_interval.id '+
 	            	'LEFT JOIN Profile ON Data_meta.profile_id=Profile.id '+
@@ -117,13 +119,13 @@ class DataMeta{
 	            	'Data_meta.date_from !> @date_to AND '+
 	            	'Data_meta.date_to !< @date_from AND '+
 	            	'('+
-	            	'(Data_meta.date_from < @date_from AND Data_meta.date_to > @date_to) OR '+
-	            	'(Data_meta.date_from > @date_from AND Data_meta.date_to > @date_to) OR '+
-	            	'(Data_meta.date_from < @date_from AND Data_meta.date_to < @date_to) OR '+
-	            	'(Data_meta.date_from > @date_from AND Data_meta.date_to < @date_to) OR '+
+	            	'(Data_meta.date_from <= @date_from AND Data_meta.date_to >= @date_to) OR '+
+	            	'(Data_meta.date_from >= @date_from AND Data_meta.date_to >= @date_to) OR '+
+	            	'(Data_meta.date_from <= @date_from AND Data_meta.date_to <= @date_to) OR '+
+	            	'(Data_meta.date_from >= @date_from AND Data_meta.date_to <= @date_to)'+
 	            	')');
 	        pool.close();
-	        // console.log(result.recordset[0]);
+	        // console.log(result.recordset);
 	        if(result.recordset.length != 0){
 	        	let returnArray = [];
 	        	for(let r of result.recordset){

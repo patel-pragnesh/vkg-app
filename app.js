@@ -43,9 +43,9 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 //app.set('models', require('./models'));
 
 //TESZT
-DataMeta.findByDate(12, 'FLOW', '2000-01-01 00:00:00', '2000-01-02 09:00:00').then(function(d){
-    console.log(d);
-  });
+// DataMeta.findByDate(12, 'FLOW', '2000-01-01 00:00:00', '2000-01-02 09:00:00').then(function(d){
+//     console.log(d);
+//   });
 
 
 

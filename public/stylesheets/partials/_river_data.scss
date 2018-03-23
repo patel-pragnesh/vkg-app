@@ -17,6 +17,11 @@
 	}
 	&-data{
 		height: calc(100% - 300px);
+		#data_table{
+			overflow: hidden;
+    		overflow-y: auto;
+    		height: 400px;
+		}
 	}
 	&-trend{
 		height: calc(300px);

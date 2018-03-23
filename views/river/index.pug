@@ -45,7 +45,7 @@ block content
 					div.panel-heading
 						h3.panel-title Adatok
 					div.panel-body
-						div.row
+						div.row(id="data_table")
 							div.col-md-12
 					div.panel-footer
 						div.clearfix
@@ -60,8 +60,9 @@ block content
 						div.clearfix
 block scripts
 	script(type="text/javascript").
-		$(document).ready(function () {
-			moment.locale('hu');
+		var dateStart, dateEnd;
+		moment.locale('hu');
+		$(document).ready(function () {			
 			var format = 'YYYY. MM. DD.';
 			var today = moment().format('YYYY. MM. DD.');
 			var yesterday = moment().subtract(1, 'days').format(format);
@@ -71,7 +72,11 @@ block scripts
 			var thisMonthLastDay = moment().endOf('month').format(format);
 			var lastMonthFirstDay = moment().subtract(1, 'month').startOf('month').format(format);
 			var lastMonthLastDay = moment().subtract(1, 'month').endOf('month').format(format);
+			var tmpStart = '2000. 01. 01.';
+			var tmpEnd = '2000. 01. 03.'
 
+			dateStart = tmpStart;
+			dateEnd = tmpEnd;
 			$('input[name="datetimeselect"]').daterangepicker({
 				"timePicker24Hour": true,
 				"ranges": {
@@ -102,7 +107,7 @@ block scripts
 			    },
 			    "locale": {
 			        "direction": "ltr",
-			        "format": "YYYY. MM. DD. HH:mm",
+			        "format": "YYYY. MM. DD.",
 			        "separator": " - ",
 			        "applyLabel": "Ok",
 			        "cancelLabel": "Mégse",
@@ -134,35 +139,54 @@ block scripts
 			        ],
 			        "firstDay": 1
 			    },
-			    "startDate": thisMonthFirstDay,
-			    "endDate": thisMonthLastDay,
+			    "startDate": tmpStart,//thisMonthFirstDay,
+			    "endDate": tmpEnd,//thisMonthLastDay,
 			    "opens": "center",
 			    "buttonClasses": "btn",
 			    "applyClass": "btn btn-primary"
 			}, function(start, end, label) {
+				dateStart = start.format('YYYY. MM. DD.');
+				dateEnd = end.format('YYYY. MM. DD.');
 			  //console.log("New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')");
+			  getData(dateStart, dateEnd);
 			});
+
+			$('#profile').change(function(){
+				getData(dateStart, dateEnd);
+			});
+
+			getData(dateStart, dateEnd);
 		});
 
-		function getData(){
-			var profile_id = $('select[name=profile]').val()
+		function getData(dStart, dEnd){
+			var profile_id = $('select[name=profile]').val();
 			// AJAX hívás az adatok lekérdezésére
 			$.post( "/rivers/data", 
 				{
 				river_id: "#{river.id}",
 				data_type: "#{act_data_type}",
-				profile_id: profile_id
+				profile_id: profile_id,
+				date_start: dStart,
+				date_end:dEnd
 				},
 				function( data ) {
 				if(data){
-					$('<option>', {value: null}).text('Válasszon').appendTo($('#river'));
-					$.each(data, function(i, v){
-						var o = $('<option>', {value: v.id}).text(v.name);
-						o.appendTo($('#river'));
-					});
-					$('#river').removeAttr('disabled');
+					$('#data_table').html('');
+					if(data.length){
+						$.each(data, function(i, v){
+							//console.log(v);
+							//console.log(moment(v.date_time_for).format('YYYY. MM. DD. HH:ss'));
+							var c1 = $('<div class="col-md-6">'+moment(v.date_time_for).format('YYYY. MM. DD. HH:ss')+'</div>');
+							var c2 = $('<div class="col-md-6">'+v.value+'</div>');
+							c1.appendTo($('#data_table'));
+							c2.appendTo($('#data_table'));
+						});
+					}else{
+						var c1 = $('<div class="col-md-12">Nincs megjelenítendő adat.</div>');
+						c1.appendTo($('#data_table'));
+					}
 				}else{
-					$('<option>', {value: null}).text('Nincs megjelenítendő adat').appendTo($('#river'));
+					
 				}			
 			});
 		}

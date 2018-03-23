@@ -60,6 +60,32 @@ class Flow{
 	    }
 	}
 
+	static async findByMetaData(id){
+	    try {
+	    	let pool = new sql.ConnectionPool(sqlConfig);
+	    	await pool.connect();
+	        let result = await pool.request()
+	            .input('input_parameter', sql.Int, id)
+	            .query('SELECT Flow.*, Data_meta.projekt_name as projekt_name FROM Flow '+
+	            	'LEFT JOIN Data_meta ON Flow.data_meta_id=Data_meta.id '+
+	            	'WHERE Flow.data_meta_id = @input_parameter ORDER BY Flow.date_time_for;');
+	        pool.close();
+	        // console.log(result.recordset[0]);
+	        if(result.recordset.length != 0){
+	        	let returnArray = [];
+	        	for(let r of result.recordset){
+	        		returnArray.push(new Flow(r.id, r.date_time_for, r.value, r.data_meta_id, r.projekt_name));
+	        	}
+	        	return returnArray;
+	        }
+	        else
+	        	return null;
+
+	    } catch (err) {
+	        console.log(err);
+	    }
+	}
+
 	async save(){
 		let that = this;
 		try{
