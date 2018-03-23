@@ -1,10 +1,11 @@
 var express = require('express');
 var router = express.Router();
+const common = require('../controllers/commonController');
 
 var Directorate = require('../models/directorate');
 
 /* GET home page. */
-router.get('/', async function(req, res, next) {
+router.get('/', common.user, async function(req, res, next) {
 	res.render('index', { title: 'Igazgatóságok'});
 });
 

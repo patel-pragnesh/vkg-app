@@ -2,84 +2,8 @@ extends ./master
 
 block body
 	.wrapper.footer_fixed
-		// Sidebar Holder
-		nav#sidebar
-			.sidebar-header
-				img(src="/images/ovf_logo.png", alt="OVF" width="35")
-				a(href="/")
-					h3 Vízkészlet-gazdálkodás
-			ul.list-unstyled.components
-				if !river_page
-					p Igazgatóságok
-					each d in directorates
-						li
-							if d.rivers
-								a(href="#homeSubmenu_"+d.id data-toggle="collapse" aria-expanded="false")=d.name
-							else
-								a(href="#homeSubmenu_"+d.id data-toggle="collapse")=d.name
-							if d.rivers
-								ul(id="homeSubmenu_"+d.id, class="collapse list-unstyled")
-									each r in d.rivers
-										li
-											a(href="/rivers/"+r.id+"/data-type/0")=r.name
-				else
-					p Adat típusok
-					each data_type in data_types
-						li(class=(act_data_type==data_type.id ? 'active' : ''))
-							a(href="/rivers/"+river.id+"/data-type/"+data_type.id)=data_type.name
-				//- li.active
-				//- 	a(href="#homeSubmenu" data-toggle="collapse" aria-expanded="false") Igazgatóságok
-				//- 	ul#homeSubmenu.collapse.list-unstyled
-				//- 		each d in directorates
-				//- 			li
-				//- 				a(href="#")=d.name
-						//- li
-						//- 	a(href="/map") Map
-						//- li
-						//- 	a(href="#") Home 2
-						//- li
-						//- 	a(href="#") Home 3
-				//- li
-				//- 	a(href="#") About
-				//- 	a(href="#pageSubmenu" data-toggle="collapse" aria-expanded="false") Pages
-				//- 	ul#pageSubmenu.collapse.list-unstyled
-				//- 		li
-				//- 			a(href="#") Page 1
-				//- 		li
-				//- 			a(href="#") Page 2
-				//- 		li
-				//- 			a(href="#") Page 3
-				//- li
-				//- 	a(href="#") Portfolio
-				//- li
-				//- 	a(href="#") Contact
-			ul.list-unstyled.CTAs
-				li
-					a.download(href="/modelling_import") Adat betöltés
-			//- ul.list-unstyled.CTAs
-				li
-					a.download(href="https://bootstrapious.com/tutorial/files/sidebar.zip") Download source
-				li
-					a.article(href="https://bootstrapious.com/p/bootstrap-sidebar") Back to article
 		// Page Content Holder
-		#content
-			nav.navbar.navbar-default.navbar-fixed-top
-				.container-fluid
-					.navbar-header
-						button#sidebarCollapse.btn.btn-info.navbar-btn(type="button")
-							i.glyphicon.glyphicon-align-left
-							span
-					#bs-example-navbar-collapse-1.collapse.navbar-collapse
-						ul.nav.navbar-nav.navbar-right
-							li
-								a(href="/modelling_import") Horváth Csaba
-							//- li
-							//- 	a(href="#") Page
-							//- li
-							//- 	a(href="#") Page
-							//- li
-							//- 	a(href="#") Page
-			block content
+		block content
 		footer
 			.pull-right
 				| Készítette: 

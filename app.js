@@ -7,10 +7,13 @@ var bodyParser = require('body-parser');
 var sassMiddleware = require('node-sass-middleware');
 var sql = require('mssql');
 var mongoose = require('mongoose');
+var session = require('express-session');
+// var MongoStore = require('connect-mongo')(session);
 
 //const util = require('util');
 
 // Directorate = require("./models/directorate");
+DataMeta = require("./models/data_meta");
 // Modelling = require("./models/modelling");
 //DatabaseHandler = require("./models/database_handler");
 
@@ -39,6 +42,23 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 //app.set('models', require('./models'));
 
+//TESZT
+DataMeta.findByDate(12, 'FLOW', '2000-01-01 00:00:00', '2000-01-02 09:00:00').then(function(d){
+    console.log(d);
+  });
+
+
+
+//use sessions for tracking logins
+app.use(session({
+  secret: 'work hard',
+  resave: true,
+  saveUninitialized: false,
+  // store: new MongoStore({
+  //   mongooseConnection: db
+  // })
+}));
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
@@ -58,6 +78,7 @@ app.use(sassMiddleware({
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(common.directorates);
+//app.use(common.user);
 
 app.use('/', index);
 app.use('/users', users);

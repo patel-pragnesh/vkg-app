@@ -144,7 +144,25 @@ block scripts
 			});
 		});
 
-					
-			
-			
-	
+		function getData(){
+			var profile_id = $('select[name=profile]').val()
+			// AJAX hívás az adatok lekérdezésére
+			$.post( "/rivers/data", 
+				{
+				river_id: "#{river.id}",
+				data_type: "#{act_data_type}",
+				profile_id: profile_id
+				},
+				function( data ) {
+				if(data){
+					$('<option>', {value: null}).text('Válasszon').appendTo($('#river'));
+					$.each(data, function(i, v){
+						var o = $('<option>', {value: v.id}).text(v.name);
+						o.appendTo($('#river'));
+					});
+					$('#river').removeAttr('disabled');
+				}else{
+					$('<option>', {value: null}).text('Nincs megjelenítendő adat').appendTo($('#river'));
+				}			
+			});
+		}

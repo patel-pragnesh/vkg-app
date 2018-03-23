@@ -70,15 +70,16 @@ block body
 							i.glyphicon.glyphicon-align-left
 							span
 					#bs-example-navbar-collapse-1.collapse.navbar-collapse
-						ul.nav.navbar-nav.navbar-right
-							li
-								a(href="/modelling_import") Horváth Csaba
-							//- li
-							//- 	a(href="#") Page
-							//- li
-							//- 	a(href="#") Page
-							//- li
-							//- 	a(href="#") Page
+						if user
+							ul.nav.navbar-nav.navbar-right
+								li
+									a(href="/users/profile/"+user._id)=user.username
+								li
+									a(href="/users/logout") Kijelentkezés
+								//- li
+								//- 	a(href="#") Page
+								//- li
+								//- 	a(href="#") Page
 			block content
 		footer
 			.pull-right

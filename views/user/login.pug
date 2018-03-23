@@ -1,0 +1,19 @@
+extends ../layout_login
+
+block content
+	div.container
+		h2=title
+		form(action="/users/login" method="post" class="login")
+			div.imgcontainer
+				img(src="/images/img_avatar2.png", alt="Avatar" class="avatar")
+			div
+				label(for="username")
+					b Felhasználónév
+				input(type="text" placeholder="Adja meg felhasználónevét" name="username" required="required")
+				label(for="password")
+					b Jelszó
+				input(type="password" placeholder="Adja meg jelszavát" name="password" required="required")
+				button(type="submit" class="btn btn-primary") Bejelentkezés
+				//- label #[input(type="checkbox" name="remember")] Maradjak bejelentkezve
+			div
+				a(href="/users/password") Elfelejtette jelszavát?

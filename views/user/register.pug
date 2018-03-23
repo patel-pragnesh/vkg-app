@@ -1,0 +1,20 @@
+extends ../layout_login
+
+block content
+	div.container
+		h2=title
+		form(action="/users/register" method="post" class="login")
+			div
+				label(for="username")
+					b Felhasználónév
+				input(type="text" placeholder="Adja meg felhasználónevét" name="username" required="required")
+				label(for="email")
+					b Email
+				input(type="email" placeholder="Adja meg email címét" name="email" required="required")
+				label(for="password")
+					b Jelszó
+				input(type="password" placeholder="Adja meg jelszavát" name="password" required="required")
+				label(for="password_conf")
+					b Jelszó megerősítés
+				input(type="password" placeholder="Adja meg újra jelszavát" name="password_conf" required="required")
+				button(type="submit" class="btn btn-primary") Regisztráció

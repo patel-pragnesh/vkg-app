@@ -101,6 +101,47 @@ class DataMeta{
 	    }
 	}
 
+	static async findByDate(profile_id, type, date_from, date_to){
+	    try {
+	    	let pool = new sql.ConnectionPool(sqlConfig);
+	    	await pool.connect();
+	        let result = await pool.request()
+	            .input('profile_id', sql.Int, profile_id)
+	            .input('type', sql.NVarChar, type)
+	            .input('date_from', sql.NVarChar, date_from)
+				.input('date_to', sql.NVarChar, date_from)
+	            .query('SELECT Data_meta.*, Time_interval.name as time_interval_name, Profile.name as profile_name FROM Data_meta '+
+	            	'LEFT JOIN Time_interval ON Data_meta.time_interval_id=Time_interval.id '+
+	            	'LEFT JOIN Profile ON Data_meta.profile_id=Profile.id '+
+	            	'WHERE Data_meta.profile_id = @profile_id AND Data_meta.type=@type AND '+
+	            	'Data_meta.date_from !> @date_to AND '+
+	            	'Data_meta.date_to !< @date_from AND '+
+	            	'('+
+	            	'(Data_meta.date_from < @date_from AND Data_meta.date_to > @date_to) OR '+
+	            	'(Data_meta.date_from > @date_from AND Data_meta.date_to > @date_to) OR '+
+	            	'(Data_meta.date_from < @date_from AND Data_meta.date_to < @date_to) OR '+
+	            	'(Data_meta.date_from > @date_from AND Data_meta.date_to < @date_to) OR '+
+	            	')');
+	        pool.close();
+	        // console.log(result.recordset[0]);
+	        if(result.recordset.length != 0){
+	        	let returnArray = [];
+	        	for(let r of result.recordset){
+	        		returnArray.push(new DataMeta(r.id, r.projekt_name, 
+	        			moment(r.date_from, "YYYY-MM-DD HH:mm:ss").format("YYYY-MM-DD HH:mm"), 
+	        			moment(r.date_to, "YYYY-MM-DD HH:mm:ss").format("YYYY-MM-DD HH:mm"), 
+	        			r.time_interval_id, r.unit, r.modelling_id, r.profile_id, r.additional_description, r.type, r.time_interval_name, r.profile_name));
+	        	}
+	        	return returnArray;
+	        }
+	        else
+	        	return null;
+
+	    } catch (err) {
+	        console.log(err);
+	    }
+	}
+
 	async save(){
 		let that = this;
 		try{
