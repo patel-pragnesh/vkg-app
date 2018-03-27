@@ -1,24 +1,29 @@
 extends ../layout
 
 block content
-	div.container-fluid
-		div.row
-			div.col-md-10
-				h1=title
-			div.col-md-2
-				a(href="#" class="btn btn-primary pull-right btn-new") Modellezések
+	div.container-fluid.mt10
+		//- div.row
+		//- 	div.col-md-10
+		//- 		h1=title
+		//- 	div.col-md-2
+		//- 		a(href="#" class="btn btn-primary pull-right btn-new") Modellezések
 		div.row.river
-			div.col-md-4.river-map
+			div.col-md-5.river-map
 				div.panel.panel-default
 					div.panel-heading
 						h3.panel-title Térkép
 					div.panel-body
 						div.row
 							div.col-md-12
+								if profiles
+									each p in profiles
+										div(class="col-md-3")
+											div(id="p_"+p.id, value=p.id, class="profile-button btn btn-success w100")=p.name
+								else
+									option(value="null") Nincs megjelenítendő adat
 					div.panel-footer
 						div.clearfix
-			div.col-md-4.river-filter
-				//- div.river-filter__content Lekérdezés
+			div.col-md-2.river-filter
 				div.panel.panel-default
 					div.panel-heading
 						h3.panel-title Szűrés
@@ -38,9 +43,9 @@ block content
 									input(type="text" name="datetimeselect" id="datetimeselect" class="form-control")
 									i.glyphicon.glyphicon-calendar.fa.fa-calendar
 					div.panel-footer
-						input(type="button" class="btn btn-primary pull-right" value="Lekérdezés")
+						input(type="button" class="get-data-button btn btn-primary pull-right" value="Lekérdezés")
 						div.clearfix
-			div.col-md-4.river-data
+			div.col-md-5.river-data
 				div.panel.panel-default
 					div.panel-heading
 						h3.panel-title Adatok
@@ -48,6 +53,7 @@ block content
 						div.row(id="data_table")
 							div.col-md-12
 					div.panel-footer
+						input(type="button" class="data-metas-button btn btn-primary pull-right" value="Adatbetöltések")
 						div.clearfix
 			div.col-md-12.river-trend
 				div.panel.panel-default
@@ -56,107 +62,24 @@ block content
 					div.panel-body
 						div.row
 							div.col-md-12
+								canvas(id="myChart")
 					div.panel-footer
 						div.clearfix
 block scripts
 	script(type="text/javascript").
-		var dateStart, dateEnd;
-		moment.locale('hu');
-		$(document).ready(function () {			
-			var format = 'YYYY. MM. DD.';
-			var today = moment().format('YYYY. MM. DD.');
-			var yesterday = moment().subtract(1, 'days').format(format);
-			var last7day = moment().subtract(7, 'days').format(format);
-			var last30day = moment().subtract(30, 'days').format(format);
-			var thisMonthFirstDay = moment().startOf('month').format(format);
-			var thisMonthLastDay = moment().endOf('month').format(format);
-			var lastMonthFirstDay = moment().subtract(1, 'month').startOf('month').format(format);
-			var lastMonthLastDay = moment().subtract(1, 'month').endOf('month').format(format);
-			var tmpStart = '2000. 01. 01.';
-			var tmpEnd = '2000. 01. 03.'
+		var dateStart, dateEnd;		
 
-			dateStart = tmpStart;
-			dateEnd = tmpEnd;
-			$('input[name="datetimeselect"]').daterangepicker({
-				"timePicker24Hour": true,
-				"ranges": {
-			        "Ma": [
-			            today,
-			            today
-			        ],
-			        "Tegnap": [
-			            yesterday,
-			            yesterday
-			        ],
-			        "Elmúlt 7 nap": [
-			            last7day,
-			            today
-			        ],
-			        "Elmúlt 30 nap": [
-			            last30day,
-			            today
-			        ],
-			        "Ez a hónap": [
-			            thisMonthFirstDay,
-			            thisMonthLastDay
-			        ],
-			        "Múlt hónap": [
-			            lastMonthFirstDay,
-			            lastMonthLastDay
-			        ]
-			    },
-			    "locale": {
-			        "direction": "ltr",
-			        "format": "YYYY. MM. DD.",
-			        "separator": " - ",
-			        "applyLabel": "Ok",
-			        "cancelLabel": "Mégse",
-			        "fromLabel": "Tól",
-			        "toLabel": "Ig",
-			        "customRangeLabel": "Egyedi",
-			        "daysOfWeek": [
-			            "V",
-			            "H",
-			            "K",
-			            "Sze",
-			            "Cs",
-			            "P",
-			            "Szo"
-			        ],
-			        "monthNames": [
-			            "Január",
-			            "Február",
-			            "Március",
-			            "Április",
-			            "Május",
-			            "Június",
-			            "Július",
-			            "Augusztus",
-			            "Szeptember",
-			            "Október",
-			            "November",
-			            "December"
-			        ],
-			        "firstDay": 1
-			    },
-			    "startDate": tmpStart,//thisMonthFirstDay,
-			    "endDate": tmpEnd,//thisMonthLastDay,
-			    "opens": "center",
-			    "buttonClasses": "btn",
-			    "applyClass": "btn btn-primary"
-			}, function(start, end, label) {
-				dateStart = start.format('YYYY. MM. DD.');
-				dateEnd = end.format('YYYY. MM. DD.');
-			  //console.log("New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')");
-			  getData(dateStart, dateEnd);
-			});
-
-			$('#profile').change(function(){
-				getData(dateStart, dateEnd);
-			});
-
-			getData(dateStart, dateEnd);
-		});
+		var chart_data;
+		//-  = {
+		//-     labels: [],
+		//-     datasets: [{ 
+		//-         data: [],
+		//-         label: "",
+		//-         borderColor: "#3e95cd",
+		//-         fill: false
+		//-       }
+		//-     ]
+		//- };
 
 		function getData(dStart, dEnd){
 			var profile_id = $('select[name=profile]').val();
@@ -172,21 +95,70 @@ block scripts
 				function( data ) {
 				if(data){
 					$('#data_table').html('');
+					var labels_array = [];
+					var data_array = [];
 					if(data.length){
-						$.each(data, function(i, v){
-							//console.log(v);
-							//console.log(moment(v.date_time_for).format('YYYY. MM. DD. HH:ss'));
-							var c1 = $('<div class="col-md-6">'+moment(v.date_time_for).format('YYYY. MM. DD. HH:ss')+'</div>');
-							var c2 = $('<div class="col-md-6">'+v.value+'</div>');
-							c1.appendTo($('#data_table'));
-							c2.appendTo($('#data_table'));
-						});
+						//console.log(data);
+						//- var h1 = $('<div class="col-md-6">'+'Időpont'+'</div>');
+						//- var h2 = $('<div class="col-md-6">'+'Érték (m3/s)'+'</div>');
+						//- h1.appendTo($('#data_table'));
+						//- h2.appendTo($('#data_table'));
+						//- $.each(data, function(i, v){
+						//- 	var c1 = $('<div class="col-md-6">'+moment(v.date_time_for).format('YYYY. MM. DD. HH:ss')+'</div>');
+						//- 	var c2 = $('<div class="col-md-6">'+v.value+'</div>');
+						//- 	c1.appendTo($('#data_table'));
+						//- 	c2.appendTo($('#data_table'));
+							
+						//- 	labels_array.push(moment(v.date_time_for).format('YYYY. MM. DD. HH:ss'));
+						//- 	data_array.push(v.value);
+
+						//- });
+						dataToChart(myLineChart, data);
 					}else{
 						var c1 = $('<div class="col-md-12">Nincs megjelenítendő adat.</div>');
 						c1.appendTo($('#data_table'));
 					}
 				}else{
 					
-				}			
+				}
 			});
 		}
+
+		function dataToChart(c, d){
+			console.log('dataToChart execute...');
+			var dataset_array = [];
+			//- data.labels=l;
+			//- data.datasets[0].data = d;
+			//- data.datasets[0].label = "m3/s";
+			$.each(d, function(i, v){
+				var data_set = {
+			      label: "i",
+			      data: [
+				      		//- {
+				        //-         x: -12,
+				        //-         y: 70
+				        //-     }, {
+				        //-         x: 15,
+				        //-         y: 35
+				        //-     }
+			            ],
+			      fill: false,
+			      backgroundColor: "rgba(218,83,79, .7)",
+			      borderColor: "rgba(218,83,79, .7)",
+			      // pointRadius: 0
+			    }
+				$.each(v.flows, function(j,w){
+					data_set.data.push({x:moment(w.date_time_for).format('YYYY. MM. DD. HH:ss'), y: w.value});
+				});
+				dataset_array.push(data_set)
+			});
+			chart_data = dataset_array;
+			console.log(chart_data);
+			c.data.datasets = dataset_array;
+			c.update();
+		}
+
+
+	script(src="/javascripts/init_datepicker.js")
+	script(src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.js")
+	script(src="/javascripts/river_chart.js")

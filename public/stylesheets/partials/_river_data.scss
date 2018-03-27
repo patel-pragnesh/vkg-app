@@ -1,12 +1,11 @@
 .river{
 	position: absolute;
 	width: 100%;
-	height: calc(100% - 150px);
+	// height: calc(100% - 150px);
 	&-map{
-		height: calc(100% - 300px);
+		
 	}
 	&-filter{
-		height: calc(100% - 300px);
 		i{
 			position: absolute;
 		    bottom: 24px;
@@ -16,14 +15,13 @@
 		}
 	}
 	&-data{
-		height: calc(100% - 300px);
 		#data_table{
 			overflow: hidden;
     		overflow-y: auto;
-    		height: 400px;
+    		height: $panel_height;
 		}
 	}
 	&-trend{
-		height: calc(300px);
+		height: calc(260px);
 	}
 }

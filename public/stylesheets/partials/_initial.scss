@@ -30,7 +30,7 @@ a, a:hover, a:focus {
 }
 
 .navbar {
-    padding: 15px 10px;
+    padding: 5px 10px;
     background: #fff;
     border: none;
     border-radius: 0;
@@ -41,6 +41,14 @@ a, a:hover, a:focus {
     transition: all 0.3s;
     &.nav-expand{
         margin-left: 0;
+    }
+    h2{
+        display: inline-block;
+        margin-top: 8px;
+        margin-left: 20px;
+    }
+    .navbar-collapse{
+        float: right;
     }
 }
 

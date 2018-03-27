@@ -10,8 +10,9 @@ router.get('/', common.user, river_controller.index);
 /* GET request for one Modelling. */
 router.get('/:id/data-type/:data_type', common.user, river_controller.river_detail);
 
-/* GET river data */
-router.post('/data', common.user, river_controller.get_data_by_type_post)
+/* GET river data (AJAX) */
+// router.post('/data', common.user, river_controller.get_data_by_type_post)
+router.post('/data', common.user, river_controller.get_data_by_type_post_opt)
 
 /* GET rivers by directorate */
 router.post('/directorate', common.user, river_controller.get_by_directorate_post)

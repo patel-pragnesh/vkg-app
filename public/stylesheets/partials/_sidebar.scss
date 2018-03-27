@@ -23,8 +23,8 @@
             padding: 10px;
             background-color: #fff;
             color: #000;
-            padding-top: 22px;
-            padding-bottom: 20px;
+            padding-top: 13px;
+            padding-bottom: 10px;
             box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
             h3{
                 margin-top: 10px;
@@ -35,13 +35,15 @@
         }
         ul{
             &.components {
-                padding: 20px 0;
+                padding: 10px 0;
                 border-bottom: 1px solid #47748b;
-                padding-top: 100px;
+                padding-top: 70px;
             }
             p {
                 color: #fff;
                 padding: 10px;
+                font-size: 20px;
+                font-weight: bold;
             }
             li {
 
@@ -56,7 +58,7 @@
                 }
                 &.active > a {
                     color: #fff;
-                    background: $dark_blue_light;
+                    background: $cyan;
                 }
             }
         }
@@ -64,7 +66,7 @@
 
     a[aria-expanded="true"] {
         color: #fff;
-        background: #6d7fcc;
+        background: $cyan;
     }
 
     a[data-toggle="collapse"] {
