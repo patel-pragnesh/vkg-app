@@ -63,18 +63,20 @@ function moveAlongPath(points, distance, index) {
         // There is still at least one point further from this point.
         //console.log(points[index].lat());
         // Construct a GPolyline to use the getLength() method.
-        var polyline = new google.maps.Polyline([points[index], points[index + 1]]);
+        var polyline = new google.maps.Polyline({path:[points[index], points[index + 1]]});
         console.log(polyline.getPath());
         // console.log(polyline[0].lat());
         // Get the distance from this point to the next point in the polyline.
         var distanceToNextPoint = polyline.inKm();
-        //console.log(distanceToNextPoint);
-        if (distance <= distanceToNextPoint) {
+        console.log(distanceToNextPoint*1000);
+        if (distance <= distanceToNextPoint*1000) {
+            console.log('1');
             // distanceToNextPoint is within this point and the next. 
             // Return the destination point with moveTowards().
             return points[index].moveTowards(points[index + 1], distance);
         }
         else {
+            console.log('2');
             // The destination is further from the next point. Subtract
             // distanceToNextPoint from distance and continue recursively.
             return moveAlongPath(points, distance - distanceToNextPoint, index + 1);

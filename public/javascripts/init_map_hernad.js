@@ -53,7 +53,7 @@ function initMap() {
           });
 
          // Add +1000 meters for the next checkpoint.
-         nextMarkerAt += 1000;    
+         nextMarkerAt += 100;    
       }
       else {
          // moveAlongPath returned null, so there are no more check points.
