@@ -1,0 +1,15 @@
+extends ../layout_login
+
+block content
+	div.row
+		div.col-xs-12
+			h3=title
+	div.row
+		div.col-xs-12
+			div=data
+	div.row
+		div.col-xs-12
+			canvas(id="testChart")
+block scripts
+	script(src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.js")
+	script(src="/javascripts/test_chart.js")

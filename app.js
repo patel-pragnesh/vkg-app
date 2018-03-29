@@ -30,6 +30,7 @@ const users = require('./routes/users');
 const directorates = require('./routes/directorates');
 const rivers = require('./routes/rivers');
 const modelling_import = require('./routes/modelling_import');
+const test = require('./routes/test');
 
 var app = express();
 
@@ -85,6 +86,7 @@ app.use('/users', users);
 app.use('/directorates', directorates);
 app.use('/rivers', rivers);
 app.use('/modelling_import', modelling_import);
+app.use('/test', test);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
