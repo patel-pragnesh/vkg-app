@@ -1,5 +1,6 @@
 var map;
-
+var nextMarkerAt = 0;     // Counter for the marker checkpoints.
+var nextPoint = null;     // The point where to place the next marker.
 // $(document).ready(function () { 
 //     initMap();
 // });
@@ -7,7 +8,7 @@ var map;
 function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
         center: {lng:20.93023457617614,lat:47.99061467092415},
-        zoom: 12,
+        zoom: 14,
         mapTypeId: 'terrain'
     });
     var myLatLng = {lng:20.93023457617614,lat:47.99061467092415};
@@ -27,7 +28,7 @@ function initMap() {
     //       });
   
     var hernad_path = new google.maps.Polyline({
-        path: hernad_coordinates_test,
+        path: hernad_coordinates,
         geodesic: true,
         strokeColor: '#267CB5',
         strokeOpacity: 1.0,
@@ -36,10 +37,12 @@ function initMap() {
 
     hernad_path.setMap(map);
 
+
+
     while (true) {
       // Call moveAlongPath which will return the GLatLng with the next
       // marker on the path.
-      nextPoint = moveAlongPath(hernad_coordinates_test, nextMarkerAt);
+      nextPoint = moveAlongPath(hernad_coordinates, nextMarkerAt);
       //console.log(nextPoint);
       if (nextPoint) {
          // Draw the marker on the map.
@@ -53,7 +56,7 @@ function initMap() {
           });
 
          // Add +1000 meters for the next checkpoint.
-         nextMarkerAt += 100;    
+         nextMarkerAt += 1000;    
       }
       else {
          // moveAlongPath returned null, so there are no more check points.

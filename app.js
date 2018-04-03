@@ -78,7 +78,9 @@ app.use(sassMiddleware({
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(common.directorates);
+//TODO: Windows commit
+//app.use(common.directorates);
+
 //app.use(common.user);
 
 app.use('/', index);

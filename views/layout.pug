@@ -5,23 +5,24 @@ block body
 		// Sidebar Holder
 		nav#sidebar
 			.sidebar-header
-				img(src="/images/ovf_logo.png", alt="OVF" width="35")
+				img(src="/images/ovf_logo.png", alt="OVF" width="30")
 				a(href="/")
 					h3 Vízkészlet-gazdálkodás
 			ul.list-unstyled.components
 				if !river_page
 					p Igazgatóságok
-					each d in directorates
-						li
-							if d.rivers
-								a(href="#homeSubmenu_"+d.id data-toggle="collapse" aria-expanded="false")=d.name
-							else
-								a(href="#homeSubmenu_"+d.id data-toggle="collapse")=d.name
-							if d.rivers
-								ul(id="homeSubmenu_"+d.id, class="collapse list-unstyled")
-									each r in d.rivers
-										li
-											a(href="/rivers/"+r.id+"/data-type/0")=r.name
+					if directorates
+						each d in directorates
+							li
+								if d.rivers
+									a(href="#homeSubmenu_"+d.id data-toggle="collapse" aria-expanded="false")=d.name
+								else
+									a(href="#homeSubmenu_"+d.id data-toggle="collapse")=d.name
+								if d.rivers
+									ul(id="homeSubmenu_"+d.id, class="collapse list-unstyled")
+										each r in d.rivers
+											li
+												a(href="/rivers/"+r.id+"/data-type/0")=r.name
 				else
 					p Adat típusok
 					each data_type in data_types
