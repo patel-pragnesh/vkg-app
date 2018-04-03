@@ -4,10 +4,11 @@ const moment = require('moment');
 moment.locale('hu');
 
 class River{
-	constructor(id, name, directorate_id=null, createdAt=null, updatedAt=null){
+	constructor(id, name, directorate_id=null, directorate_name=null, createdAt=null, updatedAt=null){
 		this.id = id;
 		this.name = name;
 		this.directorate_id = directorate_id;
+		this.directorate_name = directorate_name;
 		createdAt ? this.createdAt = createdAt : this.createdAt = moment().format("YYYY-MM-DD HH:mm:ss");
 		updatedAt ? this.updatedAt = updatedAt : this.updatedAt = moment().format("YYYY-MM-DD HH:mm:ss");
 	}
@@ -16,12 +17,12 @@ class River{
 	    try {
 	    	let pool = new sql.ConnectionPool(sqlConfig);
 	    	await pool.connect();
-	        let result = await pool.request().query('select * from River');
+	        let result = await pool.request().query('select River.*, Directorate.name as directorate_name FROM River LEFT JOIN Directorate ON River.directorate_id=Directorate.id');
 	        pool.close();
 	        if(result.recordset.length != 0){
 	        	let returnArray = [];
 	        	for(let r of result.recordset){
-	        		returnArray.push(new River(r.id, r.name, r.directorate_id));
+	        		returnArray.push(new River(r.id, r.name, r.directorate_id, r.directorate_name));
 	        	}
 	        	return returnArray;
 	        }
@@ -39,12 +40,13 @@ class River{
 	    	await pool.connect();
 	        let result = await pool.request()
 	            .input('input_parameter', sql.Int, id)
-	            .query('select * from River where id = @input_parameter')
+	            .query('select River.*, Directorate.name as directorate_name FROM River LEFT JOIN Directorate ON River.directorate_id=Directorate.id WHERE River.id = @input_parameter')
 	        pool.close();
 	        if(result.recordset.length != 0)
 	        	return new River(result.recordset[0]['id'], 
 	        			result.recordset[0]['name'],
-	        			result.recordset[0]['directorate_id']);
+	        			result.recordset[0]['directorate_id'],
+	        			result.recordset[0]['directorate_name']);
 	        else
 	        	return null;
 

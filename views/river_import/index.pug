@@ -1,0 +1,35 @@
+extends ../layout
+
+block content
+	div.container-fluid.mt10
+		div.row
+			div.col-md-10
+			//- 	h1=title
+			div.col-md-2
+				a(href="/river_import/create" class="btn btn-primary pull-right btn-new") Új vízfolyás
+		table.table.table-striped
+			thead
+				tr
+					th Megnevezés
+					th Igazgatóság
+					th.text-right Műveletek
+			tbody
+				each r in rivers
+					tr
+						td=r.name
+						td=r.directorate_name
+						td
+							a(href="/river_import/"+r.id+"/data" class="btn btn-info pull-right")
+								span.glyphicon.glyphicon-cloud-upload
+							a(href="/river_import/"+r.id+"/update" class="btn btn-info pull-right mr5")
+								span.glyphicon.glyphicon-edit
+		div.row.pull-right
+			div.col-md-12
+				ul.pagination
+					- for(var i = 1; i < page_count+1; i++)
+						li
+							a(href="/river_import?page="+i)=i
+					
+			
+			
+	

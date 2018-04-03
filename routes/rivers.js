@@ -5,16 +5,25 @@ const common = require('../controllers/commonController');
 var river_controller = require('../controllers/riverController');
 
 /* GET rivers listing. */
-router.get('/', common.user, river_controller.index);
+router.get('/', /*common.user,*/ river_controller.index);
 
 /* GET request for one Modelling. */
-router.get('/:id/data-type/:data_type', common.user, river_controller.river_detail);
+router.get('/:id/data-type/:data_type', /*common.user,*/ river_controller.river_detail);
 
 /* GET river data (AJAX) */
 // router.post('/data', common.user, river_controller.get_data_by_type_post)
-router.post('/data', common.user, river_controller.get_data_by_type_post_opt)
+router.post('/data', /*common.user,*/ river_controller.get_data_by_type_post_opt)
+
+/* GET river coordinate (AJAX) */
+router.post('/coordinates', /*common.user,*/ river_controller.get_coordinates_post)
+
+/* GET river profile coordinate (AJAX) */
+router.post('/profiles_coordinate', /*common.user,*/ river_controller.get_profiles_post)
+
+/* SAVE river profile coordinate (AJAX) */
+router.post('/profiles_coordinate_save', /*common.user,*/ river_controller.save_profile_coordinate_post)
 
 /* GET rivers by directorate */
-router.post('/directorate', common.user, river_controller.get_by_directorate_post)
+router.post('/directorate', /*common.user,*/ river_controller.get_by_directorate_post)
 
 module.exports = router;

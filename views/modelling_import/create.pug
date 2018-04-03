@@ -31,7 +31,7 @@ block content
 								option(value=null) Nincs megjelenítendő adat
 						if errors
 							for error in errors
-								if error.param == 'river'
+								if error.param == 'river_id'
 									div.text-danger=error.msg
 					div.form-group
 						label(for="name") Megnevezés

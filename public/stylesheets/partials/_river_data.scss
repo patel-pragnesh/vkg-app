@@ -3,7 +3,13 @@
 	width: 100%;
 	// height: calc(100% - 150px);
 	&-map{
+		.panel-body{
+			padding: 0;
 		
+			#map_river{
+				height: 435px;
+			}
+		}
 	}
 	&-filter{
 		i{

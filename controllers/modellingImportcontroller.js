@@ -48,7 +48,7 @@ exports.create_post = [
             let rivers = null;
             if(req.body.directorate)
                 rivers = await River.findByDirectorate(req.body.directorate);
-            res.render('modelling_import/new', { title: 'Új modellezés', modelling: req.body, rivers: rivers, errors: errors.array() });
+            res.render('modelling_import/create', { title: 'Új modellezés', modelling: req.body, rivers: rivers, errors: errors.array() });
             return;
         }
         else {
@@ -93,10 +93,11 @@ exports.update_post = [
 
         if (!errors.isEmpty()) {
             // There are errors. Render form again with sanitized values/errors messages.
+            //console.log(errors.array());
             let rivers = null;
             if(req.body.directorate)
                 rivers = await River.findByDirectorate(req.body.directorate);
-            res.render('modelling_import/new', { title: 'Új modellezés', modelling: req.body, rivers: rivers, errors: errors.array() });
+            res.render('modelling_import/create', { title: 'Új modellezés', modelling: req.body, rivers: rivers, errors: errors.array() });
             return;
         }
         else {

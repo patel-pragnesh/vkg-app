@@ -30,6 +30,7 @@ const users = require('./routes/users');
 const directorates = require('./routes/directorates');
 const rivers = require('./routes/rivers');
 const modelling_import = require('./routes/modelling_import');
+const river_import = require('./routes/river_import');
 const test = require('./routes/test');
 
 var app = express();
@@ -79,7 +80,7 @@ app.use(sassMiddleware({
 app.use(express.static(path.join(__dirname, 'public')));
 
 //TODO: Windows commit
-//app.use(common.directorates);
+app.use(common.directorates);
 
 //app.use(common.user);
 
@@ -88,6 +89,7 @@ app.use('/users', users);
 app.use('/directorates', directorates);
 app.use('/rivers', rivers);
 app.use('/modelling_import', modelling_import);
+app.use('/river_import', river_import);
 app.use('/test', test);
 
 // catch 404 and forward to error handler

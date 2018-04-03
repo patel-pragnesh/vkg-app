@@ -212,6 +212,10 @@ a.article, a.article:hover {
 .river {
   position: absolute;
   width: 100%; }
+  .river-map .panel-body {
+    padding: 0; }
+    .river-map .panel-body #map_river {
+      height: 435px; }
   .river-filter i {
     position: absolute;
     bottom: 24px;

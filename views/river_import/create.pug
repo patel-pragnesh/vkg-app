@@ -1,0 +1,34 @@
+extends ../layout
+
+block content
+	div.container-fluid.mt10
+		div.row
+			div.col-md-10
+				//- h1=title
+			div.col-md-2
+				a(href="/river_import" class="btn btn-primary pull-right btn-new") Vissza
+		div.row
+			div.col-md-12
+				form(action=form_link, method="post")
+					div.form-group
+						label(for="directorate") Igazgatóság
+						select(id="directorate" name="directorate" class="form-control")
+							option(value=null) Válasszon
+							each d in directorates
+								option(value=d.id selected=(undefined===river ? false : d.id == river.directorate_id))=d.name
+						if errors
+							for error in errors
+								if error.param == 'directorate'
+									div.text-danger=error.msg
+					div.form-group
+						label(for="name") Megnevezés
+						input(type="text" name="name" placeholder="Modellezés megnevezése" class="form-control" value=(undefined===river ? '' : river.name))
+						if errors
+							for error in errors
+								if error.param == 'name'
+									div.text-danger=error.msg
+					div.form-group
+						input(type="submit" name="submit_button" class="btn btn-primary pull-right" value="Mentés")
+						a(href="/river_import" class="btn btn-default pull-right mr5") Mégse
+					if river
+						input(type="hidden" name="id" value=river.id)

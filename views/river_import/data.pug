@@ -1,0 +1,51 @@
+extends ../layout
+
+block content
+	div.container-fluid.mt10
+		div.row
+			div.col-md-10
+				//- h1=title
+			div.col-md-2
+				a(href="/modelling_import" class="btn btn-primary pull-right btn-new") Vissza
+		div.row
+			div.col-md-12
+					div.panel.panel-default
+						div.panel-heading
+							h3.panel-title Alapadatok
+						div.panel-body
+							div.row
+								div.col-md-12
+									div.form-group
+										div.col-md-2
+											label(class="") Megnevezés:
+										div.col-md-10
+											span(class="")=river.name
+								div.col-md-12
+									div.form-group
+										div.col-md-2
+											label(class="") Igazgatóság:
+										div.col-md-10
+											span(class="")=river.directorate_name
+			div.col-md-12
+				form(action=form_link, method="post", enctype="multipart/form-data")
+					div.panel.panel-default
+						div.panel-heading
+							h3.panel-title Új adat betöltés
+						div.panel-body
+							div.row
+								div.col-md-12
+									div.form-group.fileContainer
+										input(type="file" name="fileUploaded" id="fileUploaded" class="inputFile")
+										label(for="fileUploaded" class="btn btn-primary file-label") Fájl kiválasztása
+						div.panel-footer
+							input(type="hidden" name="river" value=river.id)
+							input(type="submit" class="btn btn-primary pull-right" value="Mentés")
+							div.clearfix
+			//- div.col-md-12
+			//- 		div.panel.panel-default
+			//- 			div.panel-heading
+			//- 				h3.panel-title Betöltött adatok
+			//- 			div.panel-body
+			//- 			div.panel-footer
+			//- 				div.clearfix
+
