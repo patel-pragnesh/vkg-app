@@ -161,6 +161,9 @@ var config = {
             display: false,
             text: 'Vízhozam idősor'
         },
+        legend:{
+          display: false,
+        },
         scales: {
             xAxes: [{
                 type: 'time',

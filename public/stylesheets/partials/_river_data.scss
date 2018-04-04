@@ -8,6 +8,10 @@
 		
 			#map_river{
 				height: 435px;
+
+				.marker.selected_profile{
+					background: #FF0000 !important;
+				}
 			}
 		}
 	}

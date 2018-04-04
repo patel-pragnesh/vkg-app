@@ -216,6 +216,8 @@ a.article, a.article:hover {
     padding: 0; }
     .river-map .panel-body #map_river {
       height: 435px; }
+      .river-map .panel-body #map_river .marker.selected_profile {
+        background: #FF0000 !important; }
   .river-filter i {
     position: absolute;
     bottom: 24px;

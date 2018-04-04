@@ -82,8 +82,10 @@ block scripts
 		var dateStart, dateEnd;	
 		var dataFromQuery;
 		var selectedAdatbetoltes;	
-
-		//var chart_data;
+		var graph_color_array = [
+			"rgba(100,80,60, .7)",
+			"rgba(53,167,156, .7)",
+		];
 
 		function getData(dStart, dEnd){
 			var profile_id = $('select[name=profile]').val();
@@ -97,8 +99,7 @@ block scripts
 				date_end:dEnd
 				},
 				function( data ) {
-				if(data){
-					$('#data_table').html('');
+				if(data){					
 					if(data.length){
 						dataFromQuery = data;
 						dataToAdatbetoltesek(data);
@@ -121,23 +122,30 @@ block scripts
 				o.appendTo($('#adatbetoltesek'));
 			});
 			dataToChart(myLineChart, d, selectedAdatbetoltes);
+			dataToAdatok(d, selectedAdatbetoltes);
 		}
 
-		var graph_color_array = [
-			"rgba(100,80,60, .7)",
-			"rgba(53,167,156, .7)",
-		];
+		function dataToAdatok(d, nr){
+			$('#data_table').html('');
+			$.each(d, function(i, v){
+				if(i == nr){
+					$.each(v.flows, function(j,w){
+						var c1 = $('<div class="col-md-6">'+moment(w.date_time_for).format('YYYY. MM. DD. HH:ss')+'</div>');
+						var c2 = $('<div class="col-md-6">'+w.value+'</div>');
+						c1.appendTo($('#data_table'));
+						c2.appendTo($('#data_table'));
+					});
+					
+				}
+			});
+		}
 
 		function dataToChart(c, d, nr){
-			//console.log('dataToChart execute...');
 			var dataset_array = [];
-			//- data.labels=l;
-			//- data.datasets[0].data = d;
-			//- data.datasets[0].label = "m3/s";
 			$.each(d, function(i, v){
 				if(i == nr){
 					var data_set = {
-				      label: v.projekt_name,
+				      //label: v.projekt_name,
 				      data: [
 				      		//- {
 					        //- 	x: -12,
@@ -158,7 +166,6 @@ block scripts
 					dataset_array.push(data_set);
 				}
 			});
-			//chart_data = dataset_array;
 			c.data.datasets = dataset_array;
 			c.update();
 		}
@@ -174,5 +181,17 @@ block scripts
 			$('#adatbetoltesek').change(function(){
 				var selectedAdatbetoltes = this.value;
 				dataToChart(myLineChart, dataFromQuery, selectedAdatbetoltes);
+				dataToAdatok(dataFromQuery, selectedAdatbetoltes);
+			});
+
+			$('#profile').change(function(){
+				var selectedProfile = $( "#profile option:selected" ).text();
+				//- var selectedProfile = this.text;
+				console.log('.marker.P_'+selectedProfile);
+				//$(".marker").removeClass("selected_profile");
+				$(".marker").addClass("selected_profile");
+				//- var m = $('.marker.P_'+selectedProfile);
+				//- m.addClass('selected_profile');
+				//- console.log(m);
 			});
 		});
