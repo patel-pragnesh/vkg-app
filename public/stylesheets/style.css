@@ -222,6 +222,10 @@ a.article, a.article:hover {
     right: 24px;
     top: auto;
     cursor: pointer; }
+  .river-filter #adatbetoltesek {
+    /*height: 90px;
+			overflow: hidden;
+			overflow-y: auto;*/ }
   .river-data #data_table {
     overflow: hidden;
     overflow-y: auto;

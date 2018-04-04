@@ -158,7 +158,7 @@ var config = {
     options: {
         responsive: true,
         title: {
-            display: true,
+            display: false,
             text: 'Vízhozam idősor'
         },
         scales: {
