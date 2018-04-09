@@ -186,12 +186,8 @@ block scripts
 
 			$('#profile').change(function(){
 				var selectedProfile = $( "#profile option:selected" ).text();
-				//- var selectedProfile = this.text;
-				console.log('.marker.P_'+selectedProfile);
-				//$(".marker").removeClass("selected_profile");
-				$(".marker").addClass("selected_profile");
-				//- var m = $('.marker.P_'+selectedProfile);
-				//- m.addClass('selected_profile');
-				//- console.log(m);
+				var cssClassId = selectedProfile.replace('.','_');
+				$(".marker").removeClass("selected_profile");
+				$(".marker.P_"+cssClassId).addClass("selected_profile");
 			});
 		});

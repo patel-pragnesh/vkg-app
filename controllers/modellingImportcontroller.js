@@ -16,9 +16,13 @@ const DataLoader = require('../logic/dataloader');
 exports.index = async function(req, res, next){
 	let countPerPage = 15;
     let page = req.query.page ? req.query.page - 1 : 0;
+    let modellings_page = null;
+    let page_count = 0;
     let modellings = await Modelling.all();
-    let page_count = modellings.length/countPerPage;
-    let modellings_page = modellings.slice(page, page + countPerPage);
+    if(modellings){
+        page_count = modellings.length/countPerPage;
+        modellings_page = modellings.slice(page, page + countPerPage);
+    }
     res.render('modelling_import/index', {title: 'Adatbetöltések', modellings: modellings_page, page_count: page_count});
 	
 }
@@ -54,7 +58,7 @@ exports.create_post = [
         else {
             //Modellezés mentése
 			console.log(req.body.name);
-            const m = new Modelling(null,req.body.name,req.body.description,req.body.date_for,req.body.river);
+            const m = new Modelling(null,req.body.name,req.body.description,req.body.date_for,req.body.river_id);
             await m.save();
 			//Modellezések megjelenítése
 			let countPerPage = 15;
@@ -153,7 +157,7 @@ exports.data_post = async function(req, res, next){
         let dataloader = new DataLoader(newpath);
         await dataloader.readFile();
         await dataloader.saveData(modelling);
-        //console.log('ok');
+        console.log('ok');
         res.redirect('/modelling_import/'+modelling+'/data');
       });
     });

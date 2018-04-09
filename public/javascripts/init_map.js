@@ -88,12 +88,13 @@ function drawProfiles(coordinates, profiles, river_id){
           //   title: 'P_'+v,
           //   icon: icon
           // });
+          var cssClassId = v.replace('.','_');
           var latLng = new google.maps.LatLng(profile_obj.lat, profile_obj.lng);
           var custom_marker = new CustomMarker(
             latLng,
             map,
             {
-              marker_id: 'P_' + v
+              marker_id: 'P_' + cssClassId
             }
           );
         }else{
@@ -115,14 +116,10 @@ function drawProfiles(coordinates, profiles, river_id){
             function( data ) {
               if(data){
               }
-            });
-             
+            });             
            }
          }
-       });
-
-      
-
+      });
     }else{
 
     }

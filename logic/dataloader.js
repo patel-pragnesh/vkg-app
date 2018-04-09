@@ -1,6 +1,7 @@
 const fs = require('fs');
 const util = require('util');
 const readline = require('readline');
+const sql = require('mssql');
 const moment = require('moment');
 moment.locale('hu');
 
@@ -24,7 +25,7 @@ class DataLoader{
 	async readFile(){
 		let that = this;
 		try{
-			let data_from_file = await readFile(that.file_path, 'utf8');
+			let data_from_file = await readFile(that.file_path, 'latin1');
 			//console.log(data_from_file);
 			let line_array = data_from_file.split('\n');
 			//console.log(line_array);
@@ -65,6 +66,8 @@ class DataLoader{
 						if(!data[i-2].values){
 							data[i-2].values = [];
 						}
+						//let datetime = line_data[1].replace(/(\r\n|\n|\r)/gm,"");
+						//console.log(datetime);
 						data[i-2].values.push({nr: line_data[0].replace(/(\r\n|\n|\r)/gm,""), 
 							datetime: moment(line_data[1].replace(/(\r\n|\n|\r)/gm,""), "DDMMMYYYY HHmm").format("YYYY-MM-DD HH:mm:ss"), 
 							val: line_data[i].replace(',', '.').replace(/(\r\n|\n|\r)/gm,"")});	
@@ -83,7 +86,12 @@ class DataLoader{
 		try{
 			//console.log("Modelling id: "+modelling_id);
 			//console.log(that.data);
+			console.log('Keresztmetszetek száma: '+that.data.length);
+			console.log('Adatok száma a 0. keresztmetszetben: ');
+			// console.log(that.data[0].values[80]);
+			// return false;
 			const m = await Modelling.findById(modelling_id);
+			
 			for(let i=0; i<that.data.length; i++){
 				let p = await Profile.findByNameRiver(that.data[i].B, m.river_id);
 
@@ -99,13 +107,68 @@ class DataLoader{
 				fm = await fm.save();
 				let date_from = moment("3000-01-01 01:01", "YYYY-MM-DD HH:mm");
 				let date_to = moment("1900-01-01 01:01", "YYYY-MM-DD HH:mm");
+
 				if(that.data[i].C == 'FLOW'){
-					that.data[i].values.forEach(function(v){
-						date_from = moment(v.datetime, "YYYY-MM-DD HH:mm") < date_from ? moment(v.datetime, "YYYY-MM-DD HH:mm") : date_from;
+					let counter = 1;
+					console.log(counter);
+
+					let pool = new sql.ConnectionPool(sqlConfig);
+					let dbConn = await pool.connect();
+					// sql.connect(sqlConfig)
+				  	// .then(() => {
+				 //  	let pool = new sql.ConnectionPool(sqlConfig);
+					// let dbConn = await pool.connect();
+					// let transaction = new sql.Transaction(dbConn);
+					// await transaction.begin();
+				    // console.log('connected');
+
+				    const table = new sql.Table('TmpFlow') // or temporary table, e.g. #temptable
+					//table.create = true
+					table.columns.add('date_time_for', sql.NVarChar, {nullable: true});
+					table.columns.add('value', sql.Float, {nullable: true});
+					table.columns.add('data_meta_id', sql.Int, {nullable: true});
+					table.columns.add('updatedAt', sql.NVarChar, {nullable: true});
+					table.columns.add('createdAt', sql.NVarChar, {nullable: true});
+
+				    that.data[i].values.forEach(async function(v){
+				    	date_from = moment(v.datetime, "YYYY-MM-DD HH:mm") < date_from ? moment(v.datetime, "YYYY-MM-DD HH:mm") : date_from;
 						date_to = moment(v.datetime, "YYYY-MM-DD HH:mm") > date_to ? moment(v.datetime, "YYYY-MM-DD HH:mm") : date_to;
-						let f = new Flow(null, v.datetime, v.val, fm.id);
-						f.save();
+
+						let ca = moment().format("YYYY-MM-DD HH:mm:ss");
+
+						//console.log(v.datetime);
+						//if(counter==80){
+						//	console.log(v);
+						//	return;
+						//}
+
+						// v.datetime = v.datetime.replace('á', 'a');
+						// v.datetime = v.datetime.replace('ú', 'u');
+						table.rows.add(v.datetime, v.val, fm.id, ca, ca);
+
+						console.log(counter);
+						counter++;
 					});
+
+				    const request = new sql.Request(dbConn);
+				    let result = await request.bulk(table);
+
+				    const request_move = new sql.Request(dbConn);
+			    	let result1 = await request_move.query('INSERT INTO dbo.Flow(date_time_for, value, data_meta_id, updatedAt, createdAt) '+
+			    		'SELECT date_time_for, value, data_meta_id, updatedAt, createdAt FROM dbo.TmpFlow; '+
+			    		'TRUNCATE TABLE dbo.TmpFlow;');
+				    pool.close();
+				    console.log(result1);
+				    //return result;
+					// })
+					// .then(data => {
+					// console.log(data);
+					//sql.close();
+					// })
+					// .catch(err => {
+					// console.log(err);
+					//sql.close();
+					// });					  
 				}else if(that.data[i].C == 'FLOW-CUM'){
 					that.data[i].values.forEach(function(v){
 						date_from = moment(v.datetime, "YYYY-MM-DD HH:mm") < date_from ? moment(v.datetime, "YYYY-MM-DD HH:mm") : date_from;
