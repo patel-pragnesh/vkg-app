@@ -9,8 +9,8 @@ $(document).ready(function () {
 	var thisMonthLastDay = moment().endOf('month').format(format);
 	var lastMonthFirstDay = moment().subtract(1, 'month').startOf('month').format(format);
 	var lastMonthLastDay = moment().subtract(1, 'month').endOf('month').format(format);
-	var tmpStart = '2000. 01. 01.';
-	var tmpEnd = '2000. 01. 03.'
+	var tmpStart = '2215. 01. 01.';
+	var tmpEnd = '2215. 01. 31.'
 
 	dateStart = tmpStart;
 	dateEnd = tmpEnd;

@@ -57,7 +57,7 @@ exports.get_data_by_type_post_opt = async function(req, res){
 	let profile_id = req.body.profile_id;
 	let date_start = req.body.date_start;
 	let date_end = req.body.date_end;
-
+	
 	if(data_type == 0){	//FLOW
 		//Összes DataMeta lekérése, ami a kijelölt dátum tartományba esik és FLOW típusú és profilhoz köthető
 		let data_meta_array = await DataMeta.findByDate(profile_id, 'FLOW', date_start, date_end)
@@ -65,7 +65,7 @@ exports.get_data_by_type_post_opt = async function(req, res){
 		if(data_meta_array){
 			//Összes FLOW lekérése a DataMetakból, ami a dátum tartományba esik			
 	    	for(let data_meta of data_meta_array){
-	    		data_meta.flows = await Flow.findByMetaData(data_meta.id);
+	    		data_meta.flows = await Flow.findByMetaDataAndDate(data_meta.id, date_start, date_end);
 	    	}
     	}
 

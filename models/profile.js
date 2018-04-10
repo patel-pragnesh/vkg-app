@@ -90,7 +90,7 @@ class Profile{
 	        // let result = await pool.request().query('SELECT Profile.*, River.name as river_name FROM Profile LEFT JOIN River ON Profile.river_id=River.id');
 	        let result = await pool.request()
 	        	.input('input_parameter', sql.Int, id)
-	        	.query('SELECT Profile.* FROM Profile WHERE Profile.river_id = @input_parameter');
+	        	.query('SELECT Profile.* FROM Profile WHERE Profile.river_id = @input_parameter ORDER BY Profile.name');
 	        pool.close();
 	        if(result.recordset.length != 0){
 	        	let returnArray = [];

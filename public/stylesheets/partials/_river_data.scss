@@ -8,9 +8,15 @@
 		
 			#map_river{
 				height: 435px;
-
+				.marker{
+					border-radius: 4px;
+					border: 1px solid #2A3F54;
+					background-color: #5BC0DE;
+				}
 				.marker.selected_profile{
-					background: #FF0000 !important;
+					border-color: #A70000;
+					background-color: #FF0000 !important;
+					z-index: 10000;
 				}
 			}
 		}

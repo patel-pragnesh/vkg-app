@@ -33,7 +33,112 @@ function initMap(river_id, profiles) {
       map = new google.maps.Map(document.getElementById('map_river'), {
         center: center,
         zoom: 14,
-        mapTypeId: 'terrain'
+        //mapTypeId: 'terrain'
+        styles: [
+              {
+                  "elementType": "geometry.fill",
+                  "stylers": [
+                      {
+                          "lightness": -5
+                      },
+                      {
+                          "weight": 2
+                      }
+                  ]
+              },
+              {
+                  "featureType": "administrative.land_parcel",
+                  "elementType": "labels",
+                  "stylers": [
+                      {
+                          "visibility": "off"
+                      }
+                  ]
+              },
+              {
+                  "featureType": "landscape.natural",
+                  "elementType": "geometry.fill",
+                  "stylers": [
+                      {
+                          "color": "#f5f5f5"
+                      },
+                      {
+                          "visibility": "on"
+                      }
+                  ]
+              },
+              {
+                  "featureType": "poi",
+                  "elementType": "geometry.fill",
+                  "stylers": [
+                      {
+                          "color": "#d5dcd3"
+                      }
+                  ]
+              },
+              {
+                  "featureType": "poi",
+                  "elementType": "labels.text",
+                  "stylers": [
+                      {
+                          "visibility": "off"
+                      }
+                  ]
+              },
+              {
+                  "featureType": "poi.business",
+                  "stylers": [
+                      {
+                          "visibility": "off"
+                      }
+                  ]
+              },
+              {
+                  "featureType": "poi.park",
+                  "elementType": "labels.text",
+                  "stylers": [
+                      {
+                          "visibility": "off"
+                      }
+                  ]
+              },
+              {
+                  "featureType": "road.arterial",
+                  "elementType": "geometry.fill",
+                  "stylers": [
+                      {
+                          "color": "#e6e6e6"
+                      }
+                  ]
+              },
+              {
+                  "featureType": "road.highway",
+                  "elementType": "geometry.fill",
+                  "stylers": [
+                      {
+                          "color": "#dfdfdf"
+                      }
+                  ]
+              },
+              {
+                  "featureType": "road.highway",
+                  "elementType": "geometry.stroke",
+                  "stylers": [
+                      {
+                          "color": "#b4b4b4"
+                      }
+                  ]
+              },
+              {
+                  "featureType": "road.local",
+                  "elementType": "labels",
+                  "stylers": [
+                      {
+                          "visibility": "off"
+                      }
+                  ]
+              }
+          ]
       });
 
       // var marker = new google.maps.Marker({
@@ -78,23 +183,32 @@ function drawProfiles(coordinates, profiles, river_id){
         profiles_coordinates.push({name: v.profile, lat: v.lat, lng: v.lng});
       });
 
+      console.log(profiles_array);
+      console.log(profiles_coordinates);
+
       //TODO megkeresni a kirajzolandó profilokat a tömbben és megjeleníteni
       $.each(profiles_array, function(i,v){
         var profile_obj = profiles_coordinates.find(function (obj) { return obj.name == v; });
         if(profile_obj){
+          console.log(profile_obj.id);
           // var marker = new google.maps.Marker({
           //   position: new google.maps.LatLng(profile_obj.lat, profile_obj.lng),
           //   map: map,
           //   title: 'P_'+v,
           //   icon: icon
           // });
+          var selected = '';
+          if(i==0)
+            selected = 'selected_profile';
           var cssClassId = v.replace('.','_');
           var latLng = new google.maps.LatLng(profile_obj.lat, profile_obj.lng);
           var custom_marker = new CustomMarker(
             latLng,
             map,
             {
-              marker_id: 'P_' + cssClassId
+              marker_id: 'P_' + cssClassId,
+              selected: selected,
+              marker_value: v
             }
           );
         }else{
@@ -145,13 +259,13 @@ CustomMarker.prototype.draw = function() {
   
     div = this.div = document.createElement('div');
     
-    div.className = 'marker ' + self.args.marker_id;
+    div.className = 'marker ' + self.args.marker_id + ' ' +self.args.selected;
     
     div.style.position = 'absolute';
     div.style.cursor = 'pointer';
-    div.style.width = '10px';
-    div.style.height = '10px';
-    div.style.background = 'blue';
+    div.style.width = '8px';
+    div.style.height = '8px';
+    //div.style.background = '$color-panel-heading';
     
     if (typeof(self.args.marker_id) !== 'undefined') {
       div.dataset.marker_id = self.args.marker_id;
@@ -159,6 +273,12 @@ CustomMarker.prototype.draw = function() {
     
     google.maps.event.addDomListener(div, "click", function(event) {      
       google.maps.event.trigger(self, "click");
+      //alert(self.args.marker_value);
+      //$('#profile').val(self.args.marker_id);
+      $('#profile option').filter(function() { 
+          return ($(this).text() == self.args.marker_value); //To select Blue
+      }).prop('selected', true);
+      $('#profile').trigger('change');
     });
     
     var panes = this.getPanes();
@@ -168,8 +288,8 @@ CustomMarker.prototype.draw = function() {
   var point = this.getProjection().fromLatLngToDivPixel(this.latlng);
   
   if (point) {
-    div.style.left = (point.x - 5) + 'px';
-    div.style.top = (point.y -5) + 'px';
+    div.style.left = (point.x - 4) + 'px';
+    div.style.top = (point.y - 4) + 'px';
   }
 };
 
