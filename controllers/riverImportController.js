@@ -134,6 +134,16 @@ exports.data_post = async function(req, res, next){
     
 }
 
+exports.profiles_get = async function(req, res, next){
+    const r = await River.findById(req.params.id);
+    const form_link = "/river_import/"+r.id+"/profiles";
+    res.render('river_import/data', { title: 'Vízfolyás profil adatok', river: r, form_link: form_link});
+}
+
+exports.profiles_post = async function(req, res, next){
+    res.redirect('/river_import/'+river+'/profiles');
+}
+
 exports.meta_data_delete_get = async function(req, res, next){
     // let meta_data = await DataMeta.findById(req.params.id);
     // let modelling_id = meta_data.modelling_id;

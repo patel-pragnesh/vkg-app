@@ -60,17 +60,22 @@ block content
 			div.col-md-5.river-data
 				div.panel.panel-default
 					div.panel-heading
-						h3.panel-title Adatok
+						h3.panel-title.pull-left Adatok
+						div.pull-right Vízhozam idősor
+						div.clearfix
 					div.panel-body
+						div.row(id="data_table_head")
 						div.row(id="data_table")
-							div.col-md-12
-					//- div.panel-footer
-					//- 	input(type="button" class="data-metas-button btn btn-primary pull-right" value="Adatbetöltések")
-					//- 	div.clearfix
+					div.panel-footer
+						div#data_table_datetime.pull-left
+						div#data_table_profile.pull-right
+						div.clearfix
 			div.col-md-12.river-trend
 				div.panel.panel-default
 					div.panel-heading
-						h3.panel-title Grafikon
+						h3.panel-title.pull-left Grafikon
+						div.pull-right Vízhozam idősor
+						div.clearfix
 					div.panel-body
 						div.row
 							div.col-md-12
@@ -102,8 +107,7 @@ block scripts
 				if(data){					
 					if(data.length){
 						dataFromQuery = data;
-						dataToAdatbetoltesek(data);
-						//dataToChart(myLineChart, dataFromQuery);
+						dataToAdatbetoltesek(data, profile_id);
 					}else{
 						var c1 = $('<div class="col-md-12">Nincs megjelenítendő adat.</div>');
 						c1.appendTo($('#data_table'));
@@ -114,24 +118,41 @@ block scripts
 			});
 		}
 
-		function dataToAdatbetoltesek(d){
+		function dataToAdatbetoltesek(d, profile_id){
+			console.log(d);
 			$('#adatbetoltesek option').remove();
 			selectedAdatbetoltes = 0;
 			$.each(d, function(i, v){
-				var o = $('<option>', {value: i}).text(v.projekt_name);
+				var o = $('<option>', {value: i}).text(v.additional_description);
 				o.appendTo($('#adatbetoltesek'));
 			});
 			dataToChart(myLineChart, d, selectedAdatbetoltes);
-			dataToAdatok(d, selectedAdatbetoltes);
+			dataToAdatok(d, selectedAdatbetoltes, profile_id);
 		}
 
-		function dataToAdatok(d, nr){
+		function dataToAdatok(d, nr, profile_id){
 			$('#data_table').html('');
+			$('#data_table_head').html('');
+			//$('#data_table_datetime').html('');
+			//$('#data_table_profile').html('');
+
 			$.each(d, function(i, v){
 				if(i == nr){
-					$.each(v.flows, function(j,w){
-						var c1 = $('<div class="col-md-6">'+moment(w.date_time_for).format('YYYY. MM. DD. HH:ss')+'</div>');
-						var c2 = $('<div class="col-md-6">'+w.value+'</div>');
+					$('#data_table_datetime').html('Idő: ' + dateStart + ' - ' + dateEnd);
+					$('#data_table_profile').html('Szelvény: ' + $('select[name=profile] option[value="'+profile_id+'"]').text());
+					var h1 = $('<div class="col-md-6">'+'Időpont'+'</div>');
+					var h2 = $('<div class="col-md-6">'+'Érték'+'</div>');
+					h1.appendTo($('#data_table_head'));
+					h2.appendTo($('#data_table_head'));
+					$.each(v.datapoints, function(j,w){
+						var bg_color = '';
+						if(j%2)
+							bg_color = 'gray-bg';
+						else
+							bg_color = 'white-bg';
+
+						var c1 = $('<div class="col-md-6 '+bg_color+'">'+moment(w.date_time_for).format('YYYY. MM. DD. HH:ss')+'</div>');
+						var c2 = $('<div class="col-md-6 '+bg_color+'">'+w.value+'</div>');
 						c1.appendTo($('#data_table'));
 						c2.appendTo($('#data_table'));
 					});
@@ -160,7 +181,7 @@ block scripts
 				      borderColor: graph_color_array[i],
 				      // pointRadius: 0
 				    }
-					$.each(v.flows, function(j,w){
+					$.each(v.datapoints, function(j,w){
 						data_set.data.push({x:moment(w.date_time_for).format('YYYY. MM. DD. HH:ss'), y: w.value});
 					});
 					dataset_array.push(data_set);

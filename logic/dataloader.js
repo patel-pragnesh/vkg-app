@@ -84,14 +84,7 @@ class DataLoader{
 	async saveData(modelling_id){
 		let that = this;
 		try{
-			//console.log("Modelling id: "+modelling_id);
-			//console.log(that.data);
-			console.log('Keresztmetszetek száma: '+that.data.length);
-			console.log('Adatok száma a 0. keresztmetszetben: ');
-			// console.log(that.data[0].values[80]);
-			// return false;
 			const m = await Modelling.findById(modelling_id);
-			
 			for(let i=0; i<that.data.length; i++){
 				let p = await Profile.findByNameRiver(that.data[i].B, m.river_id);
 
@@ -109,21 +102,12 @@ class DataLoader{
 				let date_to = moment("1900-01-01 01:01", "YYYY-MM-DD HH:mm");
 
 				if(that.data[i].C == 'FLOW'){
-					let counter = 1;
-					console.log(counter);
-
+					
 					let pool = new sql.ConnectionPool(sqlConfig);
 					let dbConn = await pool.connect();
-					// sql.connect(sqlConfig)
-				  	// .then(() => {
-				 //  	let pool = new sql.ConnectionPool(sqlConfig);
-					// let dbConn = await pool.connect();
-					// let transaction = new sql.Transaction(dbConn);
-					// await transaction.begin();
-				    // console.log('connected');
 
 				    const table = new sql.Table('TmpFlow') // or temporary table, e.g. #temptable
-					//table.create = true
+					table.create = true
 					table.columns.add('date_time_for', sql.NVarChar, {nullable: true});
 					table.columns.add('value', sql.Float, {nullable: true});
 					table.columns.add('data_meta_id', sql.Int, {nullable: true});
@@ -135,19 +119,8 @@ class DataLoader{
 						date_to = moment(v.datetime, "YYYY-MM-DD HH:mm") > date_to ? moment(v.datetime, "YYYY-MM-DD HH:mm") : date_to;
 
 						let ca = moment().format("YYYY-MM-DD HH:mm:ss");
-
-						//console.log(v.datetime);
-						//if(counter==80){
-						//	console.log(v);
-						//	return;
-						//}
-
-						// v.datetime = v.datetime.replace('á', 'a');
-						// v.datetime = v.datetime.replace('ú', 'u');
 						table.rows.add(v.datetime, v.val, fm.id, ca, ca);
 
-						console.log(counter);
-						counter++;
 					});
 
 				    const request = new sql.Request(dbConn);
@@ -158,17 +131,6 @@ class DataLoader{
 			    		'SELECT date_time_for, value, data_meta_id, updatedAt, createdAt FROM dbo.TmpFlow; '+
 			    		'TRUNCATE TABLE dbo.TmpFlow;');
 				    pool.close();
-				    console.log(result1);
-				    //return result;
-					// })
-					// .then(data => {
-					// console.log(data);
-					//sql.close();
-					// })
-					// .catch(err => {
-					// console.log(err);
-					//sql.close();
-					// });					  
 				}else if(that.data[i].C == 'FLOW-CUM'){
 					that.data[i].values.forEach(function(v){
 						date_from = moment(v.datetime, "YYYY-MM-DD HH:mm") < date_from ? moment(v.datetime, "YYYY-MM-DD HH:mm") : date_from;
@@ -177,12 +139,35 @@ class DataLoader{
 						f.save();
 					});
 				}else if(that.data[i].C == 'STAGE'){
-					that.data[i].values.forEach(function(v){
-						date_from = moment(v.datetime, "YYYY-MM-DD HH:mm") < date_from ? moment(v.datetime, "YYYY-MM-DD HH:mm") : date_from;
+					let pool = new sql.ConnectionPool(sqlConfig);
+					let dbConn = await pool.connect();
+
+				    const table = new sql.Table('TmpStage') // or temporary table, e.g. #temptable
+					//table.create = true
+					table.columns.add('date_time_for', sql.NVarChar, {nullable: true});
+					table.columns.add('value', sql.Float, {nullable: true});
+					table.columns.add('data_meta_id', sql.Int, {nullable: true});
+					table.columns.add('updatedAt', sql.NVarChar, {nullable: true});
+					table.columns.add('createdAt', sql.NVarChar, {nullable: true});
+
+				    that.data[i].values.forEach(async function(v){
+				    	//console.log(v.val);
+				    	date_from = moment(v.datetime, "YYYY-MM-DD HH:mm") < date_from ? moment(v.datetime, "YYYY-MM-DD HH:mm") : date_from;
 						date_to = moment(v.datetime, "YYYY-MM-DD HH:mm") > date_to ? moment(v.datetime, "YYYY-MM-DD HH:mm") : date_to;
-						let f = new Stage(null, v.datetime, v.val, fm.id);
-						f.save();
+
+						let ca = moment().format("YYYY-MM-DD HH:mm:ss");
+						table.rows.add(v.datetime, v.val, fm.id, ca, ca);
+
 					});
+
+				    const request = new sql.Request(dbConn);
+				    let result = await request.bulk(table);
+
+				    const request_move = new sql.Request(dbConn);
+			    	let result1 = await request_move.query('INSERT INTO dbo.Stage(date_time_for, value, data_meta_id, updatedAt, createdAt) '+
+			    		'SELECT date_time_for, value, data_meta_id, updatedAt, createdAt FROM dbo.TmpStage; '+
+			    		'TRUNCATE TABLE dbo.TmpStage;');
+				    pool.close();
 				}
 
 				fm.date_from = date_from.format("YYYY-MM-DD HH:mm:ss");

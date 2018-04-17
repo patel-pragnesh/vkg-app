@@ -174,11 +174,11 @@ var config = {
                 },
                 time: {
                   parser: 'YYYY-MM-DD HH:mm:ss',
-                  unit: 'hour',
+                  unit: 'day',
                   // unit:'hour',
                   displayFormats: {
                      year: 'YYYY',
-                     day: 'DD',
+                     day: 'MM. DD.',
                      // hour: 'YYYY. MM. DD. HH:mm',
                      hour: 'HH:mm',
                      quarter: 'MMM YYYY'

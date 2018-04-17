@@ -17,4 +17,12 @@
     #sidebarCollapse span {
         display: none;
     }
+
+    .navbar {
+        &.navbar-fixed-top{
+            h2{
+                display: none;
+            }
+        }
+    }
 }

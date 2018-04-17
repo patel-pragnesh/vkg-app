@@ -2,6 +2,7 @@ const River = require('../models/river');
 const Profile = require('../models/profile');
 const DataMeta = require('../models/data_meta');
 const Flow = require('../models/flow');
+const Stage = require('../models/stage');
 const RiverMongoDB = require('../models/mongodb_river');
 const ProfileMongoDB = require('../models/mongodb_profile');
 
@@ -65,12 +66,25 @@ exports.get_data_by_type_post_opt = async function(req, res){
 		if(data_meta_array){
 			//Összes FLOW lekérése a DataMetakból, ami a dátum tartományba esik			
 	    	for(let data_meta of data_meta_array){
-	    		data_meta.flows = await Flow.findByMetaDataAndDate(data_meta.id, date_start, date_end);
+	    		data_meta.datapoints = await Flow.findByMetaDataAndDate(data_meta.id, date_start, date_end);
+	    	}
+    	}
+
+    	res.json(data_meta_array);
+	}else if(data_type == 1){	//STAGE
+		//Összes DataMeta lekérése, ami a kijelölt dátum tartományba esik és FLOW típusú és profilhoz köthető
+		let data_meta_array = await DataMeta.findByDate(profile_id, 'STAGE', date_start, date_end)
+		
+		if(data_meta_array){
+			//Összes STAGE lekérése a DataMetakból, ami a dátum tartományba esik			
+	    	for(let data_meta of data_meta_array){
+	    		data_meta.datapoints = await Stage.findByMetaDataAndDate(data_meta.id, date_start, date_end);
 	    	}
     	}
 
     	res.json(data_meta_array);
 	}
+
 }
 
 //Ajax hívás az adatok megjelenítésére
@@ -101,28 +115,28 @@ exports.get_profiles_post = async function(req, res){
 	});
 }
 
-exports.save_profile_coordinate_post = async function(req, res){
-	let river_id = req.body.river_id;
-	let point_lat = req.body.point_lat;
-	let point_lng = req.body.point_lng;
-	let point_profile = req.body.point_profile;
+// exports.save_profile_coordinate_post = async function(req, res){
+// 	let river_id = req.body.river_id;
+// 	let point_lat = req.body.point_lat;
+// 	let point_lng = req.body.point_lng;
+// 	let point_profile = req.body.point_profile;
 	
-	let profile = new ProfileMongoDB(
-	                {
-	                    river_id: river_id,
-	                    profile: point_profile,
-	                    lat: point_lat,
-	                    lng: point_lng
-	                });
-	            profile.save(function (err) {
-	                if (err) { 
-	                	console.log(err)
-	                	//return next(err); 
-	                }
-	                // Successful - redirect to new author record.
-	                //res.redirect(author.url);
-	            });
-}
+// 	let profile = new ProfileMongoDB(
+// 	                {
+// 	                    river_id: river_id,
+// 	                    profile: point_profile,
+// 	                    lat: point_lat,
+// 	                    lng: point_lng
+// 	                });
+// 	            profile.save(function (err) {
+// 	                if (err) { 
+// 	                	console.log(err)
+// 	                	//return next(err); 
+// 	                }
+// 	                // Successful - redirect to new author record.
+// 	                //res.redirect(author.url);
+// 	            });
+// }
 
 exports.get_by_directorate_post = async function(req, res){
 	// console.log(req.body.id);

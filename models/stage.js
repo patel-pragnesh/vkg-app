@@ -60,6 +60,39 @@ class Stage{
 	    }
 	}
 
+	static async findByMetaDataAndDate(id, date_from, date_to){
+	    try {
+	    	let d_from = moment(date_from, "YYYY. MM. DD.").format("YYYY-MM-DD HH:mm");
+	    	let d_to = moment(date_to, "YYYY. MM. DD.").format("YYYY-MM-DD HH:mm");
+	    	let pool = new sql.ConnectionPool(sqlConfig);
+	    	await pool.connect();
+	        let result = await pool.request()
+	            .input('input_parameter', sql.Int, id)
+	            .input('date_from', sql.NVarChar, d_from)
+				.input('date_to', sql.NVarChar, d_to)
+	            .query('SELECT Stage.*, Data_meta.projekt_name as projekt_name FROM Stage '+
+	            	'LEFT JOIN Data_meta ON Stage.data_meta_id=Data_meta.id '+
+	            	'WHERE Stage.data_meta_id = @input_parameter '+
+	            	'AND Stage.date_time_for >= @date_from '+
+	            	'AND Stage.date_time_for <= @date_to '+
+	            	'ORDER BY Stage.date_time_for;');
+	        pool.close();
+	        // console.log(result.recordset[0]);
+	        if(result.recordset.length != 0){
+	        	let returnArray = [];
+	        	for(let r of result.recordset){
+	        		returnArray.push(new Stage(r.id, r.date_time_for, r.value, r.data_meta_id, r.projekt_name));
+	        	}
+	        	return returnArray;
+	        }
+	        else
+	        	return null;
+
+	    } catch (err) {
+	        console.log(err);
+	    }
+	}
+
 	async save(){
 		let that = this;
 		try{

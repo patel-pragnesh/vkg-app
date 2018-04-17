@@ -18,10 +18,12 @@ router.post('/data', /*common.user,*/ river_controller.get_data_by_type_post_opt
 router.post('/coordinates', /*common.user,*/ river_controller.get_coordinates_post)
 
 /* GET river profile coordinate (AJAX) */
-router.post('/profiles_coordinate', /*common.user,*/ river_controller.get_profiles_post)
+//HORCSA: Ez nem kell mert a profilok az MSSQL adatbázisból kerülnek megjelenítésre
+//router.post('/profiles_coordinate', /*common.user,*/ river_controller.get_profiles_post)
 
 /* SAVE river profile coordinate (AJAX) */
-router.post('/profiles_coordinate_save', /*common.user,*/ river_controller.save_profile_coordinate_post)
+//HORCSA: Ez nem kell mert a profilok nem a térképi megjelenítés közben kerülnek tárolásra
+//router.post('/profiles_coordinate_save', /*common.user,*/ river_controller.save_profile_coordinate_post)
 
 /* GET rivers by directorate */
 router.post('/directorate', /*common.user,*/ river_controller.get_by_directorate_post)

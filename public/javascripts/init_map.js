@@ -141,13 +141,6 @@ function initMap(river_id, profiles) {
           ]
       });
 
-      // var marker = new google.maps.Marker({
-      //         position: myLatLng,
-      //         map: map,
-      //         title: 'T 6547',
-      //         icon: icon
-      //       });
-
       var path = new google.maps.Polyline({
         path: points,
         geodesic: true,
@@ -160,7 +153,8 @@ function initMap(river_id, profiles) {
 
       map.fitBounds(bounds);
 
-      drawProfiles(points, profiles, river_id);
+      //A profilok az MSSQL adatbázisból lesznek megjelenítve
+      //drawProfiles(points, profiles, river_id);
 
     }else{
 
@@ -169,76 +163,70 @@ function initMap(river_id, profiles) {
 }
 
 //#######################################################################
-function drawProfiles(coordinates, profiles, river_id){
-  let profiles_array = profiles.split(',');
-  let profiles_coordinates = [];
-  $.post( "/rivers/profiles_coordinate", 
-  {
-    river_id: river_id,
-  },
-  function( data ) {
-    if(data){
+function drawProfiles(){
 
-      $.each(data, function(i, v){
-        profiles_coordinates.push({name: v.profile, lat: v.lat, lng: v.lng});
-      });
-
-      console.log(profiles_array);
-      console.log(profiles_coordinates);
-
-      //TODO megkeresni a kirajzolandó profilokat a tömbben és megjeleníteni
-      $.each(profiles_array, function(i,v){
-        var profile_obj = profiles_coordinates.find(function (obj) { return obj.name == v; });
-        if(profile_obj){
-          console.log(profile_obj.id);
-          // var marker = new google.maps.Marker({
-          //   position: new google.maps.LatLng(profile_obj.lat, profile_obj.lng),
-          //   map: map,
-          //   title: 'P_'+v,
-          //   icon: icon
-          // });
-          var selected = '';
-          if(i==0)
-            selected = 'selected_profile';
-          var cssClassId = v.replace('.','_');
-          var latLng = new google.maps.LatLng(profile_obj.lat, profile_obj.lng);
-          var custom_marker = new CustomMarker(
-            latLng,
-            map,
-            {
-              marker_id: 'P_' + cssClassId,
-              selected: selected,
-              marker_value: v
-            }
-          );
-        }else{
-          //Ha nincs benne akkor el kell menteni
-          nextMarkerAt = Number(v);//100836.4;
-          nextPoint = moveAlongPath(coordinates, nextMarkerAt);
-          
-          if (nextPoint) {
-             // Draw the marker on the map.
-             //map.addOverlay(new google.maps.Marker(nextPoint));
-             //console.log(nextPoint);
-             $.post( "/rivers/profiles_coordinate_save", 
-             {
-              river_id: river_id,
-              point_profile: v,
-              point_lat: nextPoint.lat(),
-              point_lng: nextPoint.lng()
-            },
-            function( data ) {
-              if(data){
-              }
-            });             
-           }
-         }
-      });
-    }else{
-
-    }
-  });
 }
+//HORCSA: A profilok az MSSQL adatbázisból lesznek megjelenítve
+// function drawProfiles(coordinates, profiles, river_id){
+//   let profiles_array = profiles.split(',');
+//   let profiles_coordinates = [];
+//   $.post( "/rivers/profiles_coordinate", 
+//   {
+//     river_id: river_id,
+//   },
+//   function( data ) {
+//     if(data){
+
+//       $.each(data, function(i, v){
+//         profiles_coordinates.push({name: v.profile, lat: v.lat, lng: v.lng});
+//       });
+
+//       //TODO megkeresni a kirajzolandó profilokat a tömbben és megjeleníteni
+//       $.each(profiles_array, function(i,v){
+//         var profile_obj = profiles_coordinates.find(function (obj) { return obj.name == v; });
+//         if(profile_obj){
+//           var selected = '';
+//           if(i==0)
+//             selected = 'selected_profile';
+//           var cssClassId = v.replace('.','_');
+//           var latLng = new google.maps.LatLng(profile_obj.lat, profile_obj.lng);
+//           var custom_marker = new CustomMarker(
+//             latLng,
+//             map,
+//             {
+//               marker_id: 'P_' + cssClassId,
+//               selected: selected,
+//               marker_value: v
+//             }
+//           );
+//         }else{
+//           //Ha nincs benne akkor el kell menteni
+//           nextMarkerAt = Number(v);//100836.4;
+//           nextPoint = moveAlongPath(coordinates, nextMarkerAt);
+          
+//           if (nextPoint) {
+//              // Draw the marker on the map.
+//              //map.addOverlay(new google.maps.Marker(nextPoint));
+//              //console.log(nextPoint);
+//              $.post( "/rivers/profiles_coordinate_save", 
+//              {
+//               river_id: river_id,
+//               point_profile: v,
+//               point_lat: nextPoint.lat(),
+//               point_lng: nextPoint.lng()
+//             },
+//             function( data ) {
+//               if(data){
+//               }
+//             });             
+//            }
+//          }
+//       });
+//     }else{
+
+//     }
+//   });
+// }
 
 //#######################################################################
 function CustomMarker(latlng, map, args) {
@@ -280,6 +268,10 @@ CustomMarker.prototype.draw = function() {
       }).prop('selected', true);
       $('#profile').trigger('change');
     });
+
+    var tooltip = document.createElement('div');
+    tooltip.innerHTML =self.args.marker_value;
+    div.appendChild(tooltip);
     
     var panes = this.getPanes();
     panes.overlayImage.appendChild(div);
