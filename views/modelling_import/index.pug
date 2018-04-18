@@ -24,8 +24,10 @@ block content
 							td=m.date_for
 							td=m.river_name
 							td
-								a(href="/modelling_import/"+m.id+"/data" class="btn btn-info pull-right")
-									span.glyphicon.glyphicon-cloud-upload
+								a(href="/modelling_import/"+m.id+"/data_for_time" class="btn btn-info pull-right")
+									span.glyphicon.glyphicon-time
+								a(href="/modelling_import/"+m.id+"/data_for_profile" class="btn btn-info pull-right mr5")
+									span.glyphicon.glyphicon-road
 								a(href="/modelling_import/"+m.id+"/update" class="btn btn-info pull-right mr5")
 									span.glyphicon.glyphicon-edit
 		div.row.pull-right

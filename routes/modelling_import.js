@@ -24,10 +24,16 @@ router.post('/:id/update', /*common.user,*/ modellingImportcontroller.update_pos
 router.get('/:id', /*common.user,*/ modellingImportcontroller.modelling_detail);
 
 /* GET request to update data for Modelling. */
-router.get('/:id/data', /*common.user,*/ modellingImportcontroller.data_get);
+router.get('/:id/data_for_time', /*common.user,*/ modellingImportcontroller.data_for_time_get);
 
 /* POST request to update data for Modelling. */
-router.post('/:id/data', /*common.user,*/ modellingImportcontroller.data_post);
+router.post('/:id/data_for_time', /*common.user,*/ modellingImportcontroller.data_for_time_post);
+
+/* GET request to update data for Modelling. */
+router.get('/:id/data_for_profile', /*common.user,*/ modellingImportcontroller.data_for_profile_get);
+
+/* POST request to update data for Modelling. */
+router.post('/:id/data_for_profile', /*common.user,*/ modellingImportcontroller.data_for_profile_post);
 
 /* GET request to delete meta_data for Modelling. */
 router.get('/meta_data/:id/delete', /*common.user,*/ modellingImportcontroller.meta_data_delete_get);

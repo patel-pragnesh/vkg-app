@@ -12,6 +12,7 @@ const River = require('../models/river');
 const DataMeta = require('../models/data_meta');
 
 const DataLoader = require('../logic/dataloader');
+const DataForProfileLoader = require('../logic/dataforprofileloader');
 
 exports.index = async function(req, res, next){
 	let countPerPage = 15;
@@ -128,7 +129,7 @@ exports.modelling_detail = async function(req, res, next){
     res.send('TODO Modelling details page');
 }
 
-exports.data_get = async function(req, res, next){
+exports.data_for_time_get = async function(req, res, next){
 
     let countPerPage = 15;
     let page = req.query.page ? req.query.page - 1 : 0;
@@ -138,11 +139,11 @@ exports.data_get = async function(req, res, next){
     let meta_datas_page = meta_datas ? meta_datas.slice(page, page + countPerPage) : [];
 
     const m = await Modelling.findById(req.params.id);
-    const form_link = "/modelling_import/"+m.id+"/data";
+    const form_link = "/modelling_import/"+m.id+"/data_for_time";
     res.render('modelling_import/data', { title: 'Modellezés adatok', modelling: m, form_link: form_link, meta_datas: meta_datas_page, page_count: page_count });
 }
 
-exports.data_post = async function(req, res, next){
+exports.data_for_time_post = async function(req, res, next){
     let form = new formidable.IncomingForm();
     form.parse(req, function (err, fields, files) {
       let modelling = fields.modelling;
@@ -159,6 +160,42 @@ exports.data_post = async function(req, res, next){
         await dataloader.saveData(modelling);
         console.log('ok');
         res.redirect('/modelling_import/'+modelling+'/data');
+      });
+    });
+    
+}
+
+exports.data_for_profile_get = async function(req, res, next){
+
+    let countPerPage = 15;
+    let page = req.query.page ? req.query.page - 1 : 0;
+    let meta_datas = await DataMeta.findByModelling(req.params.id);
+    //console.log(meta_datas);
+    let page_count = meta_datas ? meta_datas.length/countPerPage : 0;
+    let meta_datas_page = meta_datas ? meta_datas.slice(page, page + countPerPage) : [];
+
+    const m = await Modelling.findById(req.params.id);
+    const form_link = "/modelling_import/"+m.id+"/data_for_profile";
+    res.render('modelling_import/data', { title: 'Modellezés adatok', modelling: m, form_link: form_link, meta_datas: meta_datas_page, page_count: page_count });
+}
+
+exports.data_for_profile_post = async function(req, res, next){
+    let form = new formidable.IncomingForm();
+    form.parse(req, function (err, fields, files) {
+      let modelling = fields.modelling;
+      let oldpath = files.fileUploaded.path;
+      let oldFileName = files.fileUploaded.name;
+      let oldFileNameArray = oldFileName.split('.');
+      oldFileNameArray.pop();
+      let newFileName = oldFileNameArray.join('.');
+      let newpath = __dirname +'/../public/DATAPROFILE/' + newFileName + '_' + moment().format("YYYY-MM-DD_HHmmssSSS") + '.csv';
+      mv(oldpath, newpath, async function(err){
+        console.log('File moved...');
+        let dataloader = new DataForProfileLoader(newpath);
+        await dataloader.readFile();
+        await dataloader.saveData(modelling);
+        console.log('ok');
+        res.redirect('/modelling_import/'+modelling+'/data_for_profile');
       });
     });
     

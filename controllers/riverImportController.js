@@ -12,6 +12,7 @@ const River = require('../models/river');
 // const DataMeta = require('../models/data_meta');
 
 const KmlLoader = require('../logic/kmlloader');
+const ProfileLoader = require('../logic/profileloader');
 
 exports.index = async function(req, res, next){
 	let countPerPage = 15;
@@ -141,7 +142,25 @@ exports.profiles_get = async function(req, res, next){
 }
 
 exports.profiles_post = async function(req, res, next){
-    res.redirect('/river_import/'+river+'/profiles');
+    let form = new formidable.IncomingForm();
+    form.parse(req, function (err, fields, files) {
+      let river = fields.river;
+      let oldpath = files.fileUploaded.path;
+      let oldFileName = files.fileUploaded.name;
+      let oldFileNameArray = oldFileName.split('.');
+      oldFileNameArray.pop();
+      let newFileName = oldFileNameArray.join('.');
+      let newpath = __dirname +'/../public/PROFILES/' + newFileName + '_' + moment().format("YYYY-MM-DD_HHmmssSSS") + '.kml';
+      mv(oldpath, newpath, async function(err){
+        console.log('File moved...');
+        let profileloader = new ProfileLoader(newpath);
+        await profileloader.readFile();
+        await profileloader.saveData(river);
+        console.log('ok');
+        res.redirect('/river_import/'+river+'/profiles');
+      });
+    });
+    
 }
 
 exports.meta_data_delete_get = async function(req, res, next){
