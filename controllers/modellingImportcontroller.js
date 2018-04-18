@@ -10,6 +10,8 @@ const Directorate = require('../models/directorate');
 const Modelling = require('../models/modelling');
 const River = require('../models/river');
 const DataMeta = require('../models/data_meta');
+const LocationFlow = require('../models/location_flow');
+const LocationStage = require('../models/location_stage');
 
 const DataLoader = require('../logic/dataloader');
 const DataForProfileLoader = require('../logic/dataforprofileloader');
@@ -169,14 +171,14 @@ exports.data_for_profile_get = async function(req, res, next){
 
     let countPerPage = 15;
     let page = req.query.page ? req.query.page - 1 : 0;
-    let meta_datas = await DataMeta.findByModelling(req.params.id);
-    //console.log(meta_datas);
+    let location_flows = await LocationFlow.findByModelling(req.params.id);
+    
     let page_count = meta_datas ? meta_datas.length/countPerPage : 0;
     let meta_datas_page = meta_datas ? meta_datas.slice(page, page + countPerPage) : [];
 
     const m = await Modelling.findById(req.params.id);
     const form_link = "/modelling_import/"+m.id+"/data_for_profile";
-    res.render('modelling_import/data', { title: 'Modellezés adatok', modelling: m, form_link: form_link, meta_datas: meta_datas_page, page_count: page_count });
+    res.render('modelling_import/data', { title: 'Modellezés hossz-szelvény adatok', modelling: m, form_link: form_link, meta_datas: meta_datas_page, page_count: page_count });
 }
 
 exports.data_for_profile_post = async function(req, res, next){
@@ -193,7 +195,7 @@ exports.data_for_profile_post = async function(req, res, next){
         console.log('File moved...');
         let dataloader = new DataForProfileLoader(newpath);
         await dataloader.readFile();
-        await dataloader.saveData(modelling);
+        //await dataloader.saveData(modelling);
         console.log('ok');
         res.redirect('/modelling_import/'+modelling+'/data_for_profile');
       });

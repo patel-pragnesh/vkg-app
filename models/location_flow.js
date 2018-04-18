@@ -4,10 +4,11 @@ const moment = require('moment');
 moment.locale('hu');
 
 class LocationFlow{
-	constructor(id, date_time_id, profile_id, createdAt=null, updatedAt=null){
+	constructor(id, date_time_id, profile_id, modelling_id, createdAt=null, updatedAt=null){
 		this.id = id;
 		this.date_time_id = date_time_id;
 		this.profile_id = profile_id;
+		this.modelling_id = modelling_id;
 		createdAt ? this.createdAt = createdAt : this.createdAt = moment().format("YYYY-MM-DD HH:mm:ss");
 		updatedAt ? this.updatedAt = updatedAt : this.updatedAt = moment().format("YYYY-MM-DD HH:mm:ss");
 	}
@@ -55,6 +56,30 @@ class LocationFlow{
 	    }
 	}
 
+	static async findByModelling(n){
+	    try {
+	    	let pool = new sql.ConnectionPool(sqlConfig);
+	    	await pool.connect();
+	        let result = await pool.request()
+	            .input('input_parameter1', sql.Int, n)
+	            .query('SELECT * FROM LocationFlow '+
+	            	'WHERE modelling_id = @input_parameter1');
+	        pool.close();
+	        //console.log(result.recordset[0]);
+	        if(result.recordset.length != 0){
+	        	let returnArray = [];
+	        	for(let r of result.recordset){
+	        		returnArray.push(new LocationFlow(r.id, r.date_time_id, r.profile_id, r.modelling_id));
+	        	}
+	        	return returnArray;
+	        }else
+	        	return null;
+
+	    } catch (err) {
+	        console.log(err);
+	    }
+	}
+
 	static async findByProfile(n){
 	    try {
 	    	let pool = new sql.ConnectionPool(sqlConfig);
@@ -65,13 +90,13 @@ class LocationFlow{
 	            	'WHERE profile_id = @input_parameter1');
 	        pool.close();
 	        //console.log(result.recordset[0]);
-	        if(result.recordset.length != 0)
+	        if(result.recordset.length != 0){
 	        	let returnArray = [];
 	        	for(let r of result.recordset){
 	        		returnArray.push(new LocationFlow(r.id, r.date_time_id, r.profile_id));
 	        	}
 	        	return returnArray;
-	        else
+	        }else
 	        	return null;
 
 	    } catch (err) {
@@ -89,13 +114,13 @@ class LocationFlow{
 	            	'WHERE date_time_id = @input_parameter1');
 	        pool.close();
 	        //console.log(result.recordset[0]);
-	        if(result.recordset.length != 0)
+	        if(result.recordset.length != 0){
 	        	let returnArray = [];
 	        	for(let r of result.recordset){
 	        		returnArray.push(new LocationFlow(r.id, r.date_time_id, r.profile_id));
 	        	}
 	        	return returnArray;
-	        else
+	        }else
 	        	return null;
 
 	    } catch (err) {
@@ -114,13 +139,13 @@ class LocationFlow{
 	            	'WHERE date_time_id = @input_parameter2 AND profile_id = @input_parameter1');
 	        pool.close();
 	        //console.log(result.recordset[0]);
-	        if(result.recordset.length != 0)
+	        if(result.recordset.length != 0){
 	        	let returnArray = [];
 	        	for(let r of result.recordset){
 	        		returnArray.push(new LocationFlow(r.id, r.date_time_id, r.profile_id));
 	        	}
 	        	return returnArray;
-	        else
+	        }else
 	        	return null;
 
 	    } catch (err) {
