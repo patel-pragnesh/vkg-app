@@ -153,6 +153,34 @@ class LocationFlow{
 	    }
 	}
 
+	static async findByProfileDateTimeModelling(p, dt, m){
+	    try {
+	    	let pool = new sql.ConnectionPool(sqlConfig);
+	    	await pool.connect();
+	        let result = await pool.request()
+	            .input('input_parameter1', sql.Int, p)
+	            .input('input_parameter2', sql.Int, dt)
+	            .input('input_parameter3', sql.Int, m)
+	            .query('SELECT * FROM LocationFlow '+
+	            	'WHERE date_time_id = @input_parameter2 '+
+	            	'AND modelling_id = @input_parameter3 '+
+	            	'AND profile_id = @input_parameter1');
+	        pool.close();
+	        //console.log(result.recordset[0]);
+	        if(result.recordset.length != 0){
+	        	let returnArray = [];
+	        	for(let r of result.recordset){
+	        		returnArray.push(new LocationFlow(r.id, r.date_time_id, r.profile_id));
+	        	}
+	        	return returnArray;
+	        }else
+	        	return null;
+
+	    } catch (err) {
+	        console.log(err);
+	    }
+	}
+
 	async save(){
 		let that = this;
 		try{

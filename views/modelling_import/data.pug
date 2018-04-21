@@ -59,33 +59,48 @@ block content
 							h3.panel-title Betöltött adatok
 						div.panel-body
 							table.table.table-striped
-								thead
-									tr
-										th Projekt
-										th -tól
-										th -ig
-										th Típus
-										th Időintervallum
-										th Mértékegység
-										th Szelvény
-										th.text-right Műveletek
-								tbody
-									each m_d in meta_datas
+								if (meta_datas)
+									thead
 										tr
-											td=m_d.projekt_name
-											td=m_d.date_from
-											td=m_d.date_to
-											td=m_d.type
-											td=m_d.time_interval_name
-											td=m_d.unit
-											td=m_d.profile_name
-											td
-												a(href="/modelling_import/meta_data/"+m_d.id+"/delete" class="btn btn-info pull-right mr5")
-													span.glyphicon.glyphicon-erase
+											th Projekt
+											th -tól
+											th -ig
+											th Típus
+											th Időintervallum
+											th Mértékegység
+											th Szelvény
+											th.text-right Műveletek
+									tbody
+										each m_d in meta_datas
+											tr
+												td=m_d.projekt_name
+												td=m_d.date_from
+												td=m_d.date_to
+												td=m_d.type
+												td=m_d.time_interval_name
+												td=m_d.unit
+												td=m_d.profile_name
+												td
+													a(href="/modelling_import/meta_data/"+m_d.id+"/delete" class="btn btn-info pull-right mr5")
+														span.glyphicon.glyphicon-erase
+								else if (location_flows_page)
+									thead
+										tr
+											th Projekt
+											th Szelvény
+											th.text-right Műveletek
+									tbody
+										each l_f in location_flows_page
+											tr
+												td=l_f.projekt_name
+												td=l_f.profile_name
+												td
+													a(href="/modelling_import/location_data/"+l_f.id+"/delete" class="btn btn-info pull-right mr5")
+														span.glyphicon.glyphicon-erase
 						div.panel-footer
 							ul.pagination.m0.pull-right
 								- for(var i = 1; i < page_count+1; i++)
 									li
-										a(href="/modelling_import/"+modelling.id+"/data?page="+i)=i
+										a(href="/modelling_import/"+modelling.id+"/"+data_type+"?page="+i)=i
 							div.clearfix
 

@@ -142,7 +142,10 @@ exports.data_for_time_get = async function(req, res, next){
 
     const m = await Modelling.findById(req.params.id);
     const form_link = "/modelling_import/"+m.id+"/data_for_time";
-    res.render('modelling_import/data', { title: 'Modellezés adatok', modelling: m, form_link: form_link, meta_datas: meta_datas_page, page_count: page_count });
+    const data_type = "data_for_time"
+    res.render('modelling_import/data', { title: 'Modellezés adatok', modelling: m, 
+        form_link: form_link, meta_datas: meta_datas_page, page_count: page_count,
+        data_type:data_type });
 }
 
 exports.data_for_time_post = async function(req, res, next){
@@ -173,12 +176,15 @@ exports.data_for_profile_get = async function(req, res, next){
     let page = req.query.page ? req.query.page - 1 : 0;
     let location_flows = await LocationFlow.findByModelling(req.params.id);
     
-    let page_count = meta_datas ? meta_datas.length/countPerPage : 0;
-    let meta_datas_page = meta_datas ? meta_datas.slice(page, page + countPerPage) : [];
+    let page_count = location_flows ? location_flows.length/countPerPage : 0;
+    let location_flows_page = location_flows ? location_flows.slice(page, page + countPerPage) : [];
 
     const m = await Modelling.findById(req.params.id);
     const form_link = "/modelling_import/"+m.id+"/data_for_profile";
-    res.render('modelling_import/data', { title: 'Modellezés hossz-szelvény adatok', modelling: m, form_link: form_link, meta_datas: meta_datas_page, page_count: page_count });
+    const data_type = "data_for_profile"
+    res.render('modelling_import/data', { title: 'Modellezés hossz-szelvény adatok', 
+        modelling: m, form_link: form_link, location_flows_page: location_flows_page, 
+        page_count: page_count, data_type:data_type });
 }
 
 exports.data_for_profile_post = async function(req, res, next){
@@ -192,12 +198,18 @@ exports.data_for_profile_post = async function(req, res, next){
       let newFileName = oldFileNameArray.join('.');
       let newpath = __dirname +'/../public/DATAPROFILE/' + newFileName + '_' + moment().format("YYYY-MM-DD_HHmmssSSS") + '.csv';
       mv(oldpath, newpath, async function(err){
-        console.log('File moved...');
+        console.log('File moved to ' + newpath);
         let dataloader = new DataForProfileLoader(newpath);
-        await dataloader.readFile();
-        //await dataloader.saveData(modelling);
-        console.log('ok');
-        res.redirect('/modelling_import/'+modelling+'/data_for_profile');
+        let success_file_read = await dataloader.readFile();
+        if(success_file_read){
+            await dataloader.saveData(modelling);
+            console.log('Data inserted to db.');
+            res.redirect('/modelling_import/'+modelling+'/data_for_profile');
+        }else{
+            console.log('Error reading file.');
+            res.redirect('/modelling_import/'+modelling+'/data_for_profile?error=error_loading_data');
+        }
+            
       });
     });
     
@@ -207,5 +219,5 @@ exports.meta_data_delete_get = async function(req, res, next){
     let meta_data = await DataMeta.findById(req.params.id);
     let modelling_id = meta_data.modelling_id;
     meta_data.delete();
-    res.redirect('/modelling_import/'+modelling_id+'/data');
+    res.redirect('/modelling_import/'+modelling_id+'/data_for_time');
 }
