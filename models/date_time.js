@@ -6,21 +6,23 @@ moment.locale('hu');
 class DateTime{
 	constructor(id, dt, createdAt=null, updatedAt=null){
 		this.id = id;
-		this.dt = dt;
-		createdAt ? this.createdAt = createdAt : this.createdAt = moment().format("YYYY-MM-DD HH:mm:ss");
-		updatedAt ? this.updatedAt = updatedAt : this.updatedAt = moment().format("YYYY-MM-DD HH:mm:ss");
+		this.dt = moment(dt)/*.subtract(2, 'hours')*/.format("YYYY-MM-DD HH:mm:ss");
+		createdAt ? this.createdAt = moment(createdAt)/*.subtract(2, 'hours')*/.format("YYYY-MM-DD HH:mm:ss") : this.createdAt = moment().format("YYYY-MM-DD HH:mm:ss");
+		updatedAt ? this.updatedAt = moment(updatedAt)/*.subtract(2, 'hours')*/.format("YYYY-MM-DD HH:mm:ss") : this.updatedAt = moment().format("YYYY-MM-DD HH:mm:ss");
 	}
 
 	static async all(){		
 	    try {
 	    	let pool = new sql.ConnectionPool(sqlConfig);
 	    	await pool.connect();
-	        let result = await pool.request().query('SELECT DateTime.* FROM DateTime');
+	        let result = await pool.request().query('SELECT id, CONVERT(VARCHAR, dt, 120) as dt_, createdAt, updatedAt FROM DateTime');
 	        pool.close();
 	        if(result.recordset.length != 0){
 	        	let returnArray = [];
 	        	for(let r of result.recordset){
-	        		returnArray.push(new DateTime(r.id, r.dt));
+	        		//console.log(r.dt_);
+	        		//console.log(moment(r.dt_).format("YYYY-MM-DD HH:mm:ss"));
+	        		returnArray.push(new DateTime(r.id, r.dt_, r.createdAt, r.updatedAt));
 	        	}
 	        	return returnArray;
 	        }
@@ -38,13 +40,13 @@ class DateTime{
 	    	await pool.connect();
 	        let result = await pool.request()
 	            .input('input_parameter', sql.Int, id)
-	            .query('SELECT * FROM DateTime '+
+	            .query('SELECT id, CONVERT(VARCHAR, dt, 120) as dt_, createdAt, updatedAt FROM DateTime '+
 	            	'WHERE id = @input_parameter');
 	        pool.close();
 	        // console.log(result.recordset[0]);
 	        if(result.recordset.length != 0)
 	        	return new DateTime(result.recordset[0]['id'], 
-	        			result.recordset[0]['dt']);
+	        			result.recordset[0]['dt_']);
 	        else
 	        	return null;
 
@@ -59,13 +61,13 @@ class DateTime{
 	    	await pool.connect();
 	        let result = await pool.request()
 	            .input('input_parameter1', sql.NVarChar, n)
-	            .query('SELECT * FROM DateTime '+
+	            .query('SELECT id, CONVERT(VARCHAR, dt, 120) as dt_, createdAt, updatedAt FROM DateTime '+
 	            	'WHERE dt = @input_parameter1');
 	        pool.close();
 	        //console.log(result.recordset[0]);
 	        if(result.recordset.length != 0)
 	        	return new DateTime(result.recordset[0]['id'], 
-	        			result.recordset[0]['dt']);
+	        			result.recordset[0]['dt_']);
 	        else
 	        	return null;
 

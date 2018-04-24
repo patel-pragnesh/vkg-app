@@ -38,4 +38,7 @@ router.post('/:id/data_for_profile', /*common.user,*/ modellingImportcontroller.
 /* GET request to delete meta_data for Modelling. */
 router.get('/meta_data/:id/delete', /*common.user,*/ modellingImportcontroller.meta_data_delete_get);
 
+/* GET request to delete meta_data for Modelling. */
+router.get('/location_flow/:modelling_id/:date_time_id/delete', /*common.user,*/ modellingImportcontroller.location_flow_delete_get);
+
 module.exports = router;

@@ -15,7 +15,8 @@ block content
 					div.panel-body
 						div.row
 							div.col-md-12
-								#map_river
+								#map
+								<span id="info" style="position:absolute; left:15px; bottom:5px; font-weight: bold; font-family: arial; font-size: 16px; color:#000000; z-index:994;"></span>
 								//- if profiles
 								//- 	each p in profiles
 								//- 		div(class="col-md-3")
@@ -194,10 +195,16 @@ block scripts
 	script(src="/javascripts/init_datepicker.js")
 	script(src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.js")
 	script(src="/javascripts/river_chart.js")
-	script(src="/javascripts/init_map.js")
-	script(src="/javascripts/google_maps_profile_drawer.js")
 	script(type="text/javascript").
-		google.maps.event.addDomListener(window, 'load', initMap("#{river.id}", "#{profile_names}"));
+		var dojoConfig = {
+			parseOnLoad: true,
+			path: {
+				//if you want to host on your own server, download and put in folders then use path like:
+			}
+		}
+	script(src="https://js.arcgis.com/3.23/")
+	script(src="/javascripts/init_arcgis_map.js")
+	script(type="text/javascript").
 		$(document).ready(function () {
 			$('#adatbetoltesek').change(function(){
 				var selectedAdatbetoltes = this.value;

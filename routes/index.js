@@ -6,7 +6,8 @@ var Directorate = require('../models/directorate');
 
 /* GET home page. */
 router.get('/', /*common.user,*/ async function(req, res, next) {
-	res.render('index_google_maps', { title: 'Igazgatóságok'});
+	res.render('index', { title: 'Igazgatóságok'});
+	// res.render('index_google_maps', { title: 'Igazgatóságok'});
 });
 
 module.exports = router;

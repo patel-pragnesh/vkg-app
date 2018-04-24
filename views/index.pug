@@ -1,8 +1,17 @@
 extends layout
 
 block content
-	#map
-block scripts	
+	div.index-page
+		#map
+		<span id="info" style="position:absolute; left:15px; bottom:5px; font-weight: bold; font-family: arial; font-size: 16px; color:#000000; z-index:994;"></span>
+block scripts
+	script(type="text/javascript").
+		var dojoConfig = {
+			parseOnLoad: true,
+			path: {
+				//if you want to host on your own server, download and put in folders then use path like:
+			}
+		}
 	script(src="https://js.arcgis.com/3.23/")
 	script(src="/javascripts/init_arcgis_map.js")
 	

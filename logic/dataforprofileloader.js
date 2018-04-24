@@ -39,6 +39,7 @@ class DataForProfileLoader{
 
 				let type=null;
 				let date_time = null;
+				let value_count = null;
 				//Első sor feldolgozása -> Típus és idő
 				if(series[0].includes('LOCATION-FLOW')){
 					type = 'location_flow';
@@ -55,18 +56,23 @@ class DataForProfileLoader{
 				
 				//Harmadik sor feldolgozása -> Érték párok száma
 				let value_count_unformat = series[2].match(/, ([0-9]{1,6}) Ordinates/g);
-				let value_count = value_count_unformat[0].match(/[0-9]{1,6}/g);
-
-				let index1_from = 3+1;
-				let index1_to = 3+parseInt(value_count);
-				//let index2_from = 3+parseInt(value_count)+1;
-				//let index2_to = 3+parseInt(value_count)+parseInt(value_count);
-				let values = [];
-				for(let i=index1_from; i<index1_to+1;i++){
-					values.push({profile:series[i].replace(/(\r\n|\n|\r)/gm,""), value:series[i+parseInt(value_count)].replace(/(\r\n|\n|\r)/gm,"")});
+				if(value_count_unformat){
+					value_count = value_count_unformat[0].match(/[0-9]{1,6}/g);
 				}
 
-				data.push({type: type, date_time: date_time, values: values});
+				if(type && date_time && value_count){
+
+					let index1_from = 3+1;
+					let index1_to = 3+parseInt(value_count);
+					//let index2_from = 3+parseInt(value_count)+1;
+					//let index2_to = 3+parseInt(value_count)+parseInt(value_count);
+					let values = [];
+					for(let i=index1_from; i<index1_to+1;i++){
+						values.push({profile:series[i].replace(/(\r\n|\n|\r)/gm,""), value:series[i+parseInt(value_count)].replace(/(\r\n|\n|\r)/gm,"")});
+					}
+
+					data.push({type: type, date_time: date_time, values: values});
+				}
 			}
 			that.data = data;
 			return that;
@@ -77,8 +83,14 @@ class DataForProfileLoader{
 
 	async saveData(modelling_id){
 		let that = this;
-		//console.log(that.data[0]);
+		console.log("A fájl összesen "+that.data.length + " db időpontot tartalmaz.");
+		//return false;
 		const modelling = await Modelling.findById(modelling_id);
+
+		let date_time_all = await DateTime.all();
+		let profile_all = await Profile.findByRiver(modelling.river_id);
+		let location_flow_all = await LocationFlow.findByModelling(modelling.id);
+
 		try{
 
 			let pool = new sql.ConnectionPool(sqlConfig);
@@ -104,35 +116,44 @@ class DataForProfileLoader{
 
 			let data_to_insert = [];
 			for(let i=0; i<that.data.length; i++){
-		    //that.data.forEach(async function(d){
+				console.log("Adafeldolgozás: "+(i+1)+' / '+that.data.length);
+
 		    	let d = that.data[i];
-		    	//DateTime Megkeresése, ha nics új bejegyzés
-				let date_time = await DateTime.findByDt(d.date_time);
+
+		    	let date_time = null;
+		    	if(date_time_all){
+		    		date_time = date_time_all.find(x => x.dt == d.date_time);
+		    	}
+
 				if(!date_time){
 					date_time = new DateTime(null, d.date_time);
 					date_time = await date_time.save();
 				}
-				//console.log(date_time);
 
 				d.values.forEach(async function(v){
-					//Profile Megkeresése, ha nincs új bejegyzés
-					let profile = await Profile.findByNameRiver(v.profile, modelling.river_id);
-					//Ha nem létezik még a szelvény a vízfolyásra, akkor létrehoz
+					let profile = null;
+					if (profile_all)
+						profile = profile_all.find(x => x.name == v.profile);
+
 					if(!profile){		
 						profile = new Profile(null, v.profile, modelling.river_id);
 						profile = await profile.save();
+						//Újra le kell kérni, hogy az új elem is bekerüljön
+						//TODO inkább hozzá kellene adni a már lekért listához!!!
+						profile_all = await Profile.findByRiver(modelling.river_id);
 					}
-					//console.log(profile);
 
 					let ca = moment().format("YYYY-MM-DD HH:mm:ss");
 					if(d.type == "location_flow"){
-						//Ellenőrizni, hogy van-e már ilyen
-						let location_flow_check = await LocationFlow.findByProfileDateTimeModelling(profile.id, date_time.id, modelling.id);
+						let location_flow_check = null;
+						if(location_flow_all)
+							location_flow_check = location_flow_all.find(x => x.profile_id == profile.id && x.date_time_id == date_time.id);
 						if(!location_flow_check){
 							tableLocationFlow.rows.add(date_time.id, profile.id, modelling.id, v.value, ca, ca);
 						}
 					}else if(d.type == "location_stage"){
 						//Ellenőrizni, hogy van-e már ilyen
+						//TODO: Optimalizáció
 						let location_stage_check = await LocationStage.findByProfileDateTimeModelling(profile.id, date_time.id, modelling.id);
 						if(!location_stage_check){
 							tableLocationStage.rows.add(date_time.id, profile.id, modelling.id, v.value, ca, ca);

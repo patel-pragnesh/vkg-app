@@ -16,10 +16,13 @@
         }
     }
 
-    #map{
-        position: absolute !important;
-        height: calc(100% - 80px);
-        width: 100%;
-        margin: 0;
-        padding: 0;
+    .index-page{
+        #map{
+            position: absolute !important;
+            height: calc(100% - 80px);
+            width: 100%;
+            margin: 0;
+            padding: 0;
+        }
     }
+    

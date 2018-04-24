@@ -173,11 +173,19 @@ exports.data_for_time_post = async function(req, res, next){
 exports.data_for_profile_get = async function(req, res, next){
 
     let countPerPage = 15;
+    let page_count = 0;
     let page = req.query.page ? req.query.page - 1 : 0;
-    let location_flows = await LocationFlow.findByModelling(req.params.id);
-    
-    let page_count = location_flows ? location_flows.length/countPerPage : 0;
-    let location_flows_page = location_flows ? location_flows.slice(page, page + countPerPage) : [];
+    let location_flows = await LocationFlow.findByModellingGroupByDateTime(req.params.id);
+    let location_flows_page = [];
+    console.log(location_flows);
+    if(location_flows){
+        //console.log(location_flows.length);
+        page_count = location_flows.length/countPerPage;
+        console.log(page);
+        // let location_flows_page = location_flows ? location_flows.slice(page, page + countPerPage) : [];
+        location_flows_page = location_flows.slice(page*countPerPage, page * countPerPage + countPerPage);
+        console.log(location_flows_page);
+    }    
 
     const m = await Modelling.findById(req.params.id);
     const form_link = "/modelling_import/"+m.id+"/data_for_profile";
@@ -202,8 +210,9 @@ exports.data_for_profile_post = async function(req, res, next){
         let dataloader = new DataForProfileLoader(newpath);
         let success_file_read = await dataloader.readFile();
         if(success_file_read){
-            await dataloader.saveData(modelling);
-            console.log('Data inserted to db.');
+            //Betöltés elindítás, de a klinesnek a hosszú idő miatt nem kell megvárni...
+            dataloader.saveData(modelling);
+            console.log('Data inserted to db.'); 
             res.redirect('/modelling_import/'+modelling+'/data_for_profile');
         }else{
             console.log('Error reading file.');
@@ -220,4 +229,11 @@ exports.meta_data_delete_get = async function(req, res, next){
     let modelling_id = meta_data.modelling_id;
     meta_data.delete();
     res.redirect('/modelling_import/'+modelling_id+'/data_for_time');
+}
+
+exports.location_flow_delete_get = async function(req, res, next){
+    let modelling_id = req.params.modelling_id;
+    let date_time_id = req.params.date_time_id;
+    await LocationFlow.deleteByModellingIdDateTimeId(modelling_id, date_time_id);
+    res.redirect('/modelling_import/'+modelling_id+'/data_for_profile');
 }

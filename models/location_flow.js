@@ -4,11 +4,12 @@ const moment = require('moment');
 moment.locale('hu');
 
 class LocationFlow{
-	constructor(id, date_time_id, profile_id, modelling_id, createdAt=null, updatedAt=null){
+	constructor(id, date_time_id, profile_id, modelling_id, value, createdAt=null, updatedAt=null){
 		this.id = id;
 		this.date_time_id = date_time_id;
 		this.profile_id = profile_id;
 		this.modelling_id = modelling_id;
+		this.value = value;
 		createdAt ? this.createdAt = createdAt : this.createdAt = moment().format("YYYY-MM-DD HH:mm:ss");
 		updatedAt ? this.updatedAt = updatedAt : this.updatedAt = moment().format("YYYY-MM-DD HH:mm:ss");
 	}
@@ -22,7 +23,7 @@ class LocationFlow{
 	        if(result.recordset.length != 0){
 	        	let returnArray = [];
 	        	for(let r of result.recordset){
-	        		returnArray.push(new LocationFlow(r.id, r.date_time_id, r.profile_id));
+	        		returnArray.push(new LocationFlow(r.id, r.date_time_id, r.profile_id, r.modelling_id, r.value));
 	        	}
 	        	return returnArray;
 	        }
@@ -47,7 +48,9 @@ class LocationFlow{
 	        if(result.recordset.length != 0)
 	        	return new LocationFlow(result.recordset[0]['id'], 
 	        			result.recordset[0]['date_time_id'],
-	        			result.recordset[0]['profile_id']);
+	        			result.recordset[0]['profile_id'],
+	        			result.recordset[0]['modelling_id'],
+	        			result.recordset[0]['value']);
 	        else
 	        	return null;
 
@@ -69,7 +72,33 @@ class LocationFlow{
 	        if(result.recordset.length != 0){
 	        	let returnArray = [];
 	        	for(let r of result.recordset){
-	        		returnArray.push(new LocationFlow(r.id, r.date_time_id, r.profile_id, r.modelling_id));
+	        		returnArray.push(new LocationFlow(r.id, r.date_time_id, r.profile_id, r.modelling_id, r.value));
+	        	}
+	        	return returnArray;
+	        }else
+	        	return null;
+
+	    } catch (err) {
+	        console.log(err);
+	    }
+	}
+
+	static async findByModellingGroupByDateTime(n){
+		//console.log(n);
+	    try {
+	    	let pool = new sql.ConnectionPool(sqlConfig);
+	    	await pool.connect();
+	        let result = await pool.request()
+	            .input('input_parameter1', sql.Int, n)
+	            .query('SELECT count(LocationFlow.modelling_id) as modelling_count, LocationFlow.date_time_id, CONVERT(VARCHAR, DateTime.dt, 120) as dt_ FROM LocationFlow '+
+	            	'LEFT JOIN  DateTime ON LocationFlow.date_time_id = DateTime.id '+
+	            	'WHERE LocationFlow.modelling_id = @input_parameter1 GROUP BY LocationFlow.date_time_id, DateTime.dt ORDER BY dt_');
+	        pool.close();
+	        //console.log(result.recordset[0]);
+	        if(result.recordset.length != 0){
+	        	let returnArray = [];
+	        	for(let r of result.recordset){
+	        		returnArray.push({count: r.modelling_count, time_id: r.date_time_id, time: r.dt_});
 	        	}
 	        	return returnArray;
 	        }else
@@ -93,7 +122,7 @@ class LocationFlow{
 	        if(result.recordset.length != 0){
 	        	let returnArray = [];
 	        	for(let r of result.recordset){
-	        		returnArray.push(new LocationFlow(r.id, r.date_time_id, r.profile_id));
+	        		returnArray.push(new LocationFlow(r.id, r.date_time_id, r.profile_id, r.modelling_id, r.value));
 	        	}
 	        	return returnArray;
 	        }else
@@ -117,7 +146,7 @@ class LocationFlow{
 	        if(result.recordset.length != 0){
 	        	let returnArray = [];
 	        	for(let r of result.recordset){
-	        		returnArray.push(new LocationFlow(r.id, r.date_time_id, r.profile_id));
+	        		returnArray.push(new LocationFlow(r.id, r.date_time_id, r.profile_id, r.modelling_id, r.value));
 	        	}
 	        	return returnArray;
 	        }else
@@ -142,7 +171,7 @@ class LocationFlow{
 	        if(result.recordset.length != 0){
 	        	let returnArray = [];
 	        	for(let r of result.recordset){
-	        		returnArray.push(new LocationFlow(r.id, r.date_time_id, r.profile_id));
+	        		returnArray.push(new LocationFlow(r.id, r.date_time_id, r.profile_id, r.modelling_id, r.value));
 	        	}
 	        	return returnArray;
 	        }else
@@ -170,7 +199,7 @@ class LocationFlow{
 	        if(result.recordset.length != 0){
 	        	let returnArray = [];
 	        	for(let r of result.recordset){
-	        		returnArray.push(new LocationFlow(r.id, r.date_time_id, r.profile_id));
+	        		returnArray.push(new LocationFlow(r.id, r.date_time_id, r.profile_id, r.modelling_id, r.value));
 	        	}
 	        	return returnArray;
 	        }else
@@ -191,9 +220,11 @@ class LocationFlow{
 			const request = new sql.Request(transaction);
 			request.input('date_time_id', sql.Int, that.date_time_id);
 			request.input('profile_id', sql.Int, that.profile_id);
+			request.input('modelling_id', sql.Int, that.modelling_id);
+			request.input('value', sql.Float, that.value);
 			request.input('createdAt', sql.NVarChar, that.createdAt);
 			request.input('updatedAt', sql.NVarChar, that.updatedAt);
-			let result = await request.query('INSERT INTO LocationFlow (date_time_id, profile_id, createdAt, updatedAt) '
+			let result = await request.query('INSERT INTO LocationFlow (date_time_id, profile_id, modelling_id, value, createdAt, updatedAt) '
 				+'OUTPUT Inserted.id VALUES (@date_time_id, @profile_id, @createdAt, @updatedAt);');
 			that.id = result.recordset[0]['id'];
 			await transaction.commit();
@@ -216,9 +247,32 @@ class LocationFlow{
 			request.input('id', sql.NVarChar, that.id);
 			request.input('date_time_id', sql.Int, that.date_time_id);
 			request.input('profile_id', sql.Int, that.profile_id);
+			request.input('modelling_id', sql.Int, that.modelling_id);
+			request.input('value', sql.Float, that.value);
 			request.input('updatedAt', sql.NVarChar, that.updatedAt);
 			let result = await request.query('UPDATE LocationFlow SET '
-				+'date_time_id=@date_time_id, profile_id=@profile_id, updatedAt=@updatedAt WHERE id=@id;');
+				+'date_time_id=@date_time_id, profile_id=@profile_id modelling_id=@modelling_id, value=@value, updatedAt=@updatedAt WHERE id=@id;');
+			//console.log(result);
+			await transaction.commit();
+			pool.close();
+			return that;
+		}catch (err){
+			console.log(err);
+		}
+	}
+
+	static async deleteByModellingIdDateTimeId(modelling_id, date_time_id){
+		let that = this;
+		console.log(date_time_id);
+		try{
+			let pool = new sql.ConnectionPool(sqlConfig);
+			let dbConn = await pool.connect();
+			let transaction = new sql.Transaction(dbConn);
+			await transaction.begin();
+			const request = new sql.Request(transaction);
+			request.input('modelling_id', sql.Int, modelling_id);
+			request.input('date_time_id', sql.Int, date_time_id);
+			let result = await request.query('DELETE FROM LocationFlow WHERE modelling_id=@modelling_id AND date_time_id=@date_time_id;');
 			//console.log(result);
 			await transaction.commit();
 			pool.close();
