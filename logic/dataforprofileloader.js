@@ -40,7 +40,8 @@ class DataForProfileLoader{
 				//Első sor feldolgozása -> Típus és idő
 				let first_row_array = series[0].split('/');
 				additional_description = first_row_array[6];
-
+				console.log(first_row_array);
+				console.log(additional_description);
 				//TODO: A splittelt array-ből ez fixen kinyerhető
 				if(series[0].includes('LOCATION-FLOW')){
 					type = 'location_flow';
@@ -145,8 +146,9 @@ class DataForProfileLoader{
 		    	}
 
 				if(!additional_description){
-					additional_description = new DescriptionLocationData(null, d.date_time);
+					additional_description = new DescriptionLocationData(null, d.additional_description);
 					additional_description = await additional_description.save();
+					additional_description_all = await DescriptionLocationData.all();
 				}
 
 				d.values.forEach(async function(v){
