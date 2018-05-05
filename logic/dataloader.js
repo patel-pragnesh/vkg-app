@@ -22,13 +22,105 @@ class DataLoader{
 		this.data = [];
 	}
 
+	//DSSVue-val DSSutl Write Data File formátumban exportált adatok beolvasása
 	async readFile(){
 		let that = this;
+
 		try{
 			let data_from_file = await readFile(that.file_path, 'latin1');
 			//console.log(data_from_file);
 			let line_array = data_from_file.split('\n');
 			//console.log(line_array);
+			let data = [];
+			//console.log(line_array);
+			let data_counter = 1;
+			while(line_array[0] != 'END FILE\r'){ 
+				console.log(data_counter);
+				let series = line_array.splice(0, line_array.indexOf('END DATA\r')+1);
+
+				let A = null;
+				let B = null;
+				let C = null;
+				let E = null;
+				let F = null;
+				let type=null;
+				let unit=null;
+				let date_time = null;
+				let value_count = null;
+				let values = [];
+
+				//Első sor feldolgozása
+				let first_row_array = series[0].split('/');
+				A = first_row_array[1];
+				B = parseFloat(first_row_array[2]).toFixed(1);
+				C = first_row_array[3];
+				E = first_row_array[5];
+				F = first_row_array[6];
+
+				//Negyedik sor feldolgozás -> unit, type
+				//let unit_unformat = series[3].match(/(Units: ([\S]{1,}))/g);
+				//let type_unformat = series[3].match(/Type: ([\S]{1,})/g);
+
+				let regExUnit = /Units: ([\S]{1,})/ig;				
+				let regExType = /Type: ([\S]{1,})/ig;				
+				let matchUnit = regExUnit.exec(series[3]);
+				let matchType = regExType.exec(series[3]);
+				unit = matchUnit[1];
+				type = matchType[1];
+
+				//Harmadik sor feldolgozása -> Érték párok száma
+				let regExValueCount = /Number: ([\S]{1,})/ig;				
+				let matchValueCount = regExValueCount.exec(series[2]);
+				value_count = matchValueCount[1];
+				
+				//Csak FLOW vagy STAGE betöltése
+				if(C !='FLOW' && C != 'STAGE'){
+					console.log('Rossz típus...');
+					return null;
+				}
+
+				// let date_time_unformat = series[0].match(/[0-9]{2}[A-Z]{3}[0-9]{4} [0-9]{4}/g);
+				// if(date_time_unformat){
+				// 	moment.locale('en');
+				// 	date_time = moment(date_time_unformat, 'DDMMMYYYY HHmm').format('YYYY-MM-DD HH:mm:ss');
+				// }
+
+				if(type && value_count){
+					let counter = 1;
+					let index1_from = 3+1;
+					let index1_to = 3+parseInt(value_count);					
+					for(let i=index1_from; i<index1_to+1;i++){
+						//31DEC2214, 2400;   40,000
+						//console.log(counter);
+						let formatted_series = series[i].replace(/(\r\n|\n|\r|\s)/gm,"");
+						let data_array = formatted_series.split(';');
+						moment.locale('en');
+						values.push({nr: counter, 
+							datetime: moment(data_array[0], "DDMMMYYYY,HHmm").format("YYYY-MM-DD HH:mm:ss"), 
+							val: data_array[1].replace(',', '.')});	
+						counter++;
+					}
+				}
+				data.push({A: A, B: B, C: C, E: E, F: F, type: type, unit: unit, values: values});
+				data_counter++;
+			}
+
+			that.data = data;
+			return that;
+		}catch(err){
+			console.log(err);
+		}
+	}
+
+	//!!! DEPRICATED !!!
+	//DSSVue-val Excel-be mentett és .csv formátumba konvertált adatok beolvasása
+	async readFileFromCsv(){
+		let that = this;
+		try{
+			let data_from_file = await readFile(that.file_path, 'latin1');
+			
+			let line_array = data_from_file.split('\n');
+			
 			let data = [];
 			line_array.forEach(function(l){
 				let line_data = l.split(';');
@@ -74,6 +166,7 @@ class DataLoader{
 					}
 				}		
 			});
+			console.log(data);
 			that.data = data;
 			return that;
 		}catch(err){
@@ -81,8 +174,10 @@ class DataLoader{
 		}
 	}
 
-	async saveData(modelling_id){
+	async saveData(modelling_id, user_description){
 		let that = this;
+		//console.log(that.data[0]);
+		//return;
 		try{
 			const m = await Modelling.findById(modelling_id);
 			for(let i=0; i<that.data.length; i++){
@@ -96,7 +191,7 @@ class DataLoader{
 				//console.log(p);
 				let ti = await TimeInterval.findByName(that.data[i].E);
 				//console.log(ti);
-				let fm = new DataMeta(null, that.data[i].A, null, null, ti.id, that.data[i].unit, modelling_id, p.id, that.data[i].F, that.data[i].C);
+				let fm = new DataMeta(null, that.data[i].A, null, null, ti.id, that.data[i].unit, modelling_id, p.id, that.data[i].F, user_description, that.data[i].C);
 				fm = await fm.save();
 				let date_from = moment("3000-01-01 01:01", "YYYY-MM-DD HH:mm");
 				let date_to = moment("1900-01-01 01:01", "YYYY-MM-DD HH:mm");
@@ -132,12 +227,12 @@ class DataLoader{
 			    		'TRUNCATE TABLE dbo.TmpFlow;');
 				    pool.close();
 				}else if(that.data[i].C == 'FLOW-CUM'){
-					that.data[i].values.forEach(function(v){
-						date_from = moment(v.datetime, "YYYY-MM-DD HH:mm") < date_from ? moment(v.datetime, "YYYY-MM-DD HH:mm") : date_from;
-						date_to = moment(v.datetime, "YYYY-MM-DD HH:mm") > date_to ? moment(v.datetime, "YYYY-MM-DD HH:mm") : date_to;
-						let f = new FlowCum(null, v.datetime, v.val, fm.id);
-						f.save();
-					});
+					// that.data[i].values.forEach(function(v){
+					// 	date_from = moment(v.datetime, "YYYY-MM-DD HH:mm") < date_from ? moment(v.datetime, "YYYY-MM-DD HH:mm") : date_from;
+					// 	date_to = moment(v.datetime, "YYYY-MM-DD HH:mm") > date_to ? moment(v.datetime, "YYYY-MM-DD HH:mm") : date_to;
+					// 	let f = new FlowCum(null, v.datetime, v.val, fm.id);
+					// 	f.save();
+					// });
 				}else if(that.data[i].C == 'STAGE'){
 					let pool = new sql.ConnectionPool(sqlConfig);
 					let dbConn = await pool.connect();

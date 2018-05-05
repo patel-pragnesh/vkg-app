@@ -24,10 +24,10 @@ router.post('/:id/update', /*common.user,*/ riverImportcontroller.update_post);
 //router.get('/:id', common.user, modellingImportcontroller.modelling_detail);
 
 /* GET request to update curve data for River. */
-router.get('/:id/data', /*common.user,*/ riverImportcontroller.data_get);
+//router.get('/:id/data', /*common.user,*/ riverImportcontroller.data_get);
 
 /* POST request to update curve data for River. */
-router.post('/:id/data', /*common.user,*/ riverImportcontroller.data_post);
+//router.post('/:id/data', /*common.user,*/ riverImportcontroller.data_post);
 
 /* GET request to update profile data for River. */
 router.get('/:id/profiles', /*common.user,*/ riverImportcontroller.profiles_get);

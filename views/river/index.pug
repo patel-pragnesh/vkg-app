@@ -124,7 +124,7 @@ block scripts
 			$('#adatbetoltesek option').remove();
 			selectedAdatbetoltes = 0;
 			$.each(d, function(i, v){
-				var o = $('<option>', {value: i}).text(v.additional_description);
+				var o = $('<option>', {value: i}).text(v.user_description);
 				o.appendTo($('#adatbetoltesek'));
 			});
 			dataToChart(myLineChart, d, selectedAdatbetoltes);

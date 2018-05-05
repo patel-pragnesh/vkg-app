@@ -1,3 +1,9 @@
+/*
+!!! NEM HASZNÁLT !!!
+A GoogleMaps helyett az OVF-es ESRI térképek megjelenítését alkalmazza a program.
+Vízfolyás töréspontjainak betöltése.
+*/
+
 const fs = require('fs');
 const util = require('util');
 const readline = require('readline');
@@ -8,13 +14,6 @@ moment.locale('hu');
 // Convert fs.readFile into Promise version of same    
 const readFile = util.promisify(fs.readFile);
 
-// const Modelling = require('../models/modelling');
-// const DataMeta = require('../models/data_meta');
-// const Flow = require('../models/flow');
-// const FlowCum = require('../models/flow_cum');
-// const Stage = require('../models/stage');
-// const TimeInterval = require('../models/time_interval');
-// const River = require('../models/river');
 const RiverMongoDB = require('../models/mongodb_river');
 
 class KmlLoader{

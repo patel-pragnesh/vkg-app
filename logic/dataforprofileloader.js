@@ -12,12 +12,8 @@ const Modelling = require('../models/modelling');
 const LocationFlow = require('../models/location_flow');
 const LocationStage = require('../models/location_stage');
 const DateTime = require('../models/date_time');
-//const DataMeta = require('../models/data_meta');
-//const Flow = require('../models/flow');
-//const FlowCum = require('../models/flow_cum');
-//const Stage = require('../models/stage');
-//const TimeInterval = require('../models/time_interval');
 const Profile = require('../models/profile');
+const DescriptionLocationData = require('../models/description_location_data');
 
 class DataForProfileLoader{
 	constructor(file_path){
@@ -29,18 +25,23 @@ class DataForProfileLoader{
 		let that = this;
 		try{
 			let data_from_file = await readFile(that.file_path, 'latin1');
-			//console.log(data_from_file);
+			
 			let line_array = data_from_file.split('\n');
-			//console.log(line_array);
+			
 			let data = [];
-			//console.log(line_array);
+			
 			while(line_array[0] != 'END FILE\r'){ 
 				let series = line_array.splice(0, line_array.indexOf('END DATA\r')+1);
 
 				let type=null;
 				let date_time = null;
 				let value_count = null;
+				let additional_description = null;
 				//Első sor feldolgozása -> Típus és idő
+				let first_row_array = series[0].split('/');
+				additional_description = first_row_array[6];
+
+				//TODO: A splittelt array-ből ez fixen kinyerhető
 				if(series[0].includes('LOCATION-FLOW')){
 					type = 'location_flow';
 				}else if(series[0].includes('LOCATION-STAGE')){
@@ -48,6 +49,8 @@ class DataForProfileLoader{
 				}else{
 					return null;
 				}
+
+				//TODO: A splittelt array-ből ez fixen kinyerhető
 				let date_time_unformat = series[0].match(/[0-9]{2}[A-Z]{3}[0-9]{4} [0-9]{4}/g);
 				if(date_time_unformat){
 					moment.locale('en');
@@ -64,14 +67,14 @@ class DataForProfileLoader{
 
 					let index1_from = 3+1;
 					let index1_to = 3+parseInt(value_count);
-					//let index2_from = 3+parseInt(value_count)+1;
-					//let index2_to = 3+parseInt(value_count)+parseInt(value_count);
 					let values = [];
 					for(let i=index1_from; i<index1_to+1;i++){
-						values.push({profile:series[i].replace(/(\r\n|\n|\r)/gm,""), value:series[i+parseInt(value_count)].replace(/(\r\n|\n|\r)/gm,"")});
+						let profile_string = series[i].replace(/(\r\n|\n|\r)/gm,"");
+						let profile_float = parseFloat(profile_string).toFixed(1);
+						values.push({profile: profile_float.toString(), value:series[i+parseInt(value_count)].replace(/(\r\n|\n|\r)/gm,"")});
 					}
 
-					data.push({type: type, date_time: date_time, values: values});
+					data.push({type: type, date_time: date_time, values: values, additional_description: additional_description});
 				}
 			}
 			that.data = data;
@@ -81,15 +84,16 @@ class DataForProfileLoader{
 		}
 	}
 
-	async saveData(modelling_id){
+	async saveData(modelling_id, description_id){
 		let that = this;
 		console.log("A fájl összesen "+that.data.length + " db időpontot tartalmaz.");
 		//return false;
 		const modelling = await Modelling.findById(modelling_id);
 
 		let date_time_all = await DateTime.all();
+		let additional_description_all = await DescriptionLocationData.all();
 		let profile_all = await Profile.findByRiver(modelling.river_id);
-		let location_flow_all = await LocationFlow.findByModelling(modelling.id);
+		//let location_flow_all = await LocationFlow.findByModelling(modelling.id);
 
 		try{
 
@@ -101,6 +105,8 @@ class DataForProfileLoader{
 			tableLocationFlow.columns.add('date_time_id', sql.Int, {nullable: true});
 			tableLocationFlow.columns.add('profile_id', sql.Int, {nullable: true});
 			tableLocationFlow.columns.add('modelling_id', sql.Int, {nullable: true});
+			tableLocationFlow.columns.add('additional_description_id', sql.Int, {nullable: true});
+			tableLocationFlow.columns.add('description_id', sql.Int, {nullable: true});
 			tableLocationFlow.columns.add('value', sql.Float, {nullable: true});			
 			tableLocationFlow.columns.add('updatedAt', sql.NVarChar, {nullable: true});
 			tableLocationFlow.columns.add('createdAt', sql.NVarChar, {nullable: true});
@@ -110,6 +116,8 @@ class DataForProfileLoader{
 			tableLocationStage.columns.add('date_time_id', sql.Int, {nullable: true});
 			tableLocationStage.columns.add('profile_id', sql.Int, {nullable: true});
 			tableLocationStage.columns.add('modelling_id', sql.Int, {nullable: true});
+			tableLocationStage.columns.add('additional_description_id', sql.Int, {nullable: true});
+			tableLocationStage.columns.add('description_id', sql.Int, {nullable: true});
 			tableLocationStage.columns.add('value', sql.Float, {nullable: true});			
 			tableLocationStage.columns.add('updatedAt', sql.NVarChar, {nullable: true});
 			tableLocationStage.columns.add('createdAt', sql.NVarChar, {nullable: true});
@@ -130,6 +138,17 @@ class DataForProfileLoader{
 					date_time = await date_time.save();
 				}
 
+				//additional_description ellenőrzése!
+				let additional_description = null;
+		    	if(additional_description_all){
+		    		additional_description = additional_description_all.find(x => x.additional_description == d.additional_description);
+		    	}
+
+				if(!additional_description){
+					additional_description = new DescriptionLocationData(null, d.date_time);
+					additional_description = await additional_description.save();
+				}
+
 				d.values.forEach(async function(v){
 					let profile = null;
 					if (profile_all)
@@ -145,19 +164,19 @@ class DataForProfileLoader{
 
 					let ca = moment().format("YYYY-MM-DD HH:mm:ss");
 					if(d.type == "location_flow"){
-						let location_flow_check = null;
-						if(location_flow_all)
-							location_flow_check = location_flow_all.find(x => x.profile_id == profile.id && x.date_time_id == date_time.id);
-						if(!location_flow_check){
-							tableLocationFlow.rows.add(date_time.id, profile.id, modelling.id, v.value, ca, ca);
-						}
+						//let location_flow_check = null;
+						//if(location_flow_all)
+						//	location_flow_check = location_flow_all.find(x => x.profile_id == profile.id && x.date_time_id == date_time.id);
+						//if(!location_flow_check){
+							tableLocationFlow.rows.add(date_time.id, profile.id, modelling.id, additional_description.id, description_id, v.value, ca, ca);
+						//}
 					}else if(d.type == "location_stage"){
 						//Ellenőrizni, hogy van-e már ilyen
 						//TODO: Optimalizáció
-						let location_stage_check = await LocationStage.findByProfileDateTimeModelling(profile.id, date_time.id, modelling.id);
-						if(!location_stage_check){
-							tableLocationStage.rows.add(date_time.id, profile.id, modelling.id, v.value, ca, ca);
-						}
+						//let location_stage_check = await LocationStage.findByProfileDateTimeModelling(profile.id, date_time.id, modelling.id);
+						//if(!location_stage_check){
+							tableLocationStage.rows.add(date_time.id, profile.id, modelling.id, additional_description.id, description_id, v.value, ca, ca);
+						//}
 					}
 				});
 			}
@@ -170,8 +189,8 @@ class DataForProfileLoader{
 
 		    const request_move_location_flow = new sql.Request(dbConn);
 	    	let result_move_location_flow = await request_move_location_flow.query('INSERT INTO '+
-	    		'dbo.LocationFlow(date_time_id, profile_id, modelling_id, value, updatedAt, createdAt) '+
-	    		'SELECT date_time_id, profile_id,modelling_id , value, updatedAt, createdAt FROM dbo.TmpLocationFlow; '+
+	    		'dbo.LocationFlow(date_time_id, profile_id, modelling_id, additional_description_id, description_id, value, updatedAt, createdAt) '+
+	    		'SELECT date_time_id, profile_id, modelling_id, additional_description_id, description_id, value, updatedAt, createdAt FROM dbo.TmpLocationFlow; '+
 	    		'TRUNCATE TABLE dbo.TmpLocationFlow;');
 
 
@@ -179,8 +198,8 @@ class DataForProfileLoader{
 
 		    const request_move_location_stage = new sql.Request(dbConn);
 	    	let result_move_location_stage = await request_move_location_stage.query('INSERT INTO '+
-	    		'dbo.LocationStage(date_time_id, profile_id, modelling_id, value, updatedAt, createdAt) '+
-	    		'SELECT date_time_id, profile_id,modelling_id , value, updatedAt, createdAt FROM dbo.TmpLocationStage; '+
+	    		'dbo.LocationStage(date_time_id, profile_id, modelling_id, additional_description_id, description_id, value, updatedAt, createdAt) '+
+	    		'SELECT date_time_id, profile_id,modelling_id, additional_description_id, description_id, value, updatedAt, createdAt FROM dbo.TmpLocationStage; '+
 	    		'TRUNCATE TABLE dbo.TmpLocationStage;');
 
 		    pool.close();

@@ -107,33 +107,33 @@ exports.modelling_detail = async function(req, res, next){
     res.send('TODO Modelling details page');
 }
 
-exports.data_get = async function(req, res, next){
-    const r = await River.findById(req.params.id);
-    const form_link = "/river_import/"+r.id+"/data";
-    res.render('river_import/data', { title: 'Vízfolyás adatok', river: r, form_link: form_link});
-}
+// exports.data_get = async function(req, res, next){
+//     const r = await River.findById(req.params.id);
+//     const form_link = "/river_import/"+r.id+"/data";
+//     res.render('river_import/data', { title: 'Vízfolyás adatok', river: r, form_link: form_link});
+// }
 
-exports.data_post = async function(req, res, next){
-    let form = new formidable.IncomingForm();
-    form.parse(req, function (err, fields, files) {
-      let river = fields.river;
-      let oldpath = files.fileUploaded.path;
-      let oldFileName = files.fileUploaded.name;
-      let oldFileNameArray = oldFileName.split('.');
-      oldFileNameArray.pop();
-      let newFileName = oldFileNameArray.join('.');
-      let newpath = __dirname +'/../public/KML/' + newFileName + '_' + moment().format("YYYY-MM-DD_HHmmssSSS") + '.kml';
-      mv(oldpath, newpath, async function(err){
-        console.log('File moved...');
-        let kmlloader = new KmlLoader(newpath);
-        await kmlloader.readFile();
-        await kmlloader.saveData(river);
-        console.log('ok');
-        res.redirect('/river_import/'+river+'/data');
-      });
-    });
+// exports.data_post = async function(req, res, next){
+//     let form = new formidable.IncomingForm();
+//     form.parse(req, function (err, fields, files) {
+//       let river = fields.river;
+//       let oldpath = files.fileUploaded.path;
+//       let oldFileName = files.fileUploaded.name;
+//       let oldFileNameArray = oldFileName.split('.');
+//       oldFileNameArray.pop();
+//       let newFileName = oldFileNameArray.join('.');
+//       let newpath = __dirname +'/../public/KML/' + newFileName + '_' + moment().format("YYYY-MM-DD_HHmmssSSS") + '.kml';
+//       mv(oldpath, newpath, async function(err){
+//         console.log('File moved...');
+//         let kmlloader = new KmlLoader(newpath);
+//         await kmlloader.readFile();
+//         await kmlloader.saveData(river);
+//         console.log('ok');
+//         res.redirect('/river_import/'+river+'/data');
+//       });
+//     });
     
-}
+// }
 
 exports.profiles_get = async function(req, res, next){
     const r = await River.findById(req.params.id);

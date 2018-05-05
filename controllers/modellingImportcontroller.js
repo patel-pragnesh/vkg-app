@@ -12,6 +12,7 @@ const River = require('../models/river');
 const DataMeta = require('../models/data_meta');
 const LocationFlow = require('../models/location_flow');
 const LocationStage = require('../models/location_stage');
+const Description = require('../models/description');
 
 const DataLoader = require('../logic/dataloader');
 const DataForProfileLoader = require('../logic/dataforprofileloader');
@@ -149,9 +150,11 @@ exports.data_for_time_get = async function(req, res, next){
 }
 
 exports.data_for_time_post = async function(req, res, next){
+    //TODO: Validálni a leírás mező kitöltésére és a megadott fájl meglétére
     let form = new formidable.IncomingForm();
     form.parse(req, function (err, fields, files) {
       let modelling = fields.modelling;
+      let user_description = fields.user_description;
       let oldpath = files.fileUploaded.path;
       let oldFileName = files.fileUploaded.name;
       let oldFileNameArray = oldFileName.split('.');
@@ -162,9 +165,9 @@ exports.data_for_time_post = async function(req, res, next){
         console.log('File moved...');
         let dataloader = new DataLoader(newpath);
         await dataloader.readFile();
-        await dataloader.saveData(modelling);
+        await dataloader.saveData(modelling,user_description+' '+moment().format("YYYY-MM-DD_HHmmssSSS"));
         console.log('ok');
-        res.redirect('/modelling_import/'+modelling+'/data');
+        res.redirect('/modelling_import/'+modelling+'/data_for_time');
       });
     });
     
@@ -196,23 +199,27 @@ exports.data_for_profile_get = async function(req, res, next){
 }
 
 exports.data_for_profile_post = async function(req, res, next){
+    //TODO: Validálni a leírás mező kitöltésére és a megadott fájl meglétére
     let form = new formidable.IncomingForm();
     form.parse(req, function (err, fields, files) {
       let modelling = fields.modelling;
+      let user_description = fields.user_description;
       let oldpath = files.fileUploaded.path;
       let oldFileName = files.fileUploaded.name;
       let oldFileNameArray = oldFileName.split('.');
       oldFileNameArray.pop();
       let newFileName = oldFileNameArray.join('.');
-      let newpath = __dirname +'/../public/DATAPROFILE/' + newFileName + '_' + moment().format("YYYY-MM-DD_HHmmssSSS") + '.csv';
+      let newpath = __dirname +'/../public/DATAPROFILE/' + newFileName + ' ' + moment().format("YYYY-MM-DD_HHmmssSSS") + '.csv';
       mv(oldpath, newpath, async function(err){
         console.log('File moved to ' + newpath);
         let dataloader = new DataForProfileLoader(newpath);
         let success_file_read = await dataloader.readFile();
         if(success_file_read){
             //Betöltés elindítás, de a klinesnek a hosszú idő miatt nem kell megvárni...
-            dataloader.saveData(modelling);
-            console.log('Data inserted to db.'); 
+            let description = new Description(null, user_description+'_'+moment().format("YYYY-MM-DD_HHmmssSSS"));
+            description = await description.save();
+            await dataloader.saveData(modelling, description.id);
+            console.log('Data is inserted to db.'); 
             res.redirect('/modelling_import/'+modelling+'/data_for_profile');
         }else{
             console.log('Error reading file.');

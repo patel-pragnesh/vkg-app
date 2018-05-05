@@ -6,7 +6,7 @@ moment.locale('hu');
 class Profile{
 	constructor(id, name, river_id, river_name=null, createdAt=null, updatedAt=null){
 		this.id = id;
-		this.name = name;
+		this.name = parseFloat(name).toFixed(1);
 		this.river_id = river_id;
 		this.river_name = river_name;
 		createdAt ? this.createdAt = createdAt : this.createdAt = moment().format("YYYY-MM-DD HH:mm:ss");

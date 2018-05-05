@@ -49,6 +49,15 @@ block content
 									div.form-group.fileContainer
 										input(type="file" name="fileUploaded" id="fileUploaded" class="inputFile")
 										label(for="fileUploaded" class="btn btn-primary file-label") Fájl kiválasztása
+							div.row
+								div.col-md-12
+									div.form-group
+										label(for="user_description") Leírás
+										input(type="text" name="user_description" placeholder="Adatbetöltés leírása" class="form-control")
+										if errors
+											for error in errors
+												if error.param == 'user_description'
+													div.text-danger=error.msg
 						div.panel-footer
 							input(type="hidden" name="modelling" value=modelling.id)
 							input(type="submit" class="btn btn-primary pull-right" value="Mentés")
