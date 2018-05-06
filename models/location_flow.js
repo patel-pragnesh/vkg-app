@@ -109,6 +109,34 @@ class LocationFlow{
 	    }
 	}
 
+	static async findByModellingGroupByUserDescription(n){
+		//console.log(n);
+	    try {
+	    	let pool = new sql.ConnectionPool(sqlConfig);
+	    	await pool.connect();
+	        let result = await pool.request()
+	            .input('input_parameter1', sql.Int, n)
+	            .query('SELECT count(LocationFlow.modelling_id) as modelling_count, LocationFlow.description_id, CAST([Description].user_description AS NVARCHAR(200)) user_description '+
+	            	'FROM LocationFlow '+
+	            	'LEFT JOIN Description ON LocationFlow.description_id = Description.id '+
+	            	'WHERE LocationFlow.modelling_id = @input_parameter1 '+
+	            	'GROUP BY LocationFlow.description_id, CAST([Description].user_description AS NVARCHAR(200)) ORDER BY LocationFlow.description_id');
+	        pool.close();
+	        console.log(result.recordset[0]);
+	        if(result.recordset.length != 0){
+	        	let returnArray = [];
+	        	for(let r of result.recordset){
+	        		returnArray.push({count: r.modelling_count, description: r.user_description, description_id: r.description_id});
+	        	}
+	        	return returnArray;
+	        }else
+	        	return null;
+
+	    } catch (err) {
+	        console.log(err);
+	    }
+	}
+
 	static async findByProfile(n){
 	    try {
 	    	let pool = new sql.ConnectionPool(sqlConfig);
@@ -273,6 +301,27 @@ class LocationFlow{
 			request.input('modelling_id', sql.Int, modelling_id);
 			request.input('date_time_id', sql.Int, date_time_id);
 			let result = await request.query('DELETE FROM LocationFlow WHERE modelling_id=@modelling_id AND date_time_id=@date_time_id;');
+			//console.log(result);
+			await transaction.commit();
+			pool.close();
+			return that;
+		}catch (err){
+			console.log(err);
+		}
+	}
+
+	static async deleteByModellingIdDescriptionId(modelling_id, description_id){
+		let that = this;
+		//console.log(date_time_id);
+		try{
+			let pool = new sql.ConnectionPool(sqlConfig);
+			let dbConn = await pool.connect();
+			let transaction = new sql.Transaction(dbConn);
+			await transaction.begin();
+			const request = new sql.Request(transaction);
+			request.input('modelling_id', sql.Int, modelling_id);
+			request.input('description_id', sql.Int, description_id);
+			let result = await request.query('DELETE FROM LocationFlow WHERE modelling_id=@modelling_id AND description_id=@description_id;');
 			//console.log(result);
 			await transaction.commit();
 			pool.close();

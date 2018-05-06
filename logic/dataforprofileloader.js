@@ -40,8 +40,8 @@ class DataForProfileLoader{
 				//Első sor feldolgozása -> Típus és idő
 				let first_row_array = series[0].split('/');
 				additional_description = first_row_array[6];
-				console.log(first_row_array);
-				console.log(additional_description);
+				//console.log(first_row_array);
+				//console.log(additional_description);
 				//TODO: A splittelt array-ből ez fixen kinyerhető
 				if(series[0].includes('LOCATION-FLOW')){
 					type = 'location_flow';
@@ -49,7 +49,7 @@ class DataForProfileLoader{
 					type = 'location_stage';
 				}else{
 					return null;
-				}
+				} 
 
 				//TODO: A splittelt array-ből ez fixen kinyerhető
 				let date_time_unformat = series[0].match(/[0-9]{2}[A-Z]{3}[0-9]{4} [0-9]{4}/g);
@@ -101,31 +101,53 @@ class DataForProfileLoader{
 			let pool = new sql.ConnectionPool(sqlConfig);
 			let dbConn = await pool.connect();
 
-		    const tableLocationFlow = new sql.Table('TmpLocationFlow') // or temporary table, e.g. #temptable
-			//tableLocationFlow.create = true
-			tableLocationFlow.columns.add('date_time_id', sql.Int, {nullable: true});
-			tableLocationFlow.columns.add('profile_id', sql.Int, {nullable: true});
-			tableLocationFlow.columns.add('modelling_id', sql.Int, {nullable: true});
-			tableLocationFlow.columns.add('additional_description_id', sql.Int, {nullable: true});
-			tableLocationFlow.columns.add('description_id', sql.Int, {nullable: true});
-			tableLocationFlow.columns.add('value', sql.Float, {nullable: true});			
-			tableLocationFlow.columns.add('updatedAt', sql.NVarChar, {nullable: true});
-			tableLocationFlow.columns.add('createdAt', sql.NVarChar, {nullable: true});
+		 //    const tableLocationFlow = new sql.Table('TmpLocationFlow') // or temporary table, e.g. #temptable
+			// //tableLocationFlow.create = true
+			// tableLocationFlow.columns.add('date_time_id', sql.Int, {nullable: true});
+			// tableLocationFlow.columns.add('profile_id', sql.Int, {nullable: true});
+			// tableLocationFlow.columns.add('modelling_id', sql.Int, {nullable: true});
+			// tableLocationFlow.columns.add('additional_description_id', sql.Int, {nullable: true});
+			// tableLocationFlow.columns.add('description_id', sql.Int, {nullable: true});
+			// tableLocationFlow.columns.add('value', sql.Float, {nullable: true});			
+			// tableLocationFlow.columns.add('updatedAt', sql.NVarChar, {nullable: true});
+			// tableLocationFlow.columns.add('createdAt', sql.NVarChar, {nullable: true});
 
-			const tableLocationStage = new sql.Table('TmpLocationStage') // or temporary table, e.g. #temptable
-			tableLocationStage.create = true
-			tableLocationStage.columns.add('date_time_id', sql.Int, {nullable: true});
-			tableLocationStage.columns.add('profile_id', sql.Int, {nullable: true});
-			tableLocationStage.columns.add('modelling_id', sql.Int, {nullable: true});
-			tableLocationStage.columns.add('additional_description_id', sql.Int, {nullable: true});
-			tableLocationStage.columns.add('description_id', sql.Int, {nullable: true});
-			tableLocationStage.columns.add('value', sql.Float, {nullable: true});			
-			tableLocationStage.columns.add('updatedAt', sql.NVarChar, {nullable: true});
-			tableLocationStage.columns.add('createdAt', sql.NVarChar, {nullable: true});
+			// const tableLocationStage = new sql.Table('TmpLocationStage') // or temporary table, e.g. #temptable
+			// // tableLocationStage.create = true
+			// tableLocationStage.columns.add('date_time_id', sql.Int, {nullable: true});
+			// tableLocationStage.columns.add('profile_id', sql.Int, {nullable: true});
+			// tableLocationStage.columns.add('modelling_id', sql.Int, {nullable: true});
+			// tableLocationStage.columns.add('additional_description_id', sql.Int, {nullable: true});
+			// tableLocationStage.columns.add('description_id', sql.Int, {nullable: true});
+			// tableLocationStage.columns.add('value', sql.Float, {nullable: true});			
+			// tableLocationStage.columns.add('updatedAt', sql.NVarChar, {nullable: true});
+			// tableLocationStage.columns.add('createdAt', sql.NVarChar, {nullable: true});
 
 			let data_to_insert = [];
 			for(let i=0; i<that.data.length; i++){
-				console.log("Adafeldolgozás: "+(i+1)+' / '+that.data.length);
+				console.log("Adabetöltés: "+(i+1)+' / '+that.data.length);
+
+				let tableLocationFlow = new sql.Table('TmpLocationFlow') // or temporary table, e.g. #temptable
+				//tableLocationFlow.create = true
+				tableLocationFlow.columns.add('date_time_id', sql.Int, {nullable: true});
+				tableLocationFlow.columns.add('profile_id', sql.Int, {nullable: true});
+				tableLocationFlow.columns.add('modelling_id', sql.Int, {nullable: true});
+				tableLocationFlow.columns.add('additional_description_id', sql.Int, {nullable: true});
+				tableLocationFlow.columns.add('description_id', sql.Int, {nullable: true});
+				tableLocationFlow.columns.add('value', sql.Float, {nullable: true});			
+				tableLocationFlow.columns.add('updatedAt', sql.NVarChar, {nullable: true});
+				tableLocationFlow.columns.add('createdAt', sql.NVarChar, {nullable: true});
+
+				let tableLocationStage = new sql.Table('TmpLocationStage') // or temporary table, e.g. #temptable
+				// tableLocationStage.create = true
+				tableLocationStage.columns.add('date_time_id', sql.Int, {nullable: true});
+				tableLocationStage.columns.add('profile_id', sql.Int, {nullable: true});
+				tableLocationStage.columns.add('modelling_id', sql.Int, {nullable: true});
+				tableLocationStage.columns.add('additional_description_id', sql.Int, {nullable: true});
+				tableLocationStage.columns.add('description_id', sql.Int, {nullable: true});
+				tableLocationStage.columns.add('value', sql.Float, {nullable: true});			
+				tableLocationStage.columns.add('updatedAt', sql.NVarChar, {nullable: true});
+				tableLocationStage.columns.add('createdAt', sql.NVarChar, {nullable: true});
 
 		    	let d = that.data[i];
 
@@ -166,43 +188,51 @@ class DataForProfileLoader{
 
 					let ca = moment().format("YYYY-MM-DD HH:mm:ss");
 					if(d.type == "location_flow"){
-						//let location_flow_check = null;
-						//if(location_flow_all)
-						//	location_flow_check = location_flow_all.find(x => x.profile_id == profile.id && x.date_time_id == date_time.id);
-						//if(!location_flow_check){
 							tableLocationFlow.rows.add(date_time.id, profile.id, modelling.id, additional_description.id, description_id, v.value, ca, ca);
-						//}
 					}else if(d.type == "location_stage"){
-						//Ellenőrizni, hogy van-e már ilyen
-						//TODO: Optimalizáció
-						//let location_stage_check = await LocationStage.findByProfileDateTimeModelling(profile.id, date_time.id, modelling.id);
-						//if(!location_stage_check){
 							tableLocationStage.rows.add(date_time.id, profile.id, modelling.id, additional_description.id, description_id, v.value, ca, ca);
-						//}
 					}
+
 				});
+
+				//Bulk insert hívása
+			    let request = new sql.Request(dbConn);
+			    let result_location_flow = await request.bulk(tableLocationFlow);
+			    let result_location_stage = await request.bulk(tableLocationStage);
+
+			    let request_move_location_flow = new sql.Request(dbConn);
+	    		let result_move_location_flow = await request_move_location_flow.query('INSERT INTO '+
+	    			'dbo.LocationFlow(date_time_id, profile_id, modelling_id, additional_description_id, description_id, value, updatedAt, createdAt) '+
+	    			'SELECT date_time_id, profile_id, modelling_id, additional_description_id, description_id, value, updatedAt, createdAt FROM dbo.TmpLocationFlow; '+
+	    			'TRUNCATE TABLE dbo.TmpLocationFlow;');
+
+	    		let request_move_location_stage = new sql.Request(dbConn);
+		    	let result_move_location_stage = await request_move_location_stage.query('INSERT INTO '+
+		    		'dbo.LocationStage(date_time_id, profile_id, modelling_id, additional_description_id, description_id, value, updatedAt, createdAt) '+
+		    		'SELECT date_time_id, profile_id,modelling_id, additional_description_id, description_id, value, updatedAt, createdAt FROM dbo.TmpLocationStage; '+
+		    		'TRUNCATE TABLE dbo.TmpLocationStage;');
+
 			}
 
-			console.log(tableLocationStage.rows);
+			//console.log(tableLocationStage.rows);
 
 			//Bulk insert hívása
-		    const request = new sql.Request(dbConn);
-		    let result_location_flow = await request.bulk(tableLocationFlow);
+		    //const request = new sql.Request(dbConn);
+		    //let result_location_flow = await request.bulk(tableLocationFlow);
 
-		    const request_move_location_flow = new sql.Request(dbConn);
-	    	let result_move_location_flow = await request_move_location_flow.query('INSERT INTO '+
-	    		'dbo.LocationFlow(date_time_id, profile_id, modelling_id, additional_description_id, description_id, value, updatedAt, createdAt) '+
-	    		'SELECT date_time_id, profile_id, modelling_id, additional_description_id, description_id, value, updatedAt, createdAt FROM dbo.TmpLocationFlow; '+
-	    		'TRUNCATE TABLE dbo.TmpLocationFlow;');
+		    // const request_move_location_flow = new sql.Request(dbConn);
+	    	// let result_move_location_flow = await request_move_location_flow.query('INSERT INTO '+
+	    	// 	'dbo.LocationFlow(date_time_id, profile_id, modelling_id, additional_description_id, description_id, value, updatedAt, createdAt) '+
+	    	// 	'SELECT date_time_id, profile_id, modelling_id, additional_description_id, description_id, value, updatedAt, createdAt FROM dbo.TmpLocationFlow; '+
+	    	// 	'TRUNCATE TABLE dbo.TmpLocationFlow;');
 
 
-	    	let result_location_stage = await request.bulk(tableLocationStage);
-
-		    const request_move_location_stage = new sql.Request(dbConn);
-	    	let result_move_location_stage = await request_move_location_stage.query('INSERT INTO '+
-	    		'dbo.LocationStage(date_time_id, profile_id, modelling_id, additional_description_id, description_id, value, updatedAt, createdAt) '+
-	    		'SELECT date_time_id, profile_id,modelling_id, additional_description_id, description_id, value, updatedAt, createdAt FROM dbo.TmpLocationStage; '+
-	    		'TRUNCATE TABLE dbo.TmpLocationStage;');
+	    	//let result_location_stage = await request.bulk(tableLocationStage);
+		    // const request_move_location_stage = new sql.Request(dbConn);
+	    	// let result_move_location_stage = await request_move_location_stage.query('INSERT INTO '+
+	    	// 	'dbo.LocationStage(date_time_id, profile_id, modelling_id, additional_description_id, description_id, value, updatedAt, createdAt) '+
+	    	// 	'SELECT date_time_id, profile_id,modelling_id, additional_description_id, description_id, value, updatedAt, createdAt FROM dbo.TmpLocationStage; '+
+	    	// 	'TRUNCATE TABLE dbo.TmpLocationStage;');
 
 		    pool.close();
 

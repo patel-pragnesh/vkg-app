@@ -95,16 +95,16 @@ block content
 								else if (location_flows_page)
 									thead
 										tr
-											th Szelvény darabszám (db)
-											th Adat időpont
+											th Adat darabszám (db)
+											th Leírás
 											th.text-right Műveletek
 									tbody
 										each l_f in location_flows_page
 											tr
 												td=l_f.count
-												td=l_f.time
+												td=l_f.description
 												td
-													a(href="/modelling_import/location_flow/"+modelling.id+"/"+l_f.time_id+"/delete" class="btn btn-info pull-right mr5")
+													a(href="/modelling_import/location_flow/"+modelling.id+"/"+l_f.description_id+"/delete" class="btn btn-info pull-right mr5")
 														span.glyphicon.glyphicon-erase
 						div.panel-footer
 							ul.pagination.m0.pull-right
