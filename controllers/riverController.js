@@ -22,15 +22,15 @@ exports.river_detail = async function(req, res, next){
 		{id: 4, name: "Vízkészlet"},
 		{id: 5, name: "Vízkivételek hozamok"},
 		{id: 6, name: "Vízbeeresztés hozamok"},
-		{id: 7, name: "Beszivárgás a mederbe"},
-		{id: 8, name: "Elszivárgás a mederből"},
+		//{id: 7, name: "Beszivárgás a mederbe"}, //Peremfeltétel, még nincs
+		//{id: 8, name: "Elszivárgás a mederből"}, //Peremfeltétel, még nincs
 		{id: 9, name: "Csapadékátlag"},
-		{id: 10, name: "Párolgás"},
-		{id: 11, name: "Evapotranspiráció"},
-		{id: 12, name: "Hőmérséklet"},
-		{id: 13, name: "Zsilipadatok"},
-		{id: 14, name: "Vízkészlet változása idősor grafikon"},
-		{id: 15, name: "Vízkészlet változás hossz-szelvény"},
+		//{id: 10, name: "Párolgás"}, //Nincs és nem is lesznek ilyen adatok
+		//{id: 11, name: "Evapotranspiráció"},
+		//{id: 12, name: "Hőmérséklet"},
+		//{id: 13, name: "Zsilipadatok"},
+		//{id: 14, name: "Vízkészlet változása idősor grafikon"},
+		//{id: 15, name: "Vízkészlet változás hossz-szelvény"},
 	];
 	let profile_names = [];
 	if(profiles){
