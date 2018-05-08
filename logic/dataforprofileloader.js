@@ -25,9 +25,7 @@ class DataForProfileLoader{
 		let that = this;
 		try{
 			let data_from_file = await readFile(that.file_path, 'latin1');
-			
 			let line_array = data_from_file.split('\n');
-			
 			let data = [];
 			
 			while(line_array[0] != 'END FILE\r'){ 
@@ -45,8 +43,8 @@ class DataForProfileLoader{
 				//TODO: A splittelt array-ből ez fixen kinyerhető
 				if(series[0].includes('LOCATION-FLOW')){
 					type = 'location_flow';
-				}else if(series[0].includes('LOCATION-STAGE')){
-					type = 'location_stage';
+				}else if(series[0].includes('LOCATION-ELEV')){
+					type = 'location_elev';
 				}else{
 					return null;
 				} 
@@ -100,28 +98,6 @@ class DataForProfileLoader{
 
 			let pool = new sql.ConnectionPool(sqlConfig);
 			let dbConn = await pool.connect();
-
-		 //    const tableLocationFlow = new sql.Table('TmpLocationFlow') // or temporary table, e.g. #temptable
-			// //tableLocationFlow.create = true
-			// tableLocationFlow.columns.add('date_time_id', sql.Int, {nullable: true});
-			// tableLocationFlow.columns.add('profile_id', sql.Int, {nullable: true});
-			// tableLocationFlow.columns.add('modelling_id', sql.Int, {nullable: true});
-			// tableLocationFlow.columns.add('additional_description_id', sql.Int, {nullable: true});
-			// tableLocationFlow.columns.add('description_id', sql.Int, {nullable: true});
-			// tableLocationFlow.columns.add('value', sql.Float, {nullable: true});			
-			// tableLocationFlow.columns.add('updatedAt', sql.NVarChar, {nullable: true});
-			// tableLocationFlow.columns.add('createdAt', sql.NVarChar, {nullable: true});
-
-			// const tableLocationStage = new sql.Table('TmpLocationStage') // or temporary table, e.g. #temptable
-			// // tableLocationStage.create = true
-			// tableLocationStage.columns.add('date_time_id', sql.Int, {nullable: true});
-			// tableLocationStage.columns.add('profile_id', sql.Int, {nullable: true});
-			// tableLocationStage.columns.add('modelling_id', sql.Int, {nullable: true});
-			// tableLocationStage.columns.add('additional_description_id', sql.Int, {nullable: true});
-			// tableLocationStage.columns.add('description_id', sql.Int, {nullable: true});
-			// tableLocationStage.columns.add('value', sql.Float, {nullable: true});			
-			// tableLocationStage.columns.add('updatedAt', sql.NVarChar, {nullable: true});
-			// tableLocationStage.columns.add('createdAt', sql.NVarChar, {nullable: true});
 
 			let data_to_insert = [];
 			for(let i=0; i<that.data.length; i++){
@@ -189,7 +165,7 @@ class DataForProfileLoader{
 					let ca = moment().format("YYYY-MM-DD HH:mm:ss");
 					if(d.type == "location_flow"){
 							tableLocationFlow.rows.add(date_time.id, profile.id, modelling.id, additional_description.id, description_id, v.value, ca, ca);
-					}else if(d.type == "location_stage"){
+					}else if(d.type == "location_elev"){
 							tableLocationStage.rows.add(date_time.id, profile.id, modelling.id, additional_description.id, description_id, v.value, ca, ca);
 					}
 

@@ -179,22 +179,20 @@ exports.data_for_profile_get = async function(req, res, next){
     let page_count = 0;
     let page = req.query.page ? req.query.page - 1 : 0;
     let location_flows = await LocationFlow.findByModellingGroupByUserDescription(req.params.id);
-    let location_flows_page = [];
-    console.log(location_flows);
-    if(location_flows){
-        //console.log(location_flows.length);
-        page_count = location_flows.length/countPerPage;
-        //console.log(page);
-        // let location_flows_page = location_flows ? location_flows.slice(page, page + countPerPage) : [];
-        location_flows_page = location_flows.slice(page*countPerPage, page * countPerPage + countPerPage);
-        console.log(location_flows_page);
-    }    
+    let location_stages = await LocationStage.findByModellingGroupByUserDescription(req.params.id);
+    let locations = location_flows.concat(location_stages);
+    let locations_page = [];
+    if(locations){
+        page_count = locations.length/countPerPage;
+        locations_page = locations.slice(page*countPerPage, page * countPerPage + countPerPage);
+        //console.log(locations_page);
+    } 
 
     const m = await Modelling.findById(req.params.id);
     const form_link = "/modelling_import/"+m.id+"/data_for_profile";
     const data_type = "data_for_profile"
     res.render('modelling_import/data', { title: 'Modellezés hossz-szelvény adatok', 
-        modelling: m, form_link: form_link, location_flows_page: location_flows_page, 
+        modelling: m, form_link: form_link, locations_page: locations_page, 
         page_count: page_count, data_type:data_type });
 }
 

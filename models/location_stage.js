@@ -81,6 +81,34 @@ class LocationStage{
 	    }
 	}
 
+	static async findByModellingGroupByUserDescription(n){
+		//console.log(n);
+	    try {
+	    	let pool = new sql.ConnectionPool(sqlConfig);
+	    	await pool.connect();
+	        let result = await pool.request()
+	            .input('input_parameter1', sql.Int, n)
+	            .query('SELECT count(LocationStage.modelling_id) as modelling_count, LocationStage.description_id, CAST([Description].user_description AS NVARCHAR(200)) user_description '+
+	            	'FROM LocationStage '+
+	            	'LEFT JOIN Description ON LocationStage.description_id = Description.id '+
+	            	'WHERE LocationStage.modelling_id = @input_parameter1 '+
+	            	'GROUP BY LocationStage.description_id, CAST([Description].user_description AS NVARCHAR(200)) ORDER BY LocationStage.description_id');
+	        pool.close();
+	        //console.log(result.recordset[0]);
+	        if(result.recordset.length != 0){
+	        	let returnArray = [];
+	        	for(let r of result.recordset){
+	        		returnArray.push({count: r.modelling_count, description: r.user_description, description_id: r.description_id});
+	        	}
+	        	return returnArray;
+	        }else
+	        	return null;
+
+	    } catch (err) {
+	        console.log(err);
+	    }
+	}
+
 	static async findByProfile(n){
 	    try {
 	    	let pool = new sql.ConnectionPool(sqlConfig);

@@ -122,7 +122,7 @@ class LocationFlow{
 	            	'WHERE LocationFlow.modelling_id = @input_parameter1 '+
 	            	'GROUP BY LocationFlow.description_id, CAST([Description].user_description AS NVARCHAR(200)) ORDER BY LocationFlow.description_id');
 	        pool.close();
-	        console.log(result.recordset[0]);
+	        //console.log(result.recordset[0]);
 	        if(result.recordset.length != 0){
 	        	let returnArray = [];
 	        	for(let r of result.recordset){
