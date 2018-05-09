@@ -3,8 +3,9 @@ const Profile = require('../models/profile');
 const DataMeta = require('../models/data_meta');
 const Flow = require('../models/flow');
 const Stage = require('../models/stage');
-const RiverMongoDB = require('../models/mongodb_river');
-const ProfileMongoDB = require('../models/mongodb_profile');
+//const RiverMongoDB = require('../models/mongodb_river');
+//const ProfileMongoDB = require('../models/mongodb_profile');
+const Modelling = require('../models/modelling');
 
 exports.index = function(req, res){
 	res.send('TODO: vízfolyások megjelenítése');
@@ -12,7 +13,9 @@ exports.index = function(req, res){
 
 exports.river_detail = async function(req, res, next){
 	let river = await River.findById(req.params.id);
-	let profiles = await Profile.findByRiver(req.params.id);
+	let modellings = await Modelling.findByRiverId(req.params.id);
+	let ud = await DataMeta.selectUserDescriptions('FLOW', 8);
+	//let profiles = await Profile.findByRiver(req.params.id);
 	let act_data_type = req.params.data_type;
 	data_types = [
 		{id: 0, name: "Vízhozam idősor"},
@@ -32,88 +35,106 @@ exports.river_detail = async function(req, res, next){
 		//{id: 14, name: "Vízkészlet változása idősor grafikon"},
 		//{id: 15, name: "Vízkészlet változás hossz-szelvény"},
 	];
-	let profile_names = [];
-	if(profiles){
-		for(let i=0; i<profiles.length; i++){
-			profile_names.push(profiles[i].name);
-		}
-	}	
+	// let profile_names = [];
+	// if(profiles){
+	// 	for(let i=0; i<profiles.length; i++){
+	// 		profile_names.push(profiles[i].name);
+	// 	}
+	// }	
 	res.render('river/index', {
 		title: river.name, 
 		river: river, 
 		river_page: true, 
+		modellings: modellings,
 		data_types: data_types, 
-		profiles: profiles, 
-		profile_names: profile_names,
+		//profiles: profiles, 
+		//profile_names: profile_names,
 		act_data_type: act_data_type
 	});
 }
 
+//Ajax hívás az adatbetöltések lekérdezésére modellezésenként
+exports.get_time_data_dataloads_by_modelling_post = async function(req, res){
+	let modelling_id = req.body.modelling_id;
+	let data_type = req.body.data_type;
+	//console.log(modelling_id);
+	let type_filer = data_type == 0 ? 'FLOW' : 'STAGE';
+	let data_meta_array = await DataMeta.selectUserDescriptions(type_filer, modelling_id);
+	res.json(data_meta_array);
+}
+
+//Ajax hívás az adatbetöltéshez tartozó profilok lekérdezésére
+exports.get_time_data_profiles_by_dataload_post = async function(req, res){
+	let user_description = req.body.user_description;
+	let profile_array = await DataMeta.selectProfilesByUserDescription(user_description);
+	res.json(profile_array);
+}
+
 //Ajax hívás az adatok megjelenítésére
 //Visszaadja az adatbetöltéseket és a hozzájuk tartozó adatokat
-exports.get_data_by_type_post_opt = async function(req, res){
-	//console.log("Data request received.");
-	let river_id = req.body.river_id;
-	let data_type = req.body.data_type;
-	let profile_id = req.body.profile_id;
-	let date_start = req.body.date_start;
-	let date_end = req.body.date_end;
+// exports.get_data_by_type_post_opt = async function(req, res){
+// 	//console.log("Data request received.");
+// 	let river_id = req.body.river_id;
+// 	let data_type = req.body.data_type;
+// 	let profile_id = req.body.profile_id;
+// 	let date_start = req.body.date_start;
+// 	let date_end = req.body.date_end;
 	
-	if(data_type == 0){	//FLOW
-		//Összes DataMeta lekérése, ami a kijelölt dátum tartományba esik és FLOW típusú és profilhoz köthető
-		let data_meta_array = await DataMeta.findByDate(profile_id, 'FLOW', date_start, date_end)
+// 	if(data_type == 0){	//FLOW
+// 		//Összes DataMeta lekérése, ami a kijelölt dátum tartományba esik és FLOW típusú és profilhoz köthető
+// 		let data_meta_array = await DataMeta.findByDate(profile_id, 'FLOW', date_start, date_end)
 		
-		if(data_meta_array){
-			//Összes FLOW lekérése a DataMetakból, ami a dátum tartományba esik			
-	    	for(let data_meta of data_meta_array){
-	    		data_meta.datapoints = await Flow.findByMetaDataAndDate(data_meta.id, date_start, date_end);
-	    	}
-    	}
+// 		if(data_meta_array){
+// 			//Összes FLOW lekérése a DataMetakból, ami a dátum tartományba esik			
+// 	    	for(let data_meta of data_meta_array){
+// 	    		data_meta.datapoints = await Flow.findByMetaDataAndDate(data_meta.id, date_start, date_end);
+// 	    	}
+//     	}
 
-    	res.json(data_meta_array);
-	}else if(data_type == 1){	//STAGE
-		//Összes DataMeta lekérése, ami a kijelölt dátum tartományba esik és FLOW típusú és profilhoz köthető
-		let data_meta_array = await DataMeta.findByDate(profile_id, 'STAGE', date_start, date_end)
+//     	res.json(data_meta_array);
+// 	}else if(data_type == 1){	//STAGE
+// 		//Összes DataMeta lekérése, ami a kijelölt dátum tartományba esik és FLOW típusú és profilhoz köthető
+// 		let data_meta_array = await DataMeta.findByDate(profile_id, 'STAGE', date_start, date_end)
 		
-		if(data_meta_array){
-			//Összes STAGE lekérése a DataMetakból, ami a dátum tartományba esik			
-	    	for(let data_meta of data_meta_array){
-	    		data_meta.datapoints = await Stage.findByMetaDataAndDate(data_meta.id, date_start, date_end);
-	    	}
-    	}
+// 		if(data_meta_array){
+// 			//Összes STAGE lekérése a DataMetakból, ami a dátum tartományba esik			
+// 	    	for(let data_meta of data_meta_array){
+// 	    		data_meta.datapoints = await Stage.findByMetaDataAndDate(data_meta.id, date_start, date_end);
+// 	    	}
+//     	}
 
-    	res.json(data_meta_array);
-	}
+//     	res.json(data_meta_array);
+// 	}
 
-}
+// }
 
 //Ajax hívás az adatok megjelenítésére
-exports.get_coordinates_post = async function(req, res){
-	//console.log("Data request received.");
-	let river_id = req.body.river_id;
+// exports.get_coordinates_post = async function(req, res){
+// 	//console.log("Data request received.");
+// 	let river_id = req.body.river_id;
 
-	RiverMongoDB.find({river_id: river_id}).sort({sort: 'asc'}).exec(function(err, result){
-		if(err){console.log(err);}
-		else{
-			//console.log(result);
-			res.json(result);
-		}
-	});
-}
+// 	RiverMongoDB.find({river_id: river_id}).sort({sort: 'asc'}).exec(function(err, result){
+// 		if(err){console.log(err);}
+// 		else{
+// 			//console.log(result);
+// 			res.json(result);
+// 		}
+// 	});
+// }
 
 //Ajax hívás a profil adatok megjelenítésére
-exports.get_profiles_post = async function(req, res){
-	//console.log("Data request received.");
-	let river_id = req.body.river_id;
+// exports.get_profiles_post = async function(req, res){
+// 	//console.log("Data request received.");
+// 	let river_id = req.body.river_id;
 
-	ProfileMongoDB.find({river_id: river_id}).exec(function(err, result){
-		if(err){console.log(err);}
-		else{
-			//console.log(result);
-			res.json(result);
-		}
-	});
-}
+// 	ProfileMongoDB.find({river_id: river_id}).exec(function(err, result){
+// 		if(err){console.log(err);}
+// 		else{
+// 			//console.log(result);
+// 			res.json(result);
+// 		}
+// 	});
+// }
 
 // exports.save_profile_coordinate_post = async function(req, res){
 // 	let river_id = req.body.river_id;

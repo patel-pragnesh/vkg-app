@@ -1,12 +1,32 @@
 extends ../layout
 
 block content
+	#mySidenav.sidenav
+		a(href="javascript:void(0)" class="closebtn" onclick="closeNav()") &times;
+		div.title Szűrés
+		div.row
+			div.col-md-12
+				div.form-group
+					label(for="modelling") Modellezések
+					select(name="modelling" id="modelling" class="form-control" disabled=(modellings ? false : true))
+						if modellings
+							each m in modellings
+								option(value=m.id)=m.name
+						else
+							option(value="null") Nincs megjelenítendő adat
+			div.col-md-12
+				div.form-group
+					label(for="dataload") Adatbetöltések
+					select(name="dataload" id="dataload" class="form-control")
+			div.col-md-12
+				div.form-group
+					label(for="profile") Profilok
+					select(name="profile" id="profile" class="form-control")
+				//- div.form-group
+				//- 	label(for="datetimeselect") Időintervallum
+				//- 	input(type="text" name="datetimeselect" id="datetimeselect" class="form-control")
+				//- 	i.glyphicon.glyphicon-calendar.fa.fa-calendar
 	div.container-fluid.mt10
-		//- div.row
-		//- 	div.col-md-10
-		//- 		h1=title
-		//- 	div.col-md-2
-		//- 		a(href="#" class="btn btn-primary pull-right btn-new") Modellezések
 		div.row.river
 			div.col-md-5.river-map
 				div.panel.panel-default
@@ -17,15 +37,7 @@ block content
 							div.col-md-12
 								#map
 								<span id="info" style="position:absolute; left:15px; bottom:5px; font-weight: bold; font-family: arial; font-size: 16px; color:#000000; z-index:994;"></span>
-								//- if profiles
-								//- 	each p in profiles
-								//- 		div(class="col-md-3")
-								//- 			div(id="p_"+p.id, value=p.id, class="profile-button btn btn-success w100")=p.name
-								//- else
-								//- 	option(value="null") Nincs megjelenítendő adat
-					//- div.panel-footer
-					//- 	div.clearfix
-			div.col-md-2.river-filter
+			//- div.col-md-2.river-filter
 				div.panel.panel-default
 					div.panel-heading
 						h3.panel-title Szűrés
@@ -93,25 +105,32 @@ block scripts
 			"rgba(53,167,156, .7)",
 		];
 
-		function getData(dStart, dEnd){
-			var profile_id = $('select[name=profile]').val();
-			// AJAX hívás az adatok lekérdezésére
-			$.post( "/rivers/data", 
+		function closeNav(){
+			$('#mySidenav').toggleClass('open');
+		}
+
+		function loadDataToDataloads(data_type, modelling_id){
+			$.post( "/rivers/filter/time_data/dataloads", 
 				{
-				river_id: "#{river.id}",
-				data_type: "#{act_data_type}",
-				profile_id: profile_id,
-				date_start: dStart,
-				date_end:dEnd
+					data_type: data_type,
+					modelling_id: modelling_id
 				},
 				function( data ) {
 				if(data){					
 					if(data.length){
-						dataFromQuery = data;
-						dataToAdatbetoltesek(data, profile_id);
+						//Adatbetöltések select adatainak frissítése
+						$.each(data, function(i, v){
+							console.log(v);
+							var o = $('<option>', {value: v.user_description}).text(v.user_description);
+							o.appendTo($('#dataload'));
+						});
+						loadDataToProfiles(data[0].user_description);
+						//Itt már tudjuk az aktuális adatbetöltéshez tartozó dátum értékeket:
+						//TODO: DatePicker min és max értékének beállítása
+						//TODO: DatePicker aktuális beállítása az utolsó adat-1 hónap értékre
 					}else{
-						var c1 = $('<div class="col-md-12">Nincs megjelenítendő adat.</div>');
-						c1.appendTo($('#data_table'));
+						//- var c1 = $('<div class="col-md-12">Nincs megjelenítendő adat.</div>');
+						//- c1.appendTo($('#data_table'));
 					}
 				}else{
 					
@@ -119,80 +138,130 @@ block scripts
 			});
 		}
 
-		function dataToAdatbetoltesek(d, profile_id){
-			console.log(d);
-			$('#adatbetoltesek option').remove();
-			selectedAdatbetoltes = 0;
-			$.each(d, function(i, v){
-				var o = $('<option>', {value: i}).text(v.user_description);
-				o.appendTo($('#adatbetoltesek'));
-			});
-			dataToChart(myLineChart, d, selectedAdatbetoltes);
-			dataToAdatok(d, selectedAdatbetoltes, profile_id);
-		}
-
-		function dataToAdatok(d, nr, profile_id){
-			$('#data_table').html('');
-			$('#data_table_head').html('');
-			//$('#data_table_datetime').html('');
-			//$('#data_table_profile').html('');
-
-			$.each(d, function(i, v){
-				if(i == nr){
-					$('#data_table_datetime').html('Idő: ' + dateStart + ' - ' + dateEnd);
-					$('#data_table_profile').html('Szelvény: ' + $('select[name=profile] option[value="'+profile_id+'"]').text());
-					var h1 = $('<div class="col-md-6">'+'Időpont'+'</div>');
-					var h2 = $('<div class="col-md-6">'+'Érték'+'</div>');
-					h1.appendTo($('#data_table_head'));
-					h2.appendTo($('#data_table_head'));
-					$.each(v.datapoints, function(j,w){
-						var bg_color = '';
-						if(j%2)
-							bg_color = 'gray-bg';
-						else
-							bg_color = 'white-bg';
-
-						var c1 = $('<div class="col-md-6 '+bg_color+'">'+moment(w.date_time_for).format('YYYY. MM. DD. HH:ss')+'</div>');
-						var c2 = $('<div class="col-md-6 '+bg_color+'">'+w.value+'</div>');
-						c1.appendTo($('#data_table'));
-						c2.appendTo($('#data_table'));
-					});
+		function loadDataToProfiles(dataload_user_description){
+			$.post( "/rivers/filter/time_data/profiles", 
+				{
+					user_description: dataload_user_description
+				},
+				function( data ) {
+				if(data){					
+					if(data.length){
+						//Adatbetöltések select adatainak frissítése
+						$.each(data, function(i, v){
+							console.log(v);
+							var o = $('<option>', {value: v.profile_id}).text(v.profile_name);
+							o.appendTo($('#profile'));
+						});
+					}else{
+						//- var c1 = $('<div class="col-md-12">Nincs megjelenítendő adat.</div>');
+						//- c1.appendTo($('#data_table'));
+					}
+				}else{
 					
 				}
 			});
 		}
 
-		function dataToChart(c, d, nr){
-			var dataset_array = [];
-			$.each(d, function(i, v){
-				if(i == nr){
-					var data_set = {
-				      //label: v.projekt_name,
-				      data: [
-				      		//- {
-					        //- 	x: -12,
-					        //-     y: 70
-					        //-     }, {
-					        //-     x: 15,
-					        //-     y: 35
-					        //- }
-				            ],
-				      fill: false,
-				      backgroundColor: graph_color_array[i],
-				      borderColor: graph_color_array[i],
-				      // pointRadius: 0
-				    }
-					$.each(v.datapoints, function(j,w){
-						data_set.data.push({x:moment(w.date_time_for).format('YYYY. MM. DD. HH:ss'), y: w.value});
-					});
-					dataset_array.push(data_set);
-				}
-			});
-			c.data.datasets = dataset_array;
-			c.update();
-		}
+		//- function getData(dStart, dEnd){
+		//- 	var profile_id = $('select[name=profile]').val();
+		//- 	// AJAX hívás az adatok lekérdezésére
+		//- 	$.post( "/rivers/data", 
+		//- 		{
+		//- 		river_id: "#{river.id}",
+		//- 		data_type: "#{act_data_type}",
+		//- 		profile_id: profile_id,
+		//- 		date_start: dStart,
+		//- 		date_end:dEnd
+		//- 		},
+		//- 		function( data ) {
+		//- 		if(data){					
+		//- 			if(data.length){
+		//- 				dataFromQuery = data;
+		//- 				dataToAdatbetoltesek(data, profile_id);
+		//- 			}else{
+		//- 				var c1 = $('<div class="col-md-12">Nincs megjelenítendő adat.</div>');
+		//- 				c1.appendTo($('#data_table'));
+		//- 			}
+		//- 		}else{
+					
+		//- 		}
+		//- 	});
+		//- }
 
-	script(src="/javascripts/init_datepicker.js")
+		//- function dataToAdatbetoltesek(d, profile_id){
+		//- 	console.log(d);
+		//- 	$('#adatbetoltesek option').remove();
+		//- 	selectedAdatbetoltes = 0;
+		//- 	$.each(d, function(i, v){
+		//- 		var o = $('<option>', {value: i}).text(v.user_description);
+		//- 		o.appendTo($('#adatbetoltesek'));
+		//- 	});
+		//- 	dataToChart(myLineChart, d, selectedAdatbetoltes);
+		//- 	dataToAdatok(d, selectedAdatbetoltes, profile_id);
+		//- }
+
+		//- function dataToAdatok(d, nr, profile_id){
+		//- 	$('#data_table').html('');
+		//- 	$('#data_table_head').html('');
+		//- 	//$('#data_table_datetime').html('');
+		//- 	//$('#data_table_profile').html('');
+
+		//- 	$.each(d, function(i, v){
+		//- 		if(i == nr){
+		//- 			$('#data_table_datetime').html('Idő: ' + dateStart + ' - ' + dateEnd);
+		//- 			$('#data_table_profile').html('Szelvény: ' + $('select[name=profile] option[value="'+profile_id+'"]').text());
+		//- 			var h1 = $('<div class="col-md-6">'+'Időpont'+'</div>');
+		//- 			var h2 = $('<div class="col-md-6">'+'Érték'+'</div>');
+		//- 			h1.appendTo($('#data_table_head'));
+		//- 			h2.appendTo($('#data_table_head'));
+		//- 			$.each(v.datapoints, function(j,w){
+		//- 				var bg_color = '';
+		//- 				if(j%2)
+		//- 					bg_color = 'gray-bg';
+		//- 				else
+		//- 					bg_color = 'white-bg';
+
+		//- 				var c1 = $('<div class="col-md-6 '+bg_color+'">'+moment(w.date_time_for).format('YYYY. MM. DD. HH:ss')+'</div>');
+		//- 				var c2 = $('<div class="col-md-6 '+bg_color+'">'+w.value+'</div>');
+		//- 				c1.appendTo($('#data_table'));
+		//- 				c2.appendTo($('#data_table'));
+		//- 			});
+					
+		//- 		}
+		//- 	});
+		//- }
+
+		//- function dataToChart(c, d, nr){
+		//- 	var dataset_array = [];
+		//- 	$.each(d, function(i, v){
+		//- 		if(i == nr){
+		//- 			var data_set = {
+		//- 		      //label: v.projekt_name,
+		//- 		      data: [
+		//- 		      		//- {
+		//- 			        //- 	x: -12,
+		//- 			        //-     y: 70
+		//- 			        //-     }, {
+		//- 			        //-     x: 15,
+		//- 			        //-     y: 35
+		//- 			        //- }
+		//- 		            ],
+		//- 		      fill: false,
+		//- 		      backgroundColor: graph_color_array[i],
+		//- 		      borderColor: graph_color_array[i],
+		//- 		      // pointRadius: 0
+		//- 		    }
+		//- 			$.each(v.datapoints, function(j,w){
+		//- 				data_set.data.push({x:moment(w.date_time_for).format('YYYY. MM. DD. HH:ss'), y: w.value});
+		//- 			});
+		//- 			dataset_array.push(data_set);
+		//- 		}
+		//- 	});
+		//- 	c.data.datasets = dataset_array;
+		//- 	c.update();
+		//- }
+
+	//- script(src="/javascripts/init_datepicker.js")
 	script(src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.js")
 	script(src="/javascripts/river_chart.js")
 	script(type="text/javascript").
@@ -206,16 +275,19 @@ block scripts
 	script(src="/javascripts/init_arcgis_map.js")
 	script(type="text/javascript").
 		$(document).ready(function () {
-			$('#adatbetoltesek').change(function(){
-				var selectedAdatbetoltes = this.value;
-				dataToChart(myLineChart, dataFromQuery, selectedAdatbetoltes);
-				dataToAdatok(dataFromQuery, selectedAdatbetoltes);
-			});
+			var selectedModelling = $('select[name=modelling]').val();
+			loadDataToDataloads("#{act_data_type}",selectedModelling);
 
-			$('#profile').change(function(){
-				var selectedProfile = $( "#profile option:selected" ).text();
-				var cssClassId = selectedProfile.replace('.','_');
-				$(".marker").removeClass("selected_profile");
-				$(".marker.P_"+cssClassId).addClass("selected_profile");
-			});
+			//- $('#adatbetoltesek').change(function(){
+			//- 	var selectedAdatbetoltes = this.value;
+			//- 	dataToChart(myLineChart, dataFromQuery, selectedAdatbetoltes);
+			//- 	dataToAdatok(dataFromQuery, selectedAdatbetoltes);
+			//- });
+
+			//- $('#profile').change(function(){
+			//- 	var selectedProfile = $( "#profile option:selected" ).text();
+			//- 	var cssClassId = selectedProfile.replace('.','_');
+			//- 	$(".marker").removeClass("selected_profile");
+			//- 	$(".marker.P_"+cssClassId).addClass("selected_profile");
+			//- });
 		});

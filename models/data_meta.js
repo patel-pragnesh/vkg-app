@@ -146,6 +146,62 @@ class DataMeta{
 	    }
 	}
 
+	static async selectUserDescriptions(type, modelling_id){
+		let _type = type;
+		let _modelling_id = modelling_id;
+		try {	    	
+	    	let pool = new sql.ConnectionPool(sqlConfig);
+	    	await pool.connect();
+	        let result = await pool.request()
+	            .input('modelling_id', sql.Int, modelling_id)
+	            .input('type', sql.NVarChar, type)
+				.query('SELECT CAST([user_description] AS NVARCHAR(200)) user_description, date_from, date_to '+
+						'FROM [vizkeszlet_gazdalkodas].[dbo].[Data_meta] '+
+						'WHERE [type]=@type AND [modelling_id]=@modelling_id GROUP BY CAST([user_description] AS NVARCHAR(200)), date_from, date_to');
+	        pool.close();
+	        //console.log(result.recordset);
+	        if(result.recordset.length != 0){
+	        	let returnArray = [];
+	        	for(let r of result.recordset){
+	        		returnArray.push({user_description: r.user_description, date_from: r.date_from, date_to: r.date_to});
+	        	}
+	        	return returnArray;
+	        }
+	        else
+	        	return null;
+
+	    } catch (err) {
+	        console.log(err);
+	    }
+	}
+
+	static async selectProfilesByUserDescription(user_description){
+		try {	    	
+	    	let pool = new sql.ConnectionPool(sqlConfig);
+	    	await pool.connect();
+	        let result = await pool.request()
+	            .input('user_description', sql.NVarChar, user_description)
+				.query('SELECT [Data_meta].profile_id, [Profile].name AS profile_name FROM [Data_meta] '+
+				'LEFT JOIN [Profile] ON [Data_meta].profile_id = [Profile].id '+
+				'WHERE CAST([user_description] AS NVARCHAR(200)) = @user_description '+
+				'ORDER BY [Profile].name');
+	        pool.close();
+	        //console.log(result.recordset);
+	        if(result.recordset.length != 0){
+	        	let returnArray = [];
+	        	for(let r of result.recordset){
+	        		returnArray.push({profile_name: r.profile_name, profile_id: r.profile_id});
+	        	}
+	        	return returnArray;
+	        }
+	        else
+	        	return null;
+
+	    } catch (err) {
+	        console.log(err);
+	    }
+	}
+
 	async save(){
 		let that = this;
 		try{

@@ -73,6 +73,11 @@ block body
 							i.glyphicon.glyphicon-align-left
 							span
 					h2=title
+					if(river_page)
+						.navbar-header.pull-right
+							button#rightSidebarCollapse.btn.btn-info.navbar-btn(type="button")
+								i.glyphicon.glyphicon-filter
+								span
 					#bs-example-navbar-collapse-1.collapse.navbar-collapse
 						if user
 							ul.nav.navbar-nav.navbar-right

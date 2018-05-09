@@ -67,6 +67,29 @@ class Modelling{
 	    }
 	}
 
+	static async findByRiverId(id){		
+	    try {
+	    	let pool = new sql.ConnectionPool(sqlConfig);
+	    	await pool.connect();
+			let result = await pool.request()
+			.input('input_parameter', sql.Int, id)
+			.query('SELECT Modelling.* FROM Modelling WHERE Modelling.river_id = @input_parameter');
+	        pool.close();
+	        if(result.recordset.length != 0){
+	        	let returnArray = [];
+	        	for(let r of result.recordset){
+	        		returnArray.push(new Modelling(r.id, r.name, r.description, r.date_for, r.river_id, r.river_name));
+	        	}
+	        	return returnArray;
+	        }
+	        else
+	        	return null;
+
+	    } catch (err) {
+	    	console.log(err);
+	    }
+	}
+
 	async save(){
 		let that = this;
 		try{

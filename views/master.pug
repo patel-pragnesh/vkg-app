@@ -36,5 +36,8 @@ html
 					$('a[aria-expanded=true]').attr('aria-expanded', 'false');
 					$('.navbar.navbar-fixed-top').toggleClass('nav-expand');
 				});
+				$('#rightSidebarCollapse').on('click', function () {
+					$('#mySidenav').toggleClass('open');
+				});
 			});	
 		block scripts
