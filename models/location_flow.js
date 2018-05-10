@@ -109,6 +109,14 @@ class LocationFlow{
 	    }
 	}
 
+	//!!!NEM JÓ LEKÉRDEZÉS MERT TIMEOUTOL!!!
+	select [description_id],b.user_description
+	from
+	(
+	SELECT DISTINCT [description_id] FROM [vizkeszlet_gazdalkodas].[dbo].[LocationFlow] a
+	  WHERE [modelling_id]=8
+	) a
+	LEFT JOIN [vizkeszlet_gazdalkodas].[dbo].[Description] b ON a.description_id = b.id
 	static async findByModellingGroupByUserDescription(n){
 		//console.log(n);
 	    try {

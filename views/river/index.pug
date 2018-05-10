@@ -18,17 +18,18 @@ block content
 				div.form-group
 					label(for="dataload") Adatbetöltések
 					select(name="dataload" id="dataload" class="form-control")
-			div.col-md-12
-				div.form-group
-					label(for="profile") Profilok
-					select(name="profile" id="profile" class="form-control")
+			if(post_link_name == "time_data")
+				div.col-md-12
+					div.form-group
+						label(for="profile") Profilok
+						select(name="profile" id="profile" class="form-control")
 			div.col-md-12
 				div.form-group
 					label(for="datetimeselect") Időintervallum
 					input(type="text" name="datetimeselect" id="datetimeselect" class="form-control")
 					i.glyphicon.glyphicon-calendar.fa.fa-calendar
 			div.col-md-12
-				input(type="button" class="get-data-button btn btn-primary pull-right" value="Lekérdezés")
+				input(type="button" id="dataget_btn" class="get-data-button btn btn-primary pull-right" value="Lekérdezés")
 	div.container-fluid.mt10
 		div.row.river
 			div.col-md-5.river-map
@@ -40,39 +41,6 @@ block content
 							div.col-md-12
 								#map
 								<span id="info" style="position:absolute; left:15px; bottom:5px; font-weight: bold; font-family: arial; font-size: 16px; color:#000000; z-index:994;"></span>
-			//- div.col-md-2.river-filter
-				div.panel.panel-default
-					div.panel-heading
-						h3.panel-title Szűrés
-					div.panel-body
-						div.row
-							div.col-md-12
-								div.form-group
-									label(for="profile") Szelvény
-									select(name="profile" id="profile" class="form-control" disabled=(profiles ? false : true))
-										if profiles
-											each p in profiles
-												option(value=p.id)=p.name
-										else
-											option(value="null") Nincs megjelenítendő adat
-								div.form-group
-									label(for="datetimeselect") Időintervallum
-									input(type="text" name="datetimeselect" id="datetimeselect" class="form-control")
-									i.glyphicon.glyphicon-calendar.fa.fa-calendar
-					div.panel-footer
-						input(type="button" class="get-data-button btn btn-primary pull-right" value="Lekérdezés")
-						div.clearfix
-				div.panel.panel-default
-					div.panel-heading
-						h3.panel-title Adatbetöltések
-					div.panel-body
-						div.row
-							//- #adatbetoltesek
-							div.col-md-12
-								div.form-group
-									select(name="adatbetoltesek" id="adatbetoltesek" class="form-control")
-					//- div.panel-footer
-					//- 	div.clearfix
 			div.col-md-7.river-data
 				div.panel.panel-default
 					div.panel-heading
@@ -100,9 +68,8 @@ block content
 						div.clearfix
 block scripts
 	script(type="text/javascript").
+		var post_link_name = "#{post_link_name}";
 		var dateStart, dateEnd;	
-		//var dataFromQuery;
-		//var selectedAdatbetoltes;	
 		var graph_color_array = [
 			"rgba(100,80,60, .7)",
 			"rgba(53,167,156, .7)",
@@ -112,49 +79,58 @@ block scripts
 			$('#mySidenav').toggleClass('open');
 		}
 
-		function loadDataToDataloads(data_type, modelling_id){
-			$.post( "/rivers/filter/time_data/dataloads", 
+		function loadDataToDataloads(data_type, modelling_id, pageload){
+			$.post( "/rivers/filter/"+post_link_name+"/dataloads", 
 				{
 					data_type: data_type,
 					modelling_id: modelling_id
 				},
 				function( data ) {
-				if(data){					
-					if(data.length){
-						//Adatbetöltések select adatainak frissítése
-						$('#dataload option').remove();
-						$.each(data, function(i, v){
-							var o = $('<option>', {value: v.user_description}).text(v.user_description);
-							o.appendTo($('#dataload'));
-						});
-						loadDataToProfiles(data[0].user_description);
+					$('#dataload option').remove();
+					$('#profile option').remove();
+					$('#dataload').prop('disabled', false);
+					$('#profile').prop('disabled', false);
+					$('#datetimeselect').prop('disabled', false);
+					$('#dataget_btn').prop('disabled', false);
+					if(data){				
+						if(data.length){
+							//Adatbetöltések select adatainak frissítése							
+							$.each(data, function(i, v){
+								var o = $('<option>', {value: v.user_description}).text(v.user_description);
+								o.appendTo($('#dataload'));
+							});
+							loadDataToProfiles(data[0].user_description,pageload);
+						}else{
+							//- var c1 = $('<div class="col-md-12">Nincs megjelenítendő adat.</div>');
+							//- c1.appendTo($('#data_table'));
+						}
 					}else{
-						//- var c1 = $('<div class="col-md-12">Nincs megjelenítendő adat.</div>');
-						//- c1.appendTo($('#data_table'));
+						var o1 = $('<option>', {value: ''}).text('Nincs megjelenítendő adat.');
+						o1.appendTo($('#dataload'));
+						$('#dataload').prop('disabled', 'disabled');
+						var o2 = $('<option>', {value: ''}).text('Nincs megjelenítendő adat.');
+						o2.appendTo($('#profile'));
+						$('#profile').prop('disabled', 'disabled');
+						$('#datetimeselect').prop('disabled', 'disabled');
+						$('#dataget_btn').prop('disabled', 'disabled');
 					}
-				}else{
-					
-				}
 			});
 		}
 
-		function loadDataToProfiles(dataload_user_description){
-			$.post( "/rivers/filter/time_data/profiles", 
+		function loadDataToProfiles(dataload_user_description,pageload){
+			$.post( "/rivers/filter/"+post_link_name+"/profiles", 
 				{
 					user_description: dataload_user_description
 				},
 				function( data ) {
-				if(data){					
+				if(data){
 					if(data.length){
-						//Profilok select adatainak frissítése
-						$('#profile option').remove();
+						//Profilok select adatainak frissítése						
 						$.each(data, function(i, v){
-							//console.log(v);
 							var o = $('<option>', {value: v.profile_id}).text(v.profile_name);
 							o.appendTo($('#profile'));
 						});
-						//console.log(data[0]);
-						setDateTimePicker(data[0].date_from,data[0].date_to)
+						setDateTimePicker(data[0].date_from,data[0].date_to,pageload)
 					}else{
 						//- var c1 = $('<div class="col-md-12">Nincs megjelenítendő adat.</div>');
 						//- c1.appendTo($('#data_table'));
@@ -165,7 +141,7 @@ block scripts
 			});
 		}
 
-		function setDateTimePicker(mindate, maxdate){
+		function setDateTimePicker(mindate, maxdate, pageload){
 
 			moment.locale('hu');	
 			var format = 'YYYY. MM. DD.';
@@ -262,12 +238,17 @@ block scripts
 				//console.log("New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')");
 				//getData(dateStart, dateEnd);
 			});
+			if(pageload){
+				getData(dateStart, dateEnd);
+			}
 		}
 
 		function getData(dStart, dEnd){
+			//console.log(dStart);
+			console.log('Getting data...')
 			var selected_dataload = $('select[name=dataload]').val();
 			var selected_profile = $('select[name=profile]').val();
-			$.post( "/rivers/filter/time_data/data", 
+			$.post( "/rivers/filter/"+post_link_name+"/data", 
 				{
 				data_type: "#{act_data_type}",
 				profile_id: selected_profile,
@@ -277,9 +258,6 @@ block scripts
 				function( data ) {
 				if(data){					
 					if(data.length){
-						console.log(data);
-						//dataFromQuery = data;
-						//dataToAdatbetoltesek(data, profile_id);
 						dataToChart(myLineChart, data);
 						dataToAdatok(data, selected_profile);
 					}else{
@@ -460,16 +438,16 @@ block scripts
 	script(type="text/javascript").
 		$(document).ready(function () {
 			var selectedModelling = $('select[name=modelling]').val();
-			loadDataToDataloads("#{act_data_type}", selectedModelling);
+			loadDataToDataloads("#{act_data_type}", selectedModelling, true);
 
 			$('select[name=modelling]').change(function(){
 				console.log('Modelling select change...');
-				loadDataToDataloads("#{act_data_type}", $(this).val());
+				loadDataToDataloads("#{act_data_type}", $(this).val(), false);
 			});
 
 			$('select[name=dataload]').change(function(){
 				console.log('Dataload select change...');
-				loadDataToProfiles($(this).val());
+				loadDataToProfiles($(this).val(), false);
 			});
 
 			$(".get-data-button").on("click", function(){

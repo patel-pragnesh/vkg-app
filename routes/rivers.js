@@ -23,6 +23,12 @@ router.post('/filter/time_data/profiles/', /*common.user,*/ river_controller.get
 /* GET river data by profile date and dataload (AJAX) */
 router.post('/filter/time_data/data/', /*common.user,*/ river_controller.get_time_data_data_post)
 
+/* GET river dataloads data by modelling (AJAX) */
+router.post('/filter/location_data/dataloads/', /*common.user,*/ river_controller.get_location_data_dataloads_by_modelling_post);
+
+/* GET river data by date and dataload (AJAX) */
+router.post('/filter/location_data/data/', /*common.user,*/ river_controller.get_location_data_data_post)
+
 /* GET river coordinate (AJAX) */
 //router.post('/coordinates', /*common.user,*/ river_controller.get_coordinates_post)
 

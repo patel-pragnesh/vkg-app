@@ -178,10 +178,13 @@ exports.data_for_profile_get = async function(req, res, next){
     let countPerPage = 15;
     let page_count = 0;
     let page = req.query.page ? req.query.page - 1 : 0;
-    let location_flows = await LocationFlow.findByModellingGroupByUserDescription(req.params.id);
-    let location_stages = await LocationStage.findByModellingGroupByUserDescription(req.params.id);
+    // let location_flows = await LocationFlow.findByModellingGroupByUserDescription(req.params.id);
+    let location_flows = [];
+    // let location_stages = await LocationStage.findByModellingGroupByUserDescription(req.params.id);
+    let location_stages = [];
     let locations = location_flows.concat(location_stages);
     let locations_page = [];
+    //console.log(locations);
     if(locations){
         page_count = locations.length/countPerPage;
         locations_page = locations.slice(page*countPerPage, page * countPerPage + countPerPage);

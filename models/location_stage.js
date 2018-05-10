@@ -81,6 +81,7 @@ class LocationStage{
 	    }
 	}
 
+	//!!!NEM JÓ LEKÉRDEZÉS MERT TIMEOUTOL!!!
 	static async findByModellingGroupByUserDescription(n){
 		//console.log(n);
 	    try {

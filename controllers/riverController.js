@@ -18,16 +18,18 @@ exports.river_detail = async function(req, res, next){
 	//let profiles = await Profile.findByRiver(req.params.id);
 	let act_data_type = req.params.data_type;
 	data_types = [
-		{id: 0, name: "Vízhozam idősor"},
-		{id: 1, name: "Vízszint idősor"},
-		{id: 2, name: "Vízszint hossz-szelvény"},
-		{id: 3, name: "Vízhozam hossz-szelvény"},
-		{id: 4, name: "Vízkészlet"},
-		{id: 5, name: "Vízkivételek hozamok"},
-		{id: 6, name: "Vízbeeresztés hozamok"},
+		{id: 0, name: "Vízhozam idősor", post_link_name: "time_data"},
+		{id: 1, name: "Vízszint idősor", post_link_name: "time_data"},
+		//{id: 16, name: "Vízszint átlag"},
+		//{id: 17, name: "Vízhozam átlag"},
+		{id: 2, name: "Vízszint hossz-szelvény", post_link_name: "location_data"},
+		{id: 3, name: "Vízhozam hossz-szelvény", post_link_name: "location_data"},
+		//{id: 4, name: "Vízkészlet"},
+		//{id: 5, name: "Vízkivételek hozamok"},
+		//{id: 6, name: "Vízbeeresztés hozamok"},
 		//{id: 7, name: "Beszivárgás a mederbe"}, //Peremfeltétel, még nincs
 		//{id: 8, name: "Elszivárgás a mederből"}, //Peremfeltétel, még nincs
-		{id: 9, name: "Csapadékátlag"},
+		//{id: 9, name: "Csapadékátlag"},
 		//{id: 10, name: "Párolgás"}, //Nincs és nem is lesznek ilyen adatok
 		//{id: 11, name: "Evapotranspiráció"},
 		//{id: 12, name: "Hőmérséklet"},
@@ -35,21 +37,15 @@ exports.river_detail = async function(req, res, next){
 		//{id: 14, name: "Vízkészlet változása idősor grafikon"},
 		//{id: 15, name: "Vízkészlet változás hossz-szelvény"},
 	];
-	// let profile_names = [];
-	// if(profiles){
-	// 	for(let i=0; i<profiles.length; i++){
-	// 		profile_names.push(profiles[i].name);
-	// 	}
-	// }	
+	let act_data_type_obj = data_types.find(function (obj) { return obj.id ==act_data_type; });
 	res.render('river/index', {
 		title: river.name, 
 		river: river, 
 		river_page: true, 
 		modellings: modellings,
 		data_types: data_types, 
-		//profiles: profiles, 
-		//profile_names: profile_names,
-		act_data_type: act_data_type
+		act_data_type: act_data_type,
+		post_link_name: act_data_type_obj.post_link_name
 	});
 }
 
@@ -57,7 +53,6 @@ exports.river_detail = async function(req, res, next){
 exports.get_time_data_dataloads_by_modelling_post = async function(req, res){
 	let modelling_id = req.body.modelling_id;
 	let data_type = req.body.data_type;
-	//console.log(modelling_id);
 	let type_filer = data_type == 0 ? 'FLOW' : 'STAGE';
 	let data_meta_array = await DataMeta.selectUserDescriptions(type_filer, modelling_id);
 	res.json(data_meta_array);
@@ -90,6 +85,23 @@ exports.get_time_data_data_post = async function(req, res){
 		datapoints = await Stage.findByMetaDataAndDate(data_meta.id, date_start, date_end);
 	}
 	res.json(datapoints);
+}
+
+//Ajax hívás az adatbetöltések lekérdezésére modellezésenként
+exports.get_location_data_dataloads_by_modelling_post = async function(req, res){
+	let modelling_id = req.body.modelling_id;
+	let data_type = req.body.data_type;
+	console.log(data_type);
+	//let type_filer = data_type == 0 ? 'FLOW' : 'STAGE';
+	//console.log(type_filer);
+	//let data_meta_array = await DataMeta.selectUserDescriptions(type_filer, modelling_id);
+	//console.log(data_meta_array);
+	//res.json(data_meta_array);
+}
+
+//Ajax hívás az szelvény adatok lekérdezésére
+exports.get_location_data_data_post = async function(req, res){
+
 }
 
 //Ajax hívás az adatok megjelenítésére
