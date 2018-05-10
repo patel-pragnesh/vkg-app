@@ -70,6 +70,28 @@ exports.get_time_data_profiles_by_dataload_post = async function(req, res){
 	res.json(profile_array);
 }
 
+//Ajax hívás az idősor adatok lekérdezésére
+exports.get_time_data_data_post = async function(req, res){
+	let data_type = req.body.data_type;
+	let profile_id = req.body.profile_id;
+	let date_start = req.body.date_start;
+	let date_end = req.body.date_end;
+
+	let datapoints = null;
+	let data_type_string = '';
+
+	if(data_type == 0){	//FLOW
+		data_type_string = 'FLOW';
+		let data_meta = await DataMeta.findByTypeProfile(data_type_string, profile_id);
+		datapoints = await Flow.findByMetaDataAndDate(data_meta.id, date_start, date_end);
+	}else if(data_type == 1){	//STAGE
+		data_type_string = 'STAGE';
+		let data_meta = await DataMeta.findByTypeProfile(data_type_string, profile_id);
+		datapoints = await Stage.findByMetaDataAndDate(data_meta.id, date_start, date_end);
+	}
+	res.json(datapoints);
+}
+
 //Ajax hívás az adatok megjelenítésére
 //Visszaadja az adatbetöltéseket és a hozzájuk tartozó adatokat
 // exports.get_data_by_type_post_opt = async function(req, res){

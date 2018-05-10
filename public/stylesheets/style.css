@@ -216,7 +216,7 @@ a.article, a.article:hover {
     padding-top: 61px;
     padding-bottom: 30px; }
     #content .sidenav.open {
-      width: 400px; }
+      width: 508px; }
     #content .sidenav a {
       padding: 8px 8px 8px 32px;
       text-decoration: none;
@@ -226,6 +226,17 @@ a.article, a.article:hover {
       transition: 0.3s; }
       #content .sidenav a:hover {
         color: #f1f1f1; }
+    #content .sidenav .filter-content {
+      padding-left: 10px;
+      padding-right: 10px; }
+      #content .sidenav .filter-content label {
+        color: #FFF; }
+      #content .sidenav .filter-content i {
+        position: absolute;
+        bottom: 24px;
+        right: 24px;
+        top: auto;
+        cursor: pointer; }
     #content .sidenav .title {
       color: #FFF;
       font-size: 25px;
@@ -236,8 +247,6 @@ a.article, a.article:hover {
       right: 25px;
       font-size: 36px;
       margin-left: 50px; }
-    #content .sidenav label {
-      color: #FFF; }
 
 .index-page #map {
   position: absolute !important;
@@ -250,22 +259,14 @@ a.article, a.article:hover {
   position: absolute;
   width: 100%;
   /*height: calc(100% - 150px);*/ }
+  .river.narrow {
+    padding-right: 508px; }
   .river-map .panel-body {
     padding: 0; }
     .river-map .panel-body #map {
       height: 435px; }
       .river-map .panel-body #map .esriOverviewMap.ovwBL {
         left: 15px !important; }
-  .river-filter i {
-    position: absolute;
-    bottom: 24px;
-    right: 24px;
-    top: auto;
-    cursor: pointer; }
-  .river-filter #adatbetoltesek {
-    /*height: 90px;
-			overflow: hidden;
-			overflow-y: auto;*/ }
   .river-data #data_table {
     overflow: hidden;
     overflow-y: auto;

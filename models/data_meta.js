@@ -175,13 +175,46 @@ class DataMeta{
 	    }
 	}
 
+	static async findByTypeProfile(type, profile_id){
+		//console.log(type);
+		//console.log(profile_id);
+		try {
+	    	let pool = new sql.ConnectionPool(sqlConfig);
+	    	await pool.connect();
+	        let result = await pool.request()
+	            .input('profile_id', sql.Int, profile_id)
+	            .input('type', sql.NVarChar, type)
+	            .query('SELECT Data_meta.* FROM Data_meta '+
+	            	'WHERE Data_meta.profile_id = @profile_id AND Data_meta.type = @type');
+	        pool.close();
+	        //console.log(result.recordset[0]);
+	        if(result.recordset.length != 0)
+	        	return new DataMeta(result.recordset[0]['id'], 
+	        			result.recordset[0]['projekt_name'],
+	        			moment(result.recordset[0]['date_from'], "YYYY-MM-DD HH:mm:ss").format("YYYY-MM-DD HH:mm"),
+	        			moment(result.recordset[0]['date_to'], "YYYY-MM-DD HH:mm:ss").format("YYYY-MM-DD HH:mm"),
+	        			result.recordset[0]['time_interval_id'],
+	        			result.recordset[0]['unit'],
+	        			result.recordset[0]['modelling_id'],
+	        			result.recordset[0]['profile_id'],
+	        			result.recordset[0]['additional_description'],
+	        			result.recordset[0]['user_description'],
+	        			result.recordset[0]['type']);
+	        else
+	        	return null;
+
+	    } catch (err) {
+	        console.log(err);
+	    }
+	}
+
 	static async selectProfilesByUserDescription(user_description){
 		try {	    	
 	    	let pool = new sql.ConnectionPool(sqlConfig);
 	    	await pool.connect();
 	        let result = await pool.request()
 	            .input('user_description', sql.NVarChar, user_description)
-				.query('SELECT [Data_meta].profile_id, [Profile].name AS profile_name FROM [Data_meta] '+
+				.query('SELECT [Data_meta].profile_id, [Data_meta].date_from, [Data_meta].date_to, [Profile].name AS profile_name FROM [Data_meta] '+
 				'LEFT JOIN [Profile] ON [Data_meta].profile_id = [Profile].id '+
 				'WHERE CAST([user_description] AS NVARCHAR(200)) = @user_description '+
 				'ORDER BY [Profile].name');
@@ -190,7 +223,7 @@ class DataMeta{
 	        if(result.recordset.length != 0){
 	        	let returnArray = [];
 	        	for(let r of result.recordset){
-	        		returnArray.push({profile_name: r.profile_name, profile_id: r.profile_id});
+	        		returnArray.push({profile_name: r.profile_name, profile_id: r.profile_id, date_from: r.date_from, date_to: r.date_to});
 	        	}
 	        	return returnArray;
 	        }

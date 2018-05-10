@@ -2,9 +2,9 @@ extends ../layout
 
 block content
 	#mySidenav.sidenav
-		a(href="javascript:void(0)" class="closebtn" onclick="closeNav()") &times;
+		//- a(href="javascript:void(0)" class="closebtn" onclick="closeNav()") &times;
 		div.title Szűrés
-		div.row
+		div.row.filter-content
 			div.col-md-12
 				div.form-group
 					label(for="modelling") Modellezések
@@ -22,10 +22,13 @@ block content
 				div.form-group
 					label(for="profile") Profilok
 					select(name="profile" id="profile" class="form-control")
-				//- div.form-group
-				//- 	label(for="datetimeselect") Időintervallum
-				//- 	input(type="text" name="datetimeselect" id="datetimeselect" class="form-control")
-				//- 	i.glyphicon.glyphicon-calendar.fa.fa-calendar
+			div.col-md-12
+				div.form-group
+					label(for="datetimeselect") Időintervallum
+					input(type="text" name="datetimeselect" id="datetimeselect" class="form-control")
+					i.glyphicon.glyphicon-calendar.fa.fa-calendar
+			div.col-md-12
+				input(type="button" class="get-data-button btn btn-primary pull-right" value="Lekérdezés")
 	div.container-fluid.mt10
 		div.row.river
 			div.col-md-5.river-map
@@ -70,7 +73,7 @@ block content
 									select(name="adatbetoltesek" id="adatbetoltesek" class="form-control")
 					//- div.panel-footer
 					//- 	div.clearfix
-			div.col-md-5.river-data
+			div.col-md-7.river-data
 				div.panel.panel-default
 					div.panel-heading
 						h3.panel-title.pull-left Adatok
@@ -98,8 +101,8 @@ block content
 block scripts
 	script(type="text/javascript").
 		var dateStart, dateEnd;	
-		var dataFromQuery;
-		var selectedAdatbetoltes;	
+		//var dataFromQuery;
+		//var selectedAdatbetoltes;	
 		var graph_color_array = [
 			"rgba(100,80,60, .7)",
 			"rgba(53,167,156, .7)",
@@ -119,15 +122,12 @@ block scripts
 				if(data){					
 					if(data.length){
 						//Adatbetöltések select adatainak frissítése
+						$('#dataload option').remove();
 						$.each(data, function(i, v){
-							console.log(v);
 							var o = $('<option>', {value: v.user_description}).text(v.user_description);
 							o.appendTo($('#dataload'));
 						});
 						loadDataToProfiles(data[0].user_description);
-						//Itt már tudjuk az aktuális adatbetöltéshez tartozó dátum értékeket:
-						//TODO: DatePicker min és max értékének beállítása
-						//TODO: DatePicker aktuális beállítása az utolsó adat-1 hónap értékre
 					}else{
 						//- var c1 = $('<div class="col-md-12">Nincs megjelenítendő adat.</div>');
 						//- c1.appendTo($('#data_table'));
@@ -146,12 +146,15 @@ block scripts
 				function( data ) {
 				if(data){					
 					if(data.length){
-						//Adatbetöltések select adatainak frissítése
+						//Profilok select adatainak frissítése
+						$('#profile option').remove();
 						$.each(data, function(i, v){
-							console.log(v);
+							//console.log(v);
 							var o = $('<option>', {value: v.profile_id}).text(v.profile_name);
 							o.appendTo($('#profile'));
 						});
+						//console.log(data[0]);
+						setDateTimePicker(data[0].date_from,data[0].date_to)
 					}else{
 						//- var c1 = $('<div class="col-md-12">Nincs megjelenítendő adat.</div>');
 						//- c1.appendTo($('#data_table'));
@@ -159,6 +162,187 @@ block scripts
 				}else{
 					
 				}
+			});
+		}
+
+		function setDateTimePicker(mindate, maxdate){
+
+			moment.locale('hu');	
+			var format = 'YYYY. MM. DD.';
+			var today = moment().format(format);
+			var yesterday = moment().subtract(1, 'days').format(format);
+			var last7day = moment().subtract(7, 'days').format(format);
+			var last30day = moment().subtract(30, 'days').format(format);
+			var thisMonthFirstDay = moment().startOf('month').format(format);
+			var thisMonthLastDay = moment().endOf('month').format(format);
+			var lastMonthFirstDay = moment().subtract(1, 'month').startOf('month').format(format);
+			var lastMonthLastDay = moment().subtract(1, 'month').endOf('month').format(format);
+			var minDate = moment(mindate).format(format);
+			var maxDate = moment(maxdate).format(format);
+
+			var defaultDateStart = moment(maxDate).startOf('month').format(format);
+			var defaultDateEnd = maxDate;
+
+			//Alapértelmezetten az adatlekéréshez inicializálni kell
+			dateStart = defaultDateStart;
+			dateEnd = defaultDateEnd;
+
+			$('input[name="datetimeselect"]').daterangepicker({
+				"timePicker24Hour": true,
+				//- "ranges": {
+				//- 	"Ma": [
+				//- 		today,
+				//- 		today
+				//- 	],
+				//- 	"Tegnap": [
+				//- 		yesterday,
+				//- 		yesterday
+				//- 	],
+				//- 	"Elmúlt 7 nap": [
+				//- 		last7day,
+				//- 		today
+				//- 	],
+				//- 	"Elmúlt 30 nap": [
+				//- 		last30day,
+				//- 		today
+				//- 	],
+				//- 	"Ez a hónap": [
+				//- 		thisMonthFirstDay,
+				//- 		thisMonthLastDay
+				//- 	],
+				//- 	"Múlt hónap": [
+				//- 		lastMonthFirstDay,
+				//- 		lastMonthLastDay
+				//- 	]
+				//- },
+				"locale": {
+					"direction": "ltr",
+					"format": "YYYY. MM. DD.",
+					"separator": " - ",
+					"applyLabel": "Ok",
+					"cancelLabel": "Mégse",
+					"fromLabel": "Tól",
+					"toLabel": "Ig",
+					"customRangeLabel": "Egyedi",
+					"daysOfWeek": [
+						"V",
+						"H",
+						"K",
+						"Sze",
+						"Cs",
+						"P",
+						"Szo"
+					],
+					"monthNames": [
+						"Január",
+						"Február",
+						"Március",
+						"Április",
+						"Május",
+						"Június",
+						"Július",
+						"Augusztus",
+						"Szeptember",
+						"Október",
+						"November",
+						"December"
+					],
+					"firstDay": 1
+				},
+				"minDate": minDate,
+				"maxDate": maxDate,
+				"startDate": defaultDateStart,//thisMonthFirstDay,
+				"endDate": defaultDateEnd,//thisMonthLastDay,
+				"opens": "center",
+				"buttonClasses": "btn",
+				"applyClass": "btn btn-primary"
+			}, function(start, end, label) {
+				dateStart = start.format('YYYY. MM. DD.');
+				dateEnd = end.format('YYYY. MM. DD.');
+				//console.log("New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')");
+				//getData(dateStart, dateEnd);
+			});
+		}
+
+		function getData(dStart, dEnd){
+			var selected_dataload = $('select[name=dataload]').val();
+			var selected_profile = $('select[name=profile]').val();
+			$.post( "/rivers/filter/time_data/data", 
+				{
+				data_type: "#{act_data_type}",
+				profile_id: selected_profile,
+				date_start: dStart,
+				date_end:dEnd
+				},
+				function( data ) {
+				if(data){					
+					if(data.length){
+						console.log(data);
+						//dataFromQuery = data;
+						//dataToAdatbetoltesek(data, profile_id);
+						dataToChart(myLineChart, data);
+						dataToAdatok(data, selected_profile);
+					}else{
+						var c1 = $('<div class="col-md-12">Nincs megjelenítendő adat.</div>');
+						c1.appendTo($('#data_table'));
+					}
+				}else{
+					
+				}
+			});
+		}
+
+		function dataToChart(c, d){
+			var dataset_array = [];
+			//$.each(d, function(i, v){				
+			var data_set = {
+				//label: v.projekt_name,
+				data: [
+					//- {
+					//- 	x: -12,
+					//-     y: 70
+					//-     }, {
+					//-     x: 15,
+					//-     y: 35
+					//- }
+					],
+				fill: false,
+				backgroundColor: graph_color_array[0],
+				borderColor: graph_color_array[0],
+				// pointRadius: 0
+			}
+			$.each(d, function(j,w){
+				data_set.data.push({x:moment(w.date_time_for).format('YYYY. MM. DD. HH:ss'), y: w.value});
+			});
+			dataset_array.push(data_set);				
+			//});
+			c.data.datasets = dataset_array;
+			c.update();
+		}
+
+		function dataToAdatok(d, profile_id){
+			$('#data_table').html('');
+			$('#data_table_head').html('');
+			//$('#data_table_datetime').html('');
+			//$('#data_table_profile').html('');
+
+			$('#data_table_datetime').html('Idő: ' + dateStart + ' - ' + dateEnd);
+			$('#data_table_profile').html('Szelvény: ' + $('select[name=profile] option[value="'+profile_id+'"]').text());
+			var h1 = $('<div class="col-md-6">'+'Időpont'+'</div>');
+			var h2 = $('<div class="col-md-6">'+'Érték'+'</div>');
+			h1.appendTo($('#data_table_head'));
+			h2.appendTo($('#data_table_head'));
+			$.each(d, function(j,w){
+				var bg_color = '';
+				if(j%2)
+					bg_color = 'gray-bg';
+				else
+					bg_color = 'white-bg';
+
+				var c1 = $('<div class="col-md-6 '+bg_color+'">'+moment(w.date_time_for).format('YYYY. MM. DD. HH:ss')+'</div>');
+				var c2 = $('<div class="col-md-6 '+bg_color+'">'+w.value+'</div>');
+				c1.appendTo($('#data_table'));
+				c2.appendTo($('#data_table'));
 			});
 		}
 
@@ -276,7 +460,24 @@ block scripts
 	script(type="text/javascript").
 		$(document).ready(function () {
 			var selectedModelling = $('select[name=modelling]').val();
-			loadDataToDataloads("#{act_data_type}",selectedModelling);
+			loadDataToDataloads("#{act_data_type}", selectedModelling);
+
+			$('select[name=modelling]').change(function(){
+				console.log('Modelling select change...');
+				loadDataToDataloads("#{act_data_type}", $(this).val());
+			});
+
+			$('select[name=dataload]').change(function(){
+				console.log('Dataload select change...');
+				loadDataToProfiles($(this).val());
+			});
+
+			$(".get-data-button").on("click", function(){
+				console.log('Downloading data from server...');
+				getData(dateStart, dateEnd);
+			});
+
+			//getData(dateStart, dateEnd);
 
 			//- $('#adatbetoltesek').change(function(){
 			//- 	var selectedAdatbetoltes = this.value;

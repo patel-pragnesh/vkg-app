@@ -15,10 +15,13 @@ router.get('/:id/data-type/:data_type', /*common.user,*/ river_controller.river_
 //router.post('/data', /*common.user,*/ river_controller.get_data_by_type_post_opt)
 
 /* GET river dataloads data by modelling (AJAX) */
-router.post('/filter/time_data/dataloads/', /*common.user,*/ river_controller.get_time_data_dataloads_by_modelling_post)
+router.post('/filter/time_data/dataloads/', /*common.user,*/ river_controller.get_time_data_dataloads_by_modelling_post);
 
 /* GET river profiles by dataload (AJAX) */
-router.post('/filter/time_data/profiles/', /*common.user,*/ river_controller.get_time_data_profiles_by_dataload_post)
+router.post('/filter/time_data/profiles/', /*common.user,*/ river_controller.get_time_data_profiles_by_dataload_post);
+
+/* GET river data by profile date and dataload (AJAX) */
+router.post('/filter/time_data/data/', /*common.user,*/ river_controller.get_time_data_data_post)
 
 /* GET river coordinate (AJAX) */
 //router.post('/coordinates', /*common.user,*/ river_controller.get_coordinates_post)

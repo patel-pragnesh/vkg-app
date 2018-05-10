@@ -29,7 +29,7 @@
             padding-bottom: 30px;
 
             &.open{
-                width: 400px;
+                width: 508px;
             }
     
             a {
@@ -41,6 +41,21 @@
                 transition: 0.3s;
                 &:hover {
                     color: #f1f1f1;
+                }
+            }
+
+            .filter-content{
+                padding-left: 10px;
+                padding-right: 10px;
+                label{
+                    color: #FFF;
+                }
+                i{
+                    position: absolute;
+                    bottom: 24px;
+                    right: 24px;
+                    top: auto;
+                    cursor: pointer;
                 }
             }
 
@@ -56,9 +71,7 @@
                 font-size: 36px;
                 margin-left: 50px;
             }
-            label{
-                color: #FFF;
-            }
+            
         }
     }
 

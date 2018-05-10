@@ -87,6 +87,9 @@ class Flow{
 	}
 
 	static async findByMetaDataAndDate(id, date_from, date_to){
+		// console.log(id);
+		// console.log(date_from);
+		// console.log(date_to);
 	    try {
 	    	let d_from = moment(date_from, "YYYY. MM. DD.").format("YYYY-MM-DD HH:mm");
 	    	let d_to = moment(date_to, "YYYY. MM. DD.").format("YYYY-MM-DD HH:mm");
@@ -103,7 +106,7 @@ class Flow{
 	            	'AND Flow.date_time_for <= @date_to '+
 	            	'ORDER BY Flow.date_time_for;');
 	        pool.close();
-	        // console.log(result.recordset[0]);
+	        //console.log(result.recordset[0]);
 	        if(result.recordset.length != 0){
 	        	let returnArray = [];
 	        	for(let r of result.recordset){
