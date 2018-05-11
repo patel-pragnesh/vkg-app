@@ -110,13 +110,13 @@ class LocationFlow{
 	}
 
 	//!!!NEM JÓ LEKÉRDEZÉS MERT TIMEOUTOL!!!
-	select [description_id],b.user_description
-	from
-	(
-	SELECT DISTINCT [description_id] FROM [vizkeszlet_gazdalkodas].[dbo].[LocationFlow] a
-	  WHERE [modelling_id]=8
-	) a
-	LEFT JOIN [vizkeszlet_gazdalkodas].[dbo].[Description] b ON a.description_id = b.id
+	// select [description_id],b.user_description
+	// from
+	// (
+	// SELECT DISTINCT [description_id] FROM [vizkeszlet_gazdalkodas].[dbo].[LocationFlow] a
+	//   WHERE [modelling_id]=8
+	// ) a
+	// LEFT JOIN [vizkeszlet_gazdalkodas].[dbo].[Description] b ON a.description_id = b.id
 	static async findByModellingGroupByUserDescription(n){
 		//console.log(n);
 	    try {
@@ -124,17 +124,24 @@ class LocationFlow{
 	    	await pool.connect();
 	        let result = await pool.request()
 	            .input('input_parameter1', sql.Int, n)
-	            .query('SELECT count(LocationFlow.modelling_id) as modelling_count, LocationFlow.description_id, CAST([Description].user_description AS NVARCHAR(200)) user_description '+
-	            	'FROM LocationFlow '+
-	            	'LEFT JOIN Description ON LocationFlow.description_id = Description.id '+
-	            	'WHERE LocationFlow.modelling_id = @input_parameter1 '+
-	            	'GROUP BY LocationFlow.description_id, CAST([Description].user_description AS NVARCHAR(200)) ORDER BY LocationFlow.description_id');
+	            // .query('SELECT count(LocationFlow.modelling_id) as modelling_count, LocationFlow.description_id, CAST([Description].user_description AS NVARCHAR(200)) user_description '+
+	            // 	'FROM LocationFlow '+
+	            // 	'LEFT JOIN Description ON LocationFlow.description_id = Description.id '+
+	            // 	'WHERE LocationFlow.modelling_id = @input_parameter1 '+
+				// 	'GROUP BY LocationFlow.description_id, CAST([Description].user_description AS NVARCHAR(200)) ORDER BY LocationFlow.description_id');
+				.query('select [description_id], b.user_description '+
+				'from '+
+				'( '+
+				'SELECT DISTINCT [description_id] FROM [LocationFlow] a '+
+				'WHERE [modelling_id]=@input_parameter1 '+
+				') a '+
+				'LEFT JOIN [vizkeszlet_gazdalkodas].[dbo].[Description] b ON a.description_id = b.id');
 	        pool.close();
 	        //console.log(result.recordset[0]);
 	        if(result.recordset.length != 0){
 	        	let returnArray = [];
 	        	for(let r of result.recordset){
-	        		returnArray.push({count: r.modelling_count, description: r.user_description, description_id: r.description_id});
+	        		returnArray.push({user_description: r.user_description, description_id: r.description_id, location_type:'location_flow'});
 	        	}
 	        	return returnArray;
 	        }else
@@ -339,4 +346,5 @@ class LocationFlow{
 		}
 	}
 }
+
 module.exports = LocationFlow;

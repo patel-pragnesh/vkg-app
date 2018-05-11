@@ -31,7 +31,18 @@ class DataMeta{
 	        if(result.recordset.length != 0){
 	        	let returnArray = [];
 	        	for(let r of result.recordset){
-	        		returnArray.push(new DataMeta(r.id, r.projekt_name, r.date_from, r.date_to, r.time_interval_id, r.unit, r.modelling_id, r.profile_id, r.additional_description, r.user_description, r.type));
+					returnArray.push(new DataMeta(r.id, 
+						r.projekt_name, 
+						moment(r.date_from, "YYYY-MM-DD HH:mm:ss").format("YYYY-MM-DD HH:mm"),
+	        			moment(r.date_to, "YYYY-MM-DD HH:mm:ss").format("YYYY-MM-DD HH:mm"),
+	        			result.recordset[0]['time_interval_id'],
+						r.time_interval_id, 
+						r.unit, 
+						r.modelling_id, 
+						r.profile_id, 
+						r.additional_description, 
+						r.user_description, 
+						r.type));
 	        	}
 	        	return returnArray;
 	        }
@@ -163,7 +174,7 @@ class DataMeta{
 	        if(result.recordset.length != 0){
 	        	let returnArray = [];
 	        	for(let r of result.recordset){
-	        		returnArray.push({user_description: r.user_description, date_from: r.date_from, date_to: r.date_to});
+	        		returnArray.push({description_id: r.user_description, user_description: r.user_description, date_from: r.date_from, date_to: r.date_to});
 	        	}
 	        	return returnArray;
 	        }

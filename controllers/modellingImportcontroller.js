@@ -178,11 +178,17 @@ exports.data_for_profile_get = async function(req, res, next){
     let countPerPage = 15;
     let page_count = 0;
     let page = req.query.page ? req.query.page - 1 : 0;
-    // let location_flows = await LocationFlow.findByModellingGroupByUserDescription(req.params.id);
-    let location_flows = [];
-    // let location_stages = await LocationStage.findByModellingGroupByUserDescription(req.params.id);
-    let location_stages = [];
-    let locations = location_flows.concat(location_stages);
+    let location_flows = await LocationFlow.findByModellingGroupByUserDescription(req.params.id);
+    //let location_flows = [];
+    let location_stages = await LocationStage.findByModellingGroupByUserDescription(req.params.id);
+    // let location_stages = [];
+    let locations = [];
+    if(location_flows){
+        locations = location_flows.concat(location_stages);
+    }else{
+        locations = location_stages;
+    }
+    
     let locations_page = [];
     //console.log(locations);
     if(locations){
@@ -217,7 +223,7 @@ exports.data_for_profile_post = async function(req, res, next){
         let success_file_read = await dataloader.readFile();
         if(success_file_read){
             //Betöltés elindítás, de a klinesnek a hosszú idő miatt nem kell megvárni...
-            let description = new Description(null, user_description+'_'+moment().format("YYYY-MM-DD_HHmmssSSS"));
+            let description = new Description(null, user_description+'_'+moment().format("YYYY-MM-DD_HHmmssSSS"), null, null, null, null);
             description = await description.save();
             await dataloader.saveData(modelling, description.id);
             console.log('Data is inserted to db.'); 
@@ -243,5 +249,12 @@ exports.location_flow_delete_get = async function(req, res, next){
     let modelling_id = req.params.modelling_id;
     let description_id = req.params.description_id;
     await LocationFlow.deleteByModellingIdDescriptionId(modelling_id, description_id);
+    res.redirect('/modelling_import/'+modelling_id+'/data_for_profile');
+}
+
+exports.location_stage_delete_get = async function(req, res, next){
+    let modelling_id = req.params.modelling_id;
+    let description_id = req.params.description_id;
+    await LocationStage.deleteByModellingIdDescriptionId(modelling_id, description_id);
     res.redirect('/modelling_import/'+modelling_id+'/data_for_profile');
 }

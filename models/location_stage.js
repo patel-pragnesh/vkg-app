@@ -89,17 +89,24 @@ class LocationStage{
 	    	await pool.connect();
 	        let result = await pool.request()
 	            .input('input_parameter1', sql.Int, n)
-	            .query('SELECT count(LocationStage.modelling_id) as modelling_count, LocationStage.description_id, CAST([Description].user_description AS NVARCHAR(200)) user_description '+
-	            	'FROM LocationStage '+
-	            	'LEFT JOIN Description ON LocationStage.description_id = Description.id '+
-	            	'WHERE LocationStage.modelling_id = @input_parameter1 '+
-	            	'GROUP BY LocationStage.description_id, CAST([Description].user_description AS NVARCHAR(200)) ORDER BY LocationStage.description_id');
+	            // .query('SELECT count(LocationStage.modelling_id) as modelling_count, LocationStage.description_id, CAST([Description].user_description AS NVARCHAR(200)) user_description '+
+	            // 	'FROM LocationStage '+
+	            // 	'LEFT JOIN Description ON LocationStage.description_id = Description.id '+
+	            // 	'WHERE LocationStage.modelling_id = @input_parameter1 '+
+				// 	'GROUP BY LocationStage.description_id, CAST([Description].user_description AS NVARCHAR(200)) ORDER BY LocationStage.description_id');
+				.query('select [description_id], b.user_description '+
+				'from '+
+				'( '+
+				'SELECT DISTINCT [description_id] FROM [LocationStage] a '+
+				'WHERE [modelling_id]=@input_parameter1 '+
+				') a '+
+				'LEFT JOIN [vizkeszlet_gazdalkodas].[dbo].[Description] b ON a.description_id = b.id');
 	        pool.close();
 	        //console.log(result.recordset[0]);
 	        if(result.recordset.length != 0){
 	        	let returnArray = [];
 	        	for(let r of result.recordset){
-	        		returnArray.push({count: r.modelling_count, description: r.user_description, description_id: r.description_id});
+	        		returnArray.push({user_description: r.user_description, description_id: r.description_id, location_type:'location_stage'});
 	        	}
 	        	return returnArray;
 	        }else
@@ -249,6 +256,27 @@ class LocationStage{
 			request.input('updatedAt', sql.NVarChar, that.updatedAt);
 			let result = await request.query('UPDATE LocationStage SET '
 				+'date_time_id=@date_time_id, profile_id=@profile_id, updatedAt=@updatedAt WHERE id=@id;');
+			//console.log(result);
+			await transaction.commit();
+			pool.close();
+			return that;
+		}catch (err){
+			console.log(err);
+		}
+	}
+
+	static async deleteByModellingIdDescriptionId(modelling_id, description_id){
+		let that = this;
+		//console.log(date_time_id);
+		try{
+			let pool = new sql.ConnectionPool(sqlConfig);
+			let dbConn = await pool.connect();
+			let transaction = new sql.Transaction(dbConn);
+			await transaction.begin();
+			const request = new sql.Request(transaction);
+			request.input('modelling_id', sql.Int, modelling_id);
+			request.input('description_id', sql.Int, description_id);
+			let result = await request.query('DELETE FROM LocationStage WHERE modelling_id=@modelling_id AND description_id=@description_id;');
 			//console.log(result);
 			await transaction.commit();
 			pool.close();

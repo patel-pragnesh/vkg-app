@@ -38,7 +38,10 @@ router.post('/:id/data_for_profile', /*common.user,*/ modellingImportcontroller.
 /* GET request to delete meta_data for Modelling. */
 router.get('/meta_data/:id/delete', /*common.user,*/ modellingImportcontroller.meta_data_delete_get);
 
-/* GET request to delete meta_data for Modelling. */
+/* GET request to delete location_flow for Modelling. */
 router.get('/location_flow/:modelling_id/:description_id/delete', /*common.user,*/ modellingImportcontroller.location_flow_delete_get);
+
+/* GET request to delete location_flow for Modelling. */
+router.get('/location_stage/:modelling_id/:description_id/delete', /*common.user,*/ modellingImportcontroller.location_stage_delete_get);
 
 module.exports = router;

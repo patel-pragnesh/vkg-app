@@ -95,16 +95,16 @@ block content
 								else if (locations_page)
 									thead
 										tr
-											th Adat darabszám (db)
+											//- th Adat darabszám (db)
 											th Leírás
 											th.text-right Műveletek
 									tbody
 										each l_f in locations_page
 											tr
-												td=l_f.count
-												td=l_f.description
+												//- td=l_f.count
+												td=l_f.user_description
 												td
-													//- a(href="/modelling_import/location_flow/"+modelling.id+"/"+l_f.description_id+"/delete" class="btn btn-info pull-right mr5")
+													a(href="/modelling_import/"+l_f.location_type+"/"+modelling.id+"/"+l_f.description_id+"/delete" class="btn btn-info pull-right mr5")
 														span.glyphicon.glyphicon-erase
 						div.panel-footer
 							ul.pagination.m0.pull-right

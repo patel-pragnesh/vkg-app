@@ -2,7 +2,9 @@ const River = require('../models/river');
 const Profile = require('../models/profile');
 const DataMeta = require('../models/data_meta');
 const Flow = require('../models/flow');
+const LocationFlow = require('../models/location_flow');
 const Stage = require('../models/stage');
+const LocationStage = require('../models/location_stage');
 //const RiverMongoDB = require('../models/mongodb_river');
 //const ProfileMongoDB = require('../models/mongodb_profile');
 const Modelling = require('../models/modelling');
@@ -91,12 +93,19 @@ exports.get_time_data_data_post = async function(req, res){
 exports.get_location_data_dataloads_by_modelling_post = async function(req, res){
 	let modelling_id = req.body.modelling_id;
 	let data_type = req.body.data_type;
-	console.log(data_type);
-	//let type_filer = data_type == 0 ? 'FLOW' : 'STAGE';
-	//console.log(type_filer);
+	//console.log(data_type);
+	let dataloads = null;
+	if(data_type == 2){
+		//LocationStage
+
+	}else if(data_type == 3){
+		//LocationFlow
+		dataloads = await LocationFlow.findByModellingGroupByUserDescription(modelling_id);
+	}
+	// console.log(dataloads);
 	//let data_meta_array = await DataMeta.selectUserDescriptions(type_filer, modelling_id);
 	//console.log(data_meta_array);
-	//res.json(data_meta_array);
+	res.json(dataloads);
 }
 
 //Ajax hívás az szelvény adatok lekérdezésére

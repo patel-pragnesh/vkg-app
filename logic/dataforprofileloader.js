@@ -14,6 +14,7 @@ const LocationStage = require('../models/location_stage');
 const DateTime = require('../models/date_time');
 const Profile = require('../models/profile');
 const DescriptionLocationData = require('../models/description_location_data');
+const Description = require('../models/description');
 
 class DataForProfileLoader{
 	constructor(file_path){
@@ -86,13 +87,14 @@ class DataForProfileLoader{
 	async saveData(modelling_id, description_id){
 		let that = this;
 		console.log("A fájl összesen "+that.data.length + " db időpontot tartalmaz.");
-		//return false;
 		const modelling = await Modelling.findById(modelling_id);
 
 		let date_time_all = await DateTime.all();
 		let additional_description_all = await DescriptionLocationData.all();
 		let profile_all = await Profile.findByRiver(modelling.river_id);
-		//let location_flow_all = await LocationFlow.findByModelling(modelling.id);
+
+		let date_from = moment("3000-01-01 01:01", "YYYY-MM-DD HH:mm");
+		let date_to = moment("1900-01-01 01:01", "YYYY-MM-DD HH:mm");
 
 		try{
 
@@ -137,6 +139,9 @@ class DataForProfileLoader{
 					date_time = await date_time.save();
 				}
 
+				date_from = moment(d.date_time, "YYYY-MM-DD HH:mm") < date_from ? moment(d.date_time, "YYYY-MM-DD HH:mm") : date_from;
+				date_to = moment(d.date_time, "YYYY-MM-DD HH:mm") > date_to ? moment(d.date_time, "YYYY-MM-DD HH:mm") : date_to;
+
 				//additional_description ellenőrzése!
 				let additional_description = null;
 		    	if(additional_description_all){
@@ -158,7 +163,6 @@ class DataForProfileLoader{
 						profile = new Profile(null, v.profile, modelling.river_id);
 						profile = await profile.save();
 						//Újra le kell kérni, hogy az új elem is bekerüljön
-						//TODO inkább hozzá kellene adni a már lekért listához!!!
 						profile_all = await Profile.findByRiver(modelling.river_id);
 					}
 
@@ -190,25 +194,12 @@ class DataForProfileLoader{
 
 			}
 
-			//console.log(tableLocationStage.rows);
-
-			//Bulk insert hívása
-		    //const request = new sql.Request(dbConn);
-		    //let result_location_flow = await request.bulk(tableLocationFlow);
-
-		    // const request_move_location_flow = new sql.Request(dbConn);
-	    	// let result_move_location_flow = await request_move_location_flow.query('INSERT INTO '+
-	    	// 	'dbo.LocationFlow(date_time_id, profile_id, modelling_id, additional_description_id, description_id, value, updatedAt, createdAt) '+
-	    	// 	'SELECT date_time_id, profile_id, modelling_id, additional_description_id, description_id, value, updatedAt, createdAt FROM dbo.TmpLocationFlow; '+
-	    	// 	'TRUNCATE TABLE dbo.TmpLocationFlow;');
-
-
-	    	//let result_location_stage = await request.bulk(tableLocationStage);
-		    // const request_move_location_stage = new sql.Request(dbConn);
-	    	// let result_move_location_stage = await request_move_location_stage.query('INSERT INTO '+
-	    	// 	'dbo.LocationStage(date_time_id, profile_id, modelling_id, additional_description_id, description_id, value, updatedAt, createdAt) '+
-	    	// 	'SELECT date_time_id, profile_id,modelling_id, additional_description_id, description_id, value, updatedAt, createdAt FROM dbo.TmpLocationStage; '+
-	    	// 	'TRUNCATE TABLE dbo.TmpLocationStage;');
+			let description = await Description.findById(description_id);
+			console.log(description);
+			description.date_from = date_from.format("YYYY-MM-DD HH:mm");
+			description.date_to = date_to.format("YYYY-MM-DD HH:mm");
+			console.log(description);
+			description.update();
 
 		    pool.close();
 

@@ -96,10 +96,12 @@ block scripts
 						if(data.length){
 							//Adatbetöltések select adatainak frissítése							
 							$.each(data, function(i, v){
-								var o = $('<option>', {value: v.user_description}).text(v.user_description);
+								var o = $('<option>', {value: v.description_id}).text(v.user_description);
 								o.appendTo($('#dataload'));
 							});
-							loadDataToProfiles(data[0].user_description,pageload);
+							if(post_link_name == "time_data"){
+								loadDataToProfiles(data[0].description_id,pageload);
+							}
 						}else{
 							//- var c1 = $('<div class="col-md-12">Nincs megjelenítendő adat.</div>');
 							//- c1.appendTo($('#data_table'));
