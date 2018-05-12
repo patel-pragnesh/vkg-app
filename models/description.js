@@ -112,5 +112,25 @@ class Description{
 			console.log(err);
 		}
 	}
+
+	static async deleteById(id){
+		let that = this;
+		//console.log(date_time_id);
+		try{
+			let pool = new sql.ConnectionPool(sqlConfig);
+			let dbConn = await pool.connect();
+			let transaction = new sql.Transaction(dbConn);
+			await transaction.begin();
+			const request = new sql.Request(transaction);
+			request.input('id', sql.Int, id);
+			let result = await request.query('DELETE FROM Description WHERE id=@id;');
+			//console.log(result);
+			await transaction.commit();
+			pool.close();
+			return that;
+		}catch (err){
+			console.log(err);
+		}
+	}
 }
 module.exports = Description;

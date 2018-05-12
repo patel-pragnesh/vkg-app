@@ -285,5 +285,25 @@ class LocationStage{
 			console.log(err);
 		}
 	}
+
+	static async deleteByDescriptionId(description_id){
+		let that = this;
+		//console.log(date_time_id);
+		try{
+			let pool = new sql.ConnectionPool(sqlConfig);
+			let dbConn = await pool.connect();
+			let transaction = new sql.Transaction(dbConn);
+			await transaction.begin();
+			const request = new sql.Request(transaction);
+			request.input('description_id', sql.Int, description_id);
+			let result = await request.query('DELETE FROM LocationStage WHERE description_id=@description_id;');
+			//console.log(result);
+			await transaction.commit();
+			pool.close();
+			return that;
+		}catch (err){
+			console.log(err);
+		}
+	}
 }
 module.exports = LocationStage;

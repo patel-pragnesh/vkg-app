@@ -21,7 +21,9 @@ global.sqlConfig = {
   user: 'horcsa',
   password: 'csacsa',
   server: 'localhost\\sqlexpress',
-  database: 'vizkeszlet_gazdalkodas'
+  database: 'vizkeszlet_gazdalkodas',
+  connectionTimeout: 300000,
+  requestTimeout: 300000
 }
 
 const common = require('./controllers/commonController');

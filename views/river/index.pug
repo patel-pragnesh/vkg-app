@@ -101,6 +101,8 @@ block scripts
 							});
 							if(post_link_name == "time_data"){
 								loadDataToProfiles(data[0].description_id,pageload);
+							}else if(post_link_name == "location_data"){
+								setDateTimePicker(data[0].date_from,data[0].date_to,pageload)
 							}
 						}else{
 							//- var c1 = $('<div class="col-md-12">Nincs megjelenítendő adat.</div>');
