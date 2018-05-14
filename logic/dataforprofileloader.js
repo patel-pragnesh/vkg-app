@@ -194,11 +194,11 @@ class DataForProfileLoader{
 
 			}
 
+			//Az adatbetöltés legelső és legutolsó adatának mentése a leíráshoz.
+			//Ez alapján korlátozza a dátumválasztó min és max dátumát lekérdezéskor.
 			let description = await Description.findById(description_id);
-			//console.log(description);
 			description.date_from = date_from.format("YYYY-MM-DD HH:mm");
 			description.date_to = date_to.format("YYYY-MM-DD HH:mm");
-			//console.log(description);
 			description.update();
 
 		    pool.close();

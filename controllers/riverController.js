@@ -47,7 +47,8 @@ exports.river_detail = async function(req, res, next){
 		modellings: modellings,
 		data_types: data_types, 
 		act_data_type: act_data_type,
-		post_link_name: act_data_type_obj.post_link_name
+		post_link_name: act_data_type_obj.post_link_name,
+		dataTypeName:act_data_type_obj.name
 	});
 }
 
@@ -97,20 +98,30 @@ exports.get_location_data_dataloads_by_modelling_post = async function(req, res)
 	let dataloads = null;
 	if(data_type == 2){
 		//LocationStage
-
+		dataloads = await LocationFlow.findByModellingGroupByUserDescription(modelling_id);
 	}else if(data_type == 3){
 		//LocationFlow
 		dataloads = await LocationFlow.findByModellingGroupByUserDescription(modelling_id);
 	}
-	// console.log(dataloads);
-	//let data_meta_array = await DataMeta.selectUserDescriptions(type_filer, modelling_id);
-	//console.log(data_meta_array);
+	//console.log(dataloads);
 	res.json(dataloads);
 }
 
 //Ajax hívás az szelvény adatok lekérdezésére
 exports.get_location_data_data_post = async function(req, res){
-
+	let data_type = req.body.data_type;
+	//let profile_id = req.body.profile_id;
+	let dateTime = req.body.date_start;
+	//let date_end = req.body.date_end;
+	if(data_type == 2){
+		//LocationStage
+		datapoints = await LocationStage.findByDateTime(dateTime);
+	}else if(data_type == 3){
+		//LocationFlow
+		datapoints = await LocationFlow.findByDateTime(dateTime);
+	}
+	//console.log(datapoints);
+	res.json(datapoints);
 }
 
 //Ajax hívás az adatok megjelenítésére
@@ -165,45 +176,7 @@ exports.get_location_data_data_post = async function(req, res){
 // 	});
 // }
 
-//Ajax hívás a profil adatok megjelenítésére
-// exports.get_profiles_post = async function(req, res){
-// 	//console.log("Data request received.");
-// 	let river_id = req.body.river_id;
-
-// 	ProfileMongoDB.find({river_id: river_id}).exec(function(err, result){
-// 		if(err){console.log(err);}
-// 		else{
-// 			//console.log(result);
-// 			res.json(result);
-// 		}
-// 	});
-// }
-
-// exports.save_profile_coordinate_post = async function(req, res){
-// 	let river_id = req.body.river_id;
-// 	let point_lat = req.body.point_lat;
-// 	let point_lng = req.body.point_lng;
-// 	let point_profile = req.body.point_profile;
-	
-// 	let profile = new ProfileMongoDB(
-// 	                {
-// 	                    river_id: river_id,
-// 	                    profile: point_profile,
-// 	                    lat: point_lat,
-// 	                    lng: point_lng
-// 	                });
-// 	            profile.save(function (err) {
-// 	                if (err) { 
-// 	                	console.log(err)
-// 	                	//return next(err); 
-// 	                }
-// 	                // Successful - redirect to new author record.
-// 	                //res.redirect(author.url);
-// 	            });
-// }
-
 exports.get_by_directorate_post = async function(req, res){
-	// console.log(req.body.id);
 	let river = await River.findByDirectorate(req.body.id);
 	res.json(river);
 }

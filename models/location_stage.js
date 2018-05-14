@@ -141,20 +141,49 @@ class LocationStage{
 	    }
 	}
 
-	static async findByDateTime(n){
+	// static async findByDateTime(n){
+	//     try {
+	//     	let pool = new sql.ConnectionPool(sqlConfig);
+	//     	await pool.connect();
+	//         let result = await pool.request()
+	//             .input('input_parameter1', sql.Int, n)
+	//             .query('SELECT * FROM LocationStage '+
+	//             	'WHERE date_time_id = @input_parameter1');
+	//         pool.close();
+	//         //console.log(result.recordset[0]);
+	//         if(result.recordset.length != 0){
+	//         	let returnArray = [];
+	//         	for(let r of result.recordset){
+	//         		returnArray.push(new LocationStage(r.id, r.date_time_id, r.profile_id));
+	//         	}
+	//         	return returnArray;
+	//         }else
+	//         	return null;
+
+	//     } catch (err) {
+	//         console.log(err);
+	//     }
+	// }
+
+	static async findByDateTime(dt){
 	    try {
+			let dt_ = moment(dt, "YYYY. MM. DD. HH:mm").format("YYYY-MM-DD HH:mm");
 	    	let pool = new sql.ConnectionPool(sqlConfig);
 	    	await pool.connect();
 	        let result = await pool.request()
-	            .input('input_parameter1', sql.Int, n)
-	            .query('SELECT * FROM LocationStage '+
-	            	'WHERE date_time_id = @input_parameter1');
+				.input('dt', sql.NVarChar, dt_)
+				.query('SELECT a.profile_id, a.modelling_id, CAST(a.value AS DECIMAL(18,3)) value, b.dt, c.name '+
+						'FROM [LocationStage] a '+
+						'LEFT JOIN [DateTime] b ON a.date_time_id=b.id ' +
+						'LEFT JOIN [Profile] c ON a.profile_id=c.id '+
+						'WHERE b.dt=@dt '+
+						'ORDER BY c.name ASC');
 	        pool.close();
 	        //console.log(result.recordset[0]);
 	        if(result.recordset.length != 0){
 	        	let returnArray = [];
 	        	for(let r of result.recordset){
-	        		returnArray.push(new LocationStage(r.id, r.date_time_id, r.profile_id));
+	        		returnArray.push({profile_id: r.profile_id, profile_name: r.name, modelling_id: r.modelling_id, value: r.value, date_time: r.dt,});
 	        	}
 	        	return returnArray;
 	        }else
