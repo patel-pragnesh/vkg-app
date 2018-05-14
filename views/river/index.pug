@@ -149,7 +149,19 @@ block scripts
 		function setDateTimePicker(mindate, maxdate, pageload, dataType){
 
 			moment.locale('hu');	
-			var format = 'YYYY. MM. DD.';
+
+			//console.log(dataType);
+			if(dataType == 0 || dataType == 1){
+				var isTimePicker = false;
+				var isSingleDatePicker = false;
+				var format = "YYYY. MM. DD.";
+			}else if(dataType == 2 || dataType == 3){
+				var isTimePicker = true;
+				var isSingleDatePicker = true;
+				var format = "YYYY. MM. DD. HH:mm";
+			}
+
+			//var format = 'YYYY. MM. DD.';
 			var today = moment().format(format);
 			var yesterday = moment().subtract(1, 'days').format(format);
 			var last7day = moment().subtract(7, 'days').format(format);
@@ -168,16 +180,7 @@ block scripts
 			dateStart = defaultDateStart;
 			dateEnd = defaultDateEnd;
 
-			//console.log(dataType);
-			if(dataType == 0 || dataType == 1){
-				var isTimePicker = false;
-				var isSingleDatePicker = false;
-				var format = "YYYY. MM. DD.";
-			}else if(dataType == 2 || dataType == 3){
-				var isTimePicker = true;
-				var isSingleDatePicker = true;
-				var format = "YYYY. MM. DD. HH:mm";
-			}
+			
 
 			$('input[name="datetimeselect"]').daterangepicker({
 				"timePicker24Hour": true,
