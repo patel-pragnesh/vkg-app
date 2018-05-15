@@ -23,17 +23,29 @@ router.post('/:id/update', /*common.user,*/ modellingImportcontroller.update_pos
 /* GET request for one Modelling. */
 router.get('/:id', /*common.user,*/ modellingImportcontroller.modelling_detail);
 
-/* GET request to update data for Modelling. */
+/* GET request to show data import for time series for Modelling. */
 router.get('/:id/data_for_time', /*common.user,*/ modellingImportcontroller.data_for_time_get);
 
-/* POST request to update data for Modelling. */
+/* POST request to save data import for time series for Modelling. */
 router.post('/:id/data_for_time', /*common.user,*/ modellingImportcontroller.data_for_time_post);
 
-/* GET request to update data for Modelling. */
+/* GET request to show data import for location series for Modelling. */
 router.get('/:id/data_for_profile', /*common.user,*/ modellingImportcontroller.data_for_profile_get);
 
-/* POST request to update data for Modelling. */
+/* POST request to save data import for location series for Modelling. */
 router.post('/:id/data_for_profile', /*common.user,*/ modellingImportcontroller.data_for_profile_post);
+
+/* GET request to show data import for flow in for Modelling. */
+router.get('/:id/data_for_flow_in', /*common.user,*/ modellingImportcontroller.data_for_flow_in_get);
+
+/* POST request to save data import for flow in for Modelling. */
+router.post('/:id/data_for_flow_in', /*common.user,*/ modellingImportcontroller.data_for_flow_in_post);
+
+/* GET request to show data import for flow out for Modelling. */
+router.get('/:id/data_for_flow_out', /*common.user,*/ modellingImportcontroller.data_for_flow_out_get);
+
+/* POST request to save data import for flow out for Modelling. */
+router.post('/:id/data_for_flow_out', /*common.user,*/ modellingImportcontroller.data_for_flow_out_post);
 
 /* GET request to delete meta_data for Modelling. */
 router.get('/meta_data/:id/delete', /*common.user,*/ modellingImportcontroller.meta_data_delete_get);

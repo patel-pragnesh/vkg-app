@@ -25,7 +25,7 @@ exports.index = async function(req, res, next){
     let modellings = await Modelling.all();
     if(modellings){
         page_count = modellings.length/countPerPage;
-        modellings_page = modellings.slice(page, page + countPerPage);
+        modellings_page = modellings.slice(page*countPerPage, page * countPerPage + countPerPage);
     }
     res.render('modelling_import/index', {title: 'Adatbetöltések', modellings: modellings_page, page_count: page_count});
 	
@@ -61,7 +61,7 @@ exports.create_post = [
         }
         else {
             //Modellezés mentése
-			console.log(req.body.name);
+			//console.log(req.body.name);
             const m = new Modelling(null,req.body.name,req.body.description,req.body.date_for,req.body.river_id);
             await m.save();
 			//Modellezések megjelenítése
@@ -69,8 +69,8 @@ exports.create_post = [
 			let page = req.query.page ? req.query.page - 1 : 0;
 			let modellings = await Modelling.all();
             let page_count = modellings.length/countPerPage;
-            console.log(page_count);
-			let modellings_page = modellings.slice(page, page + countPerPage);
+            //console.log(page_count);
+			let modellings_page = modellings.slice(page*countPerPage, page * countPerPage + countPerPage);
 		  	res.render('modelling_import/index', {title: 'Modellezések', modellings: modellings_page, page_count: page_count});
         }
     }
@@ -122,7 +122,7 @@ exports.update_post = [
             // let page = req.query.page ? req.query.page - 1 : 0;
             // let modellings = await Modelling.all();
             // let page_count = modellings.length/countPerPage;
-            // let modellings_page = modellings.slice(page, page + countPerPage);
+            // let modellings_page = modellings.slice(page*countPerPage, page * countPerPage + countPerPage);
             res.redirect('/modelling_import');
         }
     }
@@ -132,25 +132,28 @@ exports.modelling_detail = async function(req, res, next){
     res.send('TODO Modelling details page');
 }
 
+//Idősor adatok betöltés megjelenítés
 exports.data_for_time_get = async function(req, res, next){
 
     let countPerPage = 15;
     let page = req.query.page ? req.query.page - 1 : 0;
+    //console.log('page:' + page);
     let meta_datas = await DataMeta.findByModelling(req.params.id);
-    //console.log(meta_datas);
     let page_count = meta_datas ? meta_datas.length/countPerPage : 0;
-    let meta_datas_page = meta_datas ? meta_datas.slice(page, page + countPerPage) : [];
+    //console.log('page_count: '+page_count)
+    let meta_datas_page = meta_datas ? meta_datas.slice(page*countPerPage, page * countPerPage + countPerPage) : [];
+    
 
     const m = await Modelling.findById(req.params.id);
     const form_link = "/modelling_import/"+m.id+"/data_for_time";
     const data_type = "data_for_time"
-    res.render('modelling_import/data', { title: 'Modellezés adatok', modelling: m, 
+    res.render('modelling_import/data', { title: 'Modellezés vízhozam, vízszint adatok', modelling: m, 
         form_link: form_link, meta_datas: meta_datas_page, page_count: page_count,
         data_type:data_type });
 }
 
+//Idősor adatok betöltés mentés
 exports.data_for_time_post = async function(req, res, next){
-    //TODO: Validálni a leírás mező kitöltésére és a megadott fájl meglétére
     let form = new formidable.IncomingForm();
     form.parse(req, function (err, fields, files) {
       let modelling = fields.modelling;
@@ -173,6 +176,7 @@ exports.data_for_time_post = async function(req, res, next){
     
 }
 
+//Szelvény adatok betöltés megjelenítés
 exports.data_for_profile_get = async function(req, res, next){
 
     let countPerPage = 15;
@@ -205,8 +209,8 @@ exports.data_for_profile_get = async function(req, res, next){
         page_count: page_count, data_type:data_type });
 }
 
+//Szelvény adatok betöltés mentés
 exports.data_for_profile_post = async function(req, res, next){
-    //TODO: Validálni a leírás mező kitöltésére és a megadott fájl meglétére
     let form = new formidable.IncomingForm();
     form.parse(req, function (err, fields, files) {
       let modelling = fields.modelling;
@@ -236,6 +240,86 @@ exports.data_for_profile_post = async function(req, res, next){
       });
     });
     
+}
+
+//Vízbeeresztés adatok betöltés megjelenítés
+exports.data_for_flow_in_get = async function(req, res, next){
+
+    let countPerPage = 15;
+    let page = req.query.page ? req.query.page - 1 : 0;
+    let meta_datas = await DataMeta.findByModellingByType(req.params.id, 'FLOWIN');
+    let page_count = meta_datas ? meta_datas.length/countPerPage : 0;
+    let meta_datas_page = meta_datas ? meta_datas.slice(page*countPerPage, page * countPerPage + countPerPage) : [];
+
+    const m = await Modelling.findById(req.params.id);
+    const form_link = "/modelling_import/"+m.id+"/data_for_flow_in";
+    const data_type = "data_for_flow_in"
+    res.render('modelling_import/data', { title: 'Modellezés vízbeeresztés adatok', modelling: m, 
+        form_link: form_link, meta_datas: meta_datas_page, page_count: page_count,
+        data_type:data_type });
+}
+
+//Vízbeeresztés adatok betöltés mentés
+exports.data_for_flow_in_post = async function(req, res, next){
+    let form = new formidable.IncomingForm();
+    form.parse(req, function (err, fields, files) {
+      let modelling = fields.modelling;
+      let user_description = fields.user_description;
+      let oldpath = files.fileUploaded.path;
+      let oldFileName = files.fileUploaded.name;
+      let oldFileNameArray = oldFileName.split('.');
+      oldFileNameArray.pop();
+      let newFileName = oldFileNameArray.join('.');
+      let newpath = __dirname +'/../public/DSS/' + newFileName + '_' + moment().format("YYYY-MM-DD_HHmmssSSS") + '.csv';
+      mv(oldpath, newpath, async function(err){
+        console.log('File moved...');
+        let dataloader = new DataLoader(newpath);
+        await dataloader.readFile();
+        await dataloader.saveDataFlowInFlowOut(modelling,user_description+' '+moment().format("YYYY-MM-DD_HHmmssSSS"),true);
+        console.log('ok');
+        res.redirect('/modelling_import/'+modelling+'/data_for_flow_in');
+      });
+    });
+}
+
+//Vízkivétel adatok betöltés megjelenítés
+exports.data_for_flow_out_get = async function(req, res, next){
+
+    let countPerPage = 15;
+    let page = req.query.page ? req.query.page - 1 : 0;
+    let meta_datas = await DataMeta.findByModellingByType(req.params.id, 'FLOWOUT');
+    let page_count = meta_datas ? meta_datas.length/countPerPage : 0;
+    let meta_datas_page = meta_datas ? meta_datas.slice(page*countPerPage, page * countPerPage + countPerPage) : [];
+
+    const m = await Modelling.findById(req.params.id);
+    const form_link = "/modelling_import/"+m.id+"/data_for_flow_out";
+    const data_type = "data_for_flow_out"
+    res.render('modelling_import/data', { title: 'Modellezés vízkivétel adatok', modelling: m, 
+        form_link: form_link, meta_datas: meta_datas_page, page_count: page_count,
+        data_type:data_type });
+}
+
+//Vízkivétel adatok betöltés mentés
+exports.data_for_flow_out_post = async function(req, res, next){
+    let form = new formidable.IncomingForm();
+    form.parse(req, function (err, fields, files) {
+      let modelling = fields.modelling;
+      let user_description = fields.user_description;
+      let oldpath = files.fileUploaded.path;
+      let oldFileName = files.fileUploaded.name;
+      let oldFileNameArray = oldFileName.split('.');
+      oldFileNameArray.pop();
+      let newFileName = oldFileNameArray.join('.');
+      let newpath = __dirname +'/../public/DSS/' + newFileName + '_' + moment().format("YYYY-MM-DD_HHmmssSSS") + '.csv';
+      mv(oldpath, newpath, async function(err){
+        console.log('File moved...');
+        let dataloader = new DataLoader(newpath);
+        await dataloader.readFile();
+        await dataloader.saveDataFlowInFlowOut(modelling,user_description+' '+moment().format("YYYY-MM-DD_HHmmssSSS"),false);
+        console.log('ok');
+        res.redirect('/modelling_import/'+modelling+'/data_for_flow_out');
+      });
+    });
 }
 
 exports.meta_data_delete_get = async function(req, res, next){

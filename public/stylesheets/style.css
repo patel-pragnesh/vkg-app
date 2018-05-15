@@ -259,6 +259,26 @@ a.article, a.article:hover {
   margin: 0;
   padding: 0; }
 
+/* Tooltip container */
+.tooltip_ {
+  position: relative;
+  display: inline-block; }
+  .tooltip_ .tooltiptext {
+    display: none;
+    width: 150px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+    /* Position the tooltip text - see examples below! */
+    position: absolute;
+    z-index: 1; }
+  .tooltip_:hover .tooltiptext {
+    display: inline-block;
+    top: -30px;
+    right: 0px; }
+
 .river {
   position: absolute;
   width: 100%;

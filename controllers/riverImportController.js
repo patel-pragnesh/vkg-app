@@ -19,7 +19,7 @@ exports.index = async function(req, res, next){
     let page = req.query.page ? req.query.page - 1 : 0;
     let rivers = await River.all();
     let page_count = rivers.length/countPerPage;
-    let rivers_page = rivers.slice(page, page + countPerPage);
+    let rivers_page = rivers.slice(page*countPerPage, page * countPerPage + countPerPage);
     res.render('river_import/index', {title: 'Vízfolyások', rivers: rivers_page, page_count: page_count});
 	
 }
@@ -48,7 +48,7 @@ exports.create_post = [
         }
         else {
             //Modellezés mentése
-			console.log(req.body.name);
+			//console.log(req.body.name);
             const r = new River(null,req.body.name,req.body.directorate);
             await r.save();
 			//Modellezések megjelenítése
@@ -56,7 +56,7 @@ exports.create_post = [
 			let page = req.query.page ? req.query.page - 1 : 0;
 			let rivers = await River.all();
             let page_count = rivers.length/countPerPage;
-			let rivers_page = rivers.slice(page, page + countPerPage);
+			let rivers_page = rivers.slice(page*countPerPage, page * countPerPage + countPerPage);
 		  	res.render('river_import/index', {title: 'Vízfolyások', rivers: rivers_page, page_count: page_count});
         }
     }
@@ -97,7 +97,7 @@ exports.update_post = [
             // let page = req.query.page ? req.query.page - 1 : 0;
             // let modellings = await Modelling.all();
             // let page_count = modellings.length/countPerPage;
-            // let modellings_page = modellings.slice(page, page + countPerPage);
+            // let modellings_page = modellings.slice(page*countPerPage, page * countPerPage + countPerPage);
             res.redirect('/river_import');
         }
     }

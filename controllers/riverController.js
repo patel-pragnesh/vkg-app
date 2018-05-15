@@ -27,8 +27,8 @@ exports.river_detail = async function(req, res, next){
 		{id: 2, name: "Vízszint hossz-szelvény", post_link_name: "location_data"},
 		{id: 3, name: "Vízhozam hossz-szelvény", post_link_name: "location_data"},
 		{id: 4, name: "Vízkészlet", post_link_name: "time_data"},
-		//{id: 5, name: "Vízkivételek hozamok"},
-		//{id: 6, name: "Vízbeeresztés hozamok"},
+		{id: 5, name: "Vízkivételek hozamok", post_link_name: "flow_out"},
+		{id: 6, name: "Vízbeeresztés hozamok", post_link_name: "flow_in"},
 		//{id: 7, name: "Beszivárgás a mederbe"}, //Peremfeltétel, még nincs
 		//{id: 8, name: "Elszivárgás a mederből"}, //Peremfeltétel, még nincs
 		//{id: 9, name: "Csapadékátlag"},
@@ -100,7 +100,7 @@ exports.get_time_data_data_post = async function(req, res){
 		let data_meta = await DataMeta.findByTypeProfileDataload(data_type_string, profile_id,dataload);
 		datapoints = await Flow.findByMetaDataAndDateDailySum(data_meta.id, date_start, date_end);
 	}
-	console.log(datapoints);
+	//console.log(datapoints);
 	res.json(datapoints);
 }
 

@@ -24,11 +24,20 @@ block content
 							td=m.date_for
 							td=m.river_name
 							td
-								a(href="/modelling_import/"+m.id+"/data_for_time" class="btn btn-info pull-right")
+								a(href="/modelling_import/"+m.id+"/data_for_flow_out" class="btn btn-info pull-right tooltip_")
+									span.tooltiptext Vízkivétel
+									span.glyphicon.glyphicon-log-out
+								a(href="/modelling_import/"+m.id+"/data_for_flow_in" class="btn btn-info pull-right mr5 tooltip_")
+									span.tooltiptext Vízbeeresztés
+									span.glyphicon.glyphicon-log-in
+								a(href="/modelling_import/"+m.id+"/data_for_time" class="btn btn-info pull-right mr5 tooltip_")
+									span.tooltiptext Flow, Stage adatok
 									span.glyphicon.glyphicon-time
-								a(href="/modelling_import/"+m.id+"/data_for_profile" class="btn btn-info pull-right mr5")
+								a(href="/modelling_import/"+m.id+"/data_for_profile" class="btn btn-info pull-right mr5 tooltip_")
+									span.tooltiptext Location adatok
 									span.glyphicon.glyphicon-road
-								a(href="/modelling_import/"+m.id+"/update" class="btn btn-info pull-right mr5")
+								a(href="/modelling_import/"+m.id+"/update" class="btn btn-info pull-right mr5 tooltip_")
+									span.tooltiptext Szerkesztés
 									span.glyphicon.glyphicon-edit
 		div.row.pull-right
 			div.col-md-12

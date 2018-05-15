@@ -84,16 +84,50 @@ class DataMeta{
 	    }
 	}
 
+	//FLOW és STAGE típusú MetaData lekérdezés
 	static async findByModelling(modelling_id){
 	    try {
 	    	let pool = new sql.ConnectionPool(sqlConfig);
 	    	await pool.connect();
 	        let result = await pool.request()
-	            .input('input_parameter', sql.Int, modelling_id)
+				.input('input_parameter', sql.Int, modelling_id)
+				.input('stage', sql.NVarChar, 'STAGE')
+				.input('flow', sql.NVarChar, 'FLOW')
 	            .query('SELECT Data_meta.*, Time_interval.name as time_interval_name, Profile.name as profile_name FROM Data_meta '+
 	            	'LEFT JOIN Time_interval ON Data_meta.time_interval_id=Time_interval.id '+
 	            	'LEFT JOIN Profile ON Data_meta.profile_id=Profile.id '+
-	            	'WHERE Data_meta.modelling_id = @input_parameter');
+	            	'WHERE Data_meta.modelling_id = @input_parameter AND (Data_meta.type=@stage OR Data_meta.type=@flow)');
+	        pool.close();
+	        // console.log(result.recordset[0]);
+	        if(result.recordset.length != 0){
+	        	let returnArray = [];
+	        	for(let r of result.recordset){
+	        		returnArray.push(new DataMeta(r.id, r.projekt_name, 
+	        			moment(r.date_from, "YYYY-MM-DD HH:mm:ss").format("YYYY-MM-DD HH:mm"), 
+	        			moment(r.date_to, "YYYY-MM-DD HH:mm:ss").format("YYYY-MM-DD HH:mm"), 
+	        			r.time_interval_id, r.unit, r.modelling_id, r.profile_id, r.additional_description, r.user_description, r.type, r.time_interval_name, r.profile_name));
+	        	}
+	        	return returnArray;
+	        }
+	        else
+	        	return null;
+
+	    } catch (err) {
+	        console.log(err);
+	    }
+	}
+
+	static async findByModellingByType(modelling_id, type){
+	    try {
+	    	let pool = new sql.ConnectionPool(sqlConfig);
+	    	await pool.connect();
+	        let result = await pool.request()
+				.input('input_parameter', sql.Int, modelling_id)
+				.input('type', sql.NVarChar, type)
+	            .query('SELECT Data_meta.*, Time_interval.name as time_interval_name, Profile.name as profile_name FROM Data_meta '+
+	            	'LEFT JOIN Time_interval ON Data_meta.time_interval_id=Time_interval.id '+
+	            	'LEFT JOIN Profile ON Data_meta.profile_id=Profile.id '+
+	            	'WHERE Data_meta.modelling_id = @input_parameter AND Data_meta.type=@type');
 	        pool.close();
 	        // console.log(result.recordset[0]);
 	        if(result.recordset.length != 0){
