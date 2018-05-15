@@ -186,8 +186,8 @@ class DataMeta{
 	    }
 	}
 
-	static async findByTypeProfile(type, profile_id){
-		//console.log(type);
+	static async findByTypeProfileDataload(type, profile_id, dataload){
+		console.log(dataload);
 		//console.log(profile_id);
 		try {
 	    	let pool = new sql.ConnectionPool(sqlConfig);
@@ -195,8 +195,9 @@ class DataMeta{
 	        let result = await pool.request()
 	            .input('profile_id', sql.Int, profile_id)
 	            .input('type', sql.NVarChar, type)
+	            .input('dataload', sql.NVarChar, dataload)
 	            .query('SELECT Data_meta.* FROM Data_meta '+
-	            	'WHERE Data_meta.profile_id = @profile_id AND Data_meta.type = @type');
+	            	'WHERE Data_meta.profile_id = @profile_id AND Data_meta.type = @type AND CAST(Data_meta.user_description AS NVARCHAR(200)) = @dataload');
 	        pool.close();
 	        //console.log(result.recordset[0]);
 	        if(result.recordset.length != 0)

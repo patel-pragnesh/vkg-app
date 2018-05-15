@@ -86,10 +86,8 @@ class Flow{
 	    }
 	}
 
+	//Minden adatpont lekérdezése
 	static async findByMetaDataAndDate(id, date_from, date_to){
-		// console.log(id);
-		// console.log(date_from);
-		// console.log(date_to);
 	    try {
 	    	let d_from = moment(date_from, "YYYY. MM. DD.").format("YYYY-MM-DD HH:mm");
 	    	let d_to = moment(date_to, "YYYY. MM. DD.").format("YYYY-MM-DD HH:mm");
@@ -111,6 +109,77 @@ class Flow{
 	        	let returnArray = [];
 	        	for(let r of result.recordset){
 	        		returnArray.push(new Flow(r.id, r.date_time_for, r.value, r.data_meta_id, r.projekt_name));
+	        	}
+	        	return returnArray;
+	        }
+	        else
+	        	return null;
+
+	    } catch (err) {
+	        console.log(err);
+	    }
+	}
+
+	//Napi átlag vízhozam adat lekérdezése
+	static async findByMetaDataAndDateDailyAVG(id, date_from, date_to){
+	    try {
+	    	let d_from = moment(date_from, "YYYY. MM. DD.").format("YYYY-MM-DD HH:mm");
+	    	let d_to = moment(date_to, "YYYY. MM. DD.").format("YYYY-MM-DD HH:mm");
+	    	let pool = new sql.ConnectionPool(sqlConfig);
+	    	await pool.connect();
+	        let result = await pool.request()
+	            .input('input_parameter', sql.Int, id)
+	            .input('date_from', sql.NVarChar, d_from)
+				.input('date_to', sql.NVarChar, d_to)
+				.query('SELECT CAST(date_time_for AS DATE) date_time_for, ROUND(AVG([value]),2) value FROM Flow '+
+							'LEFT JOIN Data_meta ON Flow.data_meta_id=Data_meta.id '+
+							'WHERE Flow.data_meta_id = @input_parameter '+
+							'AND Flow.date_time_for >= @date_from '+
+	            			'AND Flow.date_time_for <= @date_to '+
+							'GROUP BY CAST(date_time_for AS DATE) '+
+							'ORDER BY CAST(date_time_for AS DATE)');
+	        pool.close();
+	        //console.log(result.recordset[0]);
+	        if(result.recordset.length != 0){
+	        	let returnArray = [];
+	        	for(let r of result.recordset){
+	        		returnArray.push({date_time_for: moment(r.date_time_for, "YYYY-MM-DD HH:mm").format("YYYY. MM. DD."), value: r.value});
+	        	}
+	        	return returnArray;
+	        }
+	        else
+	        	return null;
+
+	    } catch (err) {
+	        console.log(err);
+	    }
+	}
+
+	//Napi átfolyt vízmennyiség adat lekérdezése
+	static async findByMetaDataAndDateDailySum(id, date_from, date_to){
+	    try {
+	    	let d_from = moment(date_from, "YYYY. MM. DD.").format("YYYY-MM-DD HH:mm");
+	    	let d_to = moment(date_to, "YYYY. MM. DD.").format("YYYY-MM-DD HH:mm");
+	    	let pool = new sql.ConnectionPool(sqlConfig);
+	    	await pool.connect();
+	        let result = await pool.request()
+	            .input('input_parameter', sql.Int, id)
+	            .input('date_from', sql.NVarChar, d_from)
+				.input('date_to', sql.NVarChar, d_to)
+				.query('SELECT CAST(date_time_for AS DATE) date_time_for, ROUND(AVG([value]),2) value FROM Flow '+
+							'LEFT JOIN Data_meta ON Flow.data_meta_id=Data_meta.id '+
+							'WHERE Flow.data_meta_id = @input_parameter '+
+							'AND Flow.date_time_for >= @date_from '+
+	            			'AND Flow.date_time_for <= @date_to '+
+							'GROUP BY CAST(date_time_for AS DATE) '+
+							'ORDER BY CAST(date_time_for AS DATE)');
+	        pool.close();
+	        //console.log(result.recordset[0]);
+	        if(result.recordset.length != 0){
+	        	let returnArray = [];
+	        	for(let r of result.recordset){
+					let daily_sum = r.value * 86400;
+	        		returnArray.push({date_time_for: moment(r.date_time_for, "YYYY-MM-DD HH:mm").format("YYYY. MM. DD."), value: parseFloat(daily_sum.toFixed(0))});
 	        	}
 	        	return returnArray;
 	        }

@@ -103,6 +103,38 @@ if(actDataTpye == 0){
             stepSize: 5000
         }
     }];
+}else if(actDataTpye == 4){
+    var chartType= 'line';
+    var yAxesLabel = 'Vízkészlet (m3)';
+    var xAxesLabel = 'Időpont';
+    var xAxesSettings = [{
+        type: 'time',
+        display: true,
+        scaleLabel: {
+            display: true,
+            labelString: xAxesLabel
+        },
+        time: {
+          parser: 'YYYY-MM-DD HH:mm:ss',
+          unit: 'day',
+          // unit:'hour',
+          displayFormats: {
+             year: 'YYYY',
+             day: 'MM. DD.',
+             // hour: 'YYYY. MM. DD. HH:mm',
+             hour: 'HH:mm',
+             quarter: 'MMM YYYY'
+          },
+          // min: '2017-10-02 18:43:53',
+          // max: '2017-10-09 18:43:53'
+        },
+        ticks: {
+            major: {
+                fontStyle: 'bold',
+                fontColor: '#FF0000'
+            }
+        }
+    }];
 }
 
 var color = Chart.helpers.color;

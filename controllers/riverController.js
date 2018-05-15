@@ -26,7 +26,7 @@ exports.river_detail = async function(req, res, next){
 		//{id: 17, name: "Vízhozam átlag"},
 		{id: 2, name: "Vízszint hossz-szelvény", post_link_name: "location_data"},
 		{id: 3, name: "Vízhozam hossz-szelvény", post_link_name: "location_data"},
-		//{id: 4, name: "Vízkészlet"},
+		{id: 4, name: "Vízkészlet", post_link_name: "time_data"},
 		//{id: 5, name: "Vízkivételek hozamok"},
 		//{id: 6, name: "Vízbeeresztés hozamok"},
 		//{id: 7, name: "Beszivárgás a mederbe"}, //Peremfeltétel, még nincs
@@ -56,7 +56,14 @@ exports.river_detail = async function(req, res, next){
 exports.get_time_data_dataloads_by_modelling_post = async function(req, res){
 	let modelling_id = req.body.modelling_id;
 	let data_type = req.body.data_type;
-	let type_filer = data_type == 0 ? 'FLOW' : 'STAGE';
+	let type_filer = null;
+	if(data_type == 0){
+		type_filer = 'FLOW';
+	}else if(data_type == 1){
+		type_filer = 'STAGE';
+	}else if(data_type == 4){
+		type_filer = 'FLOW';
+	}
 	let data_meta_array = await DataMeta.selectUserDescriptions(type_filer, modelling_id);
 	res.json(data_meta_array);
 }
@@ -74,19 +81,26 @@ exports.get_time_data_data_post = async function(req, res){
 	let profile_id = req.body.profile_id;
 	let date_start = req.body.date_start;
 	let date_end = req.body.date_end;
+	let dataload = req.body.dataload;
 
 	let datapoints = null;
 	let data_type_string = '';
 
 	if(data_type == 0){	//FLOW
 		data_type_string = 'FLOW';
-		let data_meta = await DataMeta.findByTypeProfile(data_type_string, profile_id);
-		datapoints = await Flow.findByMetaDataAndDate(data_meta.id, date_start, date_end);
+		let data_meta = await DataMeta.findByTypeProfileDataload(data_type_string, profile_id,dataload);
+		// datapoints = await Flow.findByMetaDataAndDate(data_meta.id, date_start, date_end);
+		datapoints = await Flow.findByMetaDataAndDateDailyAVG(data_meta.id, date_start, date_end);
 	}else if(data_type == 1){	//STAGE
 		data_type_string = 'STAGE';
-		let data_meta = await DataMeta.findByTypeProfile(data_type_string, profile_id);
-		datapoints = await Stage.findByMetaDataAndDate(data_meta.id, date_start, date_end);
+		let data_meta = await DataMeta.findByTypeProfileDataload(data_type_string, profile_id,dataload);
+		datapoints = await Stage.findByMetaDataAndDateDailyAVG(data_meta.id, date_start, date_end);
+	}else if(data_type == 4){	//FLOW-ból számított napi térfogat
+		data_type_string = 'FLOW';
+		let data_meta = await DataMeta.findByTypeProfileDataload(data_type_string, profile_id,dataload);
+		datapoints = await Flow.findByMetaDataAndDateDailySum(data_meta.id, date_start, date_end);
 	}
+	console.log(datapoints);
 	res.json(datapoints);
 }
 

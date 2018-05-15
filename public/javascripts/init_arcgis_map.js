@@ -73,8 +73,10 @@ var map;
 
     map = new Map("map", {
       basemap: "topo",
-      center: [20.500, 47.108],
-      zoom: 8,
+      //center: [20.500, 47.108],
+      center: [21.110, 48.280],
+      // zoom: 8,
+      zoom: 9,
 //            infoWindow: popup,
       spatialReference:new esri.SpatialReference({ "wkid": 3857 })  //4326
         });
@@ -88,8 +90,8 @@ var map;
 
     var overviewMapDijit = new OverviewMap({
       map: map,
-      width: 250,
-      heigth: 100,
+      width: 150,
+      heigth: 50,
       attachTo: "bottom-left",
       visible: true
     });
@@ -159,6 +161,7 @@ var map;
     }
 
     function executeIdentifyTask(event) {
+      $("div.profile_info").html('');
       var layers = map.getLayersVisibleAtScale(map.getScale());
       identifyParams.width = map.width;
       identifyParams.height = map.height;
@@ -172,18 +175,58 @@ var map;
         .addCallback(function (response) {
         // response is an array of identify result objects
         // Let's return an array of features.
-        //console.log(response.result.River_Stat);
         return arrayUtils.map(response, function (result) {
           var feature = result.feature;
-          console.log(feature.attributes.River_Stat);
+          //console.log(feature.attributes.River_Stat);
           var layerName = result.layerName;
           feature.attributes.layerName = layerName;
           var InfTemplate = new InfoTemplate(layerName, feature.attributes.qSpecies);
           feature.setInfoTemplate(InfTemplate);
+
+          //Profil választó beállítása
+          updateProfileSelect(feature.attributes.River_Stat);
+
           return feature;
         });
       });
       map.infoWindow.setFeatures([deferred]);
       map.infoWindow.show(event.mapPoint);
     }
+
+    $("#map_btn").on("click", function(){
+      console.log('Map btn click...');
+      // iTaskMap();
+    });
+
+    function updateProfileSelect(river_stat){      
+      console.log(river_stat);
+      console.log(typeof(river_stat));
+      var river_stat_float = parseFloat(river_stat).toFixed(1);
+      console.log(river_stat_float);
+
+      var dd = document.getElementById('profile');
+      //console.log('dd hossz: '+dd.length);
+      console.log(dd);
+      if(dd){
+        var findOption = false;
+        for (var i = 0; i < dd.options.length; i++) {
+          var option_text_float = parseFloat(dd.options[i].text).toFixed(1);
+          if (option_text_float === river_stat_float) {
+              dd.selectedIndex = i;
+              findOption = true;
+              break;
+          }
+        }
+        if(!findOption){
+          console.log('Nincs adat a kiválasztott profilhoz...');
+          $("div.profile_info").html('Nincs adat a kiválasztott profilhoz.');
+        }else{
+          $("div.profile_info").html('');
+        }
+      }else{
+        console.log('Nincs profil select...');
+      }
+      
+    }
+
   });

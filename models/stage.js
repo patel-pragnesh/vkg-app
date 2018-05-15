@@ -60,6 +60,7 @@ class Stage{
 	    }
 	}
 
+	//Minden adatpont lekérdezése
 	static async findByMetaDataAndDate(id, date_from, date_to){
 	    try {
 	    	let d_from = moment(date_from, "YYYY. MM. DD.").format("YYYY-MM-DD HH:mm");
@@ -82,6 +83,41 @@ class Stage{
 	        	let returnArray = [];
 	        	for(let r of result.recordset){
 	        		returnArray.push(new Stage(r.id, r.date_time_for, r.value, r.data_meta_id, r.projekt_name));
+	        	}
+	        	return returnArray;
+	        }
+	        else
+	        	return null;
+
+	    } catch (err) {
+	        console.log(err);
+	    }
+	}
+
+	//Napi átlag adat lekérdezése
+	static async findByMetaDataAndDateDailyAVG(id, date_from, date_to){
+	    try {
+	    	let d_from = moment(date_from, "YYYY. MM. DD.").format("YYYY-MM-DD HH:mm");
+	    	let d_to = moment(date_to, "YYYY. MM. DD.").format("YYYY-MM-DD HH:mm");
+	    	let pool = new sql.ConnectionPool(sqlConfig);
+	    	await pool.connect();
+	        let result = await pool.request()
+	            .input('input_parameter', sql.Int, id)
+	            .input('date_from', sql.NVarChar, d_from)
+				.input('date_to', sql.NVarChar, d_to)
+	            .query('SELECT CAST(Stage.date_time_for AS DATE) date_time_for, ROUND(AVG(Stage.[value]),2) value FROM Stage '+
+							'LEFT JOIN Data_meta ON Stage.data_meta_id=Data_meta.id '+
+							'WHERE Stage.data_meta_id = @input_parameter '+
+							'AND Stage.date_time_for >= @date_from '+
+	            			'AND Stage.date_time_for <= @date_to '+
+							'GROUP BY CAST(date_time_for AS DATE) '+
+							'ORDER BY CAST(date_time_for AS DATE)');
+	        pool.close();
+	        // console.log(result.recordset[0]);
+	        if(result.recordset.length != 0){
+	        	let returnArray = [];
+	        	for(let r of result.recordset){
+	        		returnArray.push({date_time_for: moment(r.date_time_for, "YYYY-MM-DD HH:mm").format("YYYY. MM. DD."), value: r.value});
 	        	}
 	        	return returnArray;
 	        }

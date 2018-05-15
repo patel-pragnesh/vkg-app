@@ -210,6 +210,7 @@ class DataLoader{
 					table.columns.add('createdAt', sql.NVarChar, {nullable: true});
 
 				    that.data[i].values.forEach(async function(v){
+						console.log(v.datetime);
 				    	date_from = moment(v.datetime, "YYYY-MM-DD HH:mm") < date_from ? moment(v.datetime, "YYYY-MM-DD HH:mm") : date_from;
 						date_to = moment(v.datetime, "YYYY-MM-DD HH:mm") > date_to ? moment(v.datetime, "YYYY-MM-DD HH:mm") : date_to;
 

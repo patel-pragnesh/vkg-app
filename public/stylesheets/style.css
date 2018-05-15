@@ -238,6 +238,9 @@ a.article, a.article:hover {
         right: 24px;
         top: auto;
         cursor: pointer; }
+      #content .sidenav .filter-content .profile_info {
+        color: #FFF;
+        padding-top: 3px; }
     #content .sidenav .title {
       color: #FFF;
       font-size: 25px;

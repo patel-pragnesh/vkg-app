@@ -30,18 +30,22 @@ block content
 					i.glyphicon.glyphicon-calendar.fa.fa-calendar
 			div.col-md-12
 				input(type="button" id="dataget_btn" class="get-data-button btn btn-primary pull-right" value="Lekérdezés")
+			//- div.col-md-12
+				input(type="button" id="map_btn" class="btn btn-primary pull-right" value="Map")
 	div.container-fluid.mt10
 		div.row.river.narrow
-			div.col-md-5.river-map
+			div.col-md-7.river-map
 				div.panel.panel-default
 					div.panel-heading
-						h3.panel-title Térkép
+						h3.panel-title.pull-left Térkép
+						div.profile_info.pull-right
+						div.clearfix
 					div.panel-body
 						div.row
 							div.col-md-12
 								#map
 								<span id="info" style="position:absolute; left:15px; bottom:5px; font-weight: bold; font-family: arial; font-size: 16px; color:#000000; z-index:994;"></span>
-			div.col-md-7.river-data
+			div.col-md-5.river-data
 				div.panel.panel-default
 					div.panel-heading
 						h3.panel-title.pull-left Adatok
@@ -135,6 +139,7 @@ block scripts
 							var o = $('<option>', {value: v.profile_id}).text(v.profile_name);
 							o.appendTo($('#profile'));
 						});
+						console.log('loadDataToProfiles(): ' + data[0].date_from);
 						setDateTimePicker(data[0].date_from, data[0].date_to, pageload, dataType)
 					}else{
 						//- var c1 = $('<div class="col-md-12">Nincs megjelenítendő adat.</div>');
@@ -150,8 +155,8 @@ block scripts
 
 			moment.locale('hu');	
 
-			//console.log(dataType);
-			if(dataType == 0 || dataType == 1){
+			console.log('dataType: '+dataType);
+			if(dataType == 0 || dataType == 1|| dataType == 4){
 				var isTimePicker = false;
 				var isSingleDatePicker = false;
 				var format = "YYYY. MM. DD.";
@@ -248,7 +253,8 @@ block scripts
 				data_type: actDataTpye,
 				profile_id: selected_profile,
 				date_start: dStart,
-				date_end:dEnd
+				date_end:dEnd,
+				dataload: selected_dataload
 				},
 				function( data ) {
 				if(data){					
@@ -266,6 +272,8 @@ block scripts
 		}
 
 		function dataToChart(c, d, dataType){
+			//console.log('dataToChart dataType: '+dataType);
+			//console.log('dataToChart d: '+d);
 			var dataset_array = [];		
 			var data_set = {
 				data: [
@@ -284,15 +292,18 @@ block scripts
 				// pointRadius: 0
 			}
 			$.each(d, function(j,w){
-				if(dataType == 0 || dataType == 1){
-					data_set.data.push({x:moment(w.date_time_for).format('YYYY. MM. DD. HH:ss'), y: w.value});
+				if(dataType == 0 || dataType == 1 || dataType == 4){
+					console.log(w);
+					//- data_set.data.push({x:moment(w.date_time_for).format('YYYY. MM. DD. HH:ss'), y: w.value});
+					data_set.data.push({x:moment(w.date_time_for).format('YYYY. MM. DD.'), y: w.value});
 				}else if(dataType == 2 || dataType == 3){
 					data_set.data.push({x:w.profile_name, y: w.value});
 				}
 			});
-            
+			//console.log(data_set);
 			dataset_array.push(data_set);	
 			c.data.datasets = dataset_array;
+			console.log(dataset_array);
 			c.update();
 		}
 
@@ -303,13 +314,23 @@ block scripts
 			if(dataType == 0 || dataType == 1){
 				$('#data_table_datetime').html('Idő intervallum: ' + dateStart + ' - ' + dateEnd);
 				$('#data_table_profile').html('Szelvény: ' + $('select[name=profile] option[value="'+profile_id+'"]').text());
-				var h1 = $('<div class="col-md-6">'+'Időpont'+'</div>');
-				var h2 = $('<div class="col-md-6">'+'Érték'+'</div>');
+				if(dataType == 0){
+					var h1 = $('<div class="col-md-6">'+'Időpont'+'</div>');
+					var h2 = $('<div class="col-md-6">'+'Érték (m3/s)'+'</div>');
+				}else if(dataType == 1){
+					var h1 = $('<div class="col-md-6">'+'Időpont'+'</div>');
+					var h2 = $('<div class="col-md-6">'+'Érték (m)'+'</div>');
+				}				
 			}else if(dataType == 2 || dataType == 3){
 				$('#data_table_datetime').html('Időpont: ' + dateStart);
 				$('#data_table_profile').html('');
-				var h1 = $('<div class="col-md-6">'+'Szelvény'+'</div>');
-				var h2 = $('<div class="col-md-6">'+'Érték'+'</div>');
+				if(dataType == 3){
+					var h1 = $('<div class="col-md-6">'+'Időpont'+'</div>');
+					var h2 = $('<div class="col-md-6">'+'Érték (m3/s)'+'</div>');
+				}else if(dataType == 2){
+					var h1 = $('<div class="col-md-6">'+'Időpont'+'</div>');
+					var h2 = $('<div class="col-md-6">'+'Érték (m)'+'</div>');
+				}			
 			}
 
 			
@@ -322,8 +343,9 @@ block scripts
 				else
 					bg_color = 'white-bg';
 
-				if(dataType == 0 || dataType == 1){
-					var c1 = $('<div class="col-md-6 '+bg_color+'">'+moment(w.date_time_for).format('YYYY. MM. DD. HH:ss')+'</div>');
+				if(dataType == 0 || dataType == 1 || dataType == 1){
+					//- var c1 = $('<div class="col-md-6 '+bg_color+'">'+moment(w.date_time_for).format('YYYY. MM. DD. HH:ss')+'</div>');
+					var c1 = $('<div class="col-md-6 '+bg_color+'">'+moment(w.date_time_for).format('YYYY. MM. DD.')+'</div>');
 					var c2 = $('<div class="col-md-6 '+bg_color+'">'+w.value+'</div>');
 				}else if(dataType == 2 || dataType == 3){
 					var c1 = $('<div class="col-md-6 '+bg_color+'">'+w.profile_name+'</div>');					
@@ -358,7 +380,12 @@ block scripts
 
 			$('select[name=dataload]').change(function(){
 				console.log('Dataload select change...');
-				loadDataToProfiles($(this).val(), false);
+				loadDataToProfiles($(this).val(), false,actDataTpye);
+			});
+
+			$('select[name=profile]').change(function(){
+				console.log('Profile select change...');
+				$("div.profile_info").html('');
 			});
 
 			$(".get-data-button").on("click", function(){
