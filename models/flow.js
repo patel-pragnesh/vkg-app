@@ -135,7 +135,7 @@ class Flow{
 							'LEFT JOIN Data_meta ON Flow.data_meta_id=Data_meta.id '+
 							'WHERE Flow.data_meta_id = @input_parameter '+
 							'AND Flow.date_time_for >= @date_from '+
-	            			'AND Flow.date_time_for <= @date_to '+
+	            			'AND Flow.date_time_for < @date_to '+
 							'GROUP BY CAST(date_time_for AS DATE) '+
 							'ORDER BY CAST(date_time_for AS DATE)');
 	        pool.close();
@@ -170,7 +170,7 @@ class Flow{
 							'LEFT JOIN Data_meta ON Flow.data_meta_id=Data_meta.id '+
 							'WHERE Flow.data_meta_id = @input_parameter '+
 							'AND Flow.date_time_for >= @date_from '+
-	            			'AND Flow.date_time_for <= @date_to '+
+	            			'AND Flow.date_time_for < @date_to '+
 							'GROUP BY CAST(date_time_for AS DATE) '+
 							'ORDER BY CAST(date_time_for AS DATE)');
 	        pool.close();

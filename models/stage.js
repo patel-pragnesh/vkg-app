@@ -75,7 +75,7 @@ class Stage{
 	            	'LEFT JOIN Data_meta ON Stage.data_meta_id=Data_meta.id '+
 	            	'WHERE Stage.data_meta_id = @input_parameter '+
 	            	'AND Stage.date_time_for >= @date_from '+
-	            	'AND Stage.date_time_for <= @date_to '+
+	            	'AND Stage.date_time_for < @date_to '+
 	            	'ORDER BY Stage.date_time_for;');
 	        pool.close();
 	        // console.log(result.recordset[0]);
@@ -109,7 +109,7 @@ class Stage{
 							'LEFT JOIN Data_meta ON Stage.data_meta_id=Data_meta.id '+
 							'WHERE Stage.data_meta_id = @input_parameter '+
 							'AND Stage.date_time_for >= @date_from '+
-	            			'AND Stage.date_time_for <= @date_to '+
+	            			'AND Stage.date_time_for < @date_to '+
 							'GROUP BY CAST(date_time_for AS DATE) '+
 							'ORDER BY CAST(date_time_for AS DATE)');
 	        pool.close();

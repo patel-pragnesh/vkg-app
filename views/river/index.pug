@@ -18,7 +18,7 @@ block content
 				div.form-group
 					label(for="dataload") Adatbetöltések
 					select(name="dataload" id="dataload" class="form-control")
-			if(post_link_name == "time_data" || post_link_name == "flow_out" || post_link_name == "flow_in")
+			if(post_link_name == "time_data" || post_link_name == "flow_out_data" || post_link_name == "flow_in_data")
 				div.col-md-12
 					div.form-group
 						label(for="profile") Profilok
@@ -75,7 +75,7 @@ block scripts
 		var post_link_name = "#{post_link_name}";        
 		var dateStart, dateEnd, actDataTpye="#{act_data_type}";	
 		var graph_color_array = [
-			"rgba(100,80,60, .7)",
+			"rgba(32,53,10360, .7)",
 			"rgba(53,167,156, .7)",
 		];
         
@@ -84,6 +84,17 @@ block scripts
 		}
 
 		function loadDataToDataloads(data_type, modelling_id, pageload){
+			//Beviteli mezők tiltása
+			var o1 = $('<option>', {value: ''}).text('Nincs megjelenítendő adat.');
+			o1.appendTo($('#dataload'));
+			$('#dataload').prop('disabled', 'disabled');
+			var o2 = $('<option>', {value: ''}).text('Nincs megjelenítendő adat.');
+			o2.appendTo($('#profile'));
+			$('#profile').prop('disabled', 'disabled');
+			$('#datetimeselect').prop('disabled', 'disabled');
+			$('#dataget_btn').prop('disabled', 'disabled');
+
+			//Adatbeviteli datok lekérdezése
 			$.post( "/rivers/filter/"+post_link_name+"/dataloads", 
 				{
 					data_type: data_type,
@@ -96,33 +107,36 @@ block scripts
 					$('#profile').prop('disabled', false);
 					$('#datetimeselect').prop('disabled', false);
 					$('#dataget_btn').prop('disabled', false);
-					if(data){				
+					if(data){
+						console.log(data);			
 						if(data.length){
 							//Adatbetöltések select adatainak frissítése							
 							$.each(data, function(i, v){
 								var o = $('<option>', {value: v.description_id}).text(v.user_description);
 								o.appendTo($('#dataload'));
 							});
-							if(post_link_name == "time_data" || post_link_name == "flow_out" || post_link_name == "flow_in"){
+							if(post_link_name == "time_data" || post_link_name == "flow_out_data" || post_link_name == "flow_in_data"){
 								loadDataToProfiles(data[0].description_id, pageload, data_type);
 							}else if(post_link_name == "location_data"){
 								console.log(data[0]);
 								setDateTimePicker(data[0].date_from, data[0].date_to, pageload, data_type)
 							}
-						}else{
-							//- var c1 = $('<div class="col-md-12">Nincs megjelenítendő adat.</div>');
-							//- c1.appendTo($('#data_table'));
 						}
-					}else{
-						var o1 = $('<option>', {value: ''}).text('Nincs megjelenítendő adat.');
-						o1.appendTo($('#dataload'));
-						$('#dataload').prop('disabled', 'disabled');
-						var o2 = $('<option>', {value: ''}).text('Nincs megjelenítendő adat.');
-						o2.appendTo($('#profile'));
-						$('#profile').prop('disabled', 'disabled');
-						$('#datetimeselect').prop('disabled', 'disabled');
-						$('#dataget_btn').prop('disabled', 'disabled');
+						//- else{
+						//- 	//- var c1 = $('<div class="col-md-12">Nincs megjelenítendő adat.</div>');
+						//- 	//- c1.appendTo($('#data_table'));
+						//- }
 					}
+					//- else{
+					//- 	var o1 = $('<option>', {value: ''}).text('Nincs megjelenítendő adat.');
+					//- 	o1.appendTo($('#dataload'));
+					//- 	$('#dataload').prop('disabled', 'disabled');
+					//- 	var o2 = $('<option>', {value: ''}).text('Nincs megjelenítendő adat.');
+					//- 	o2.appendTo($('#profile'));
+					//- 	$('#profile').prop('disabled', 'disabled');
+					//- 	$('#datetimeselect').prop('disabled', 'disabled');
+					//- 	$('#dataget_btn').prop('disabled', 'disabled');
+					//- }
 			});
 		}
 
@@ -156,7 +170,7 @@ block scripts
 			moment.locale('hu');	
 
 			console.log('dataType: '+dataType);
-			if(dataType == 0 || dataType == 1|| dataType == 4){
+			if(dataType == 0 || dataType == 1 || dataType == 4 || dataType == 5 || dataType == 6 || dataType == 14){
 				var isTimePicker = false;
 				var isSingleDatePicker = false;
 				var format = "YYYY. MM. DD.";
@@ -276,6 +290,8 @@ block scripts
 			//console.log('dataToChart d: '+d);
 			var dataset_array = [];		
 			var data_set = {
+				type: 'line',
+				yAxisID: 'A',
 				data: [
 					//- {
 					//- 	x: -12,
@@ -292,18 +308,43 @@ block scripts
 				// pointRadius: 0
 			}
 			$.each(d, function(j,w){
-				if(dataType == 0 || dataType == 1 || dataType == 4){
-					console.log(w);
+				if(dataType == 0 || dataType == 1 || dataType == 4|| dataType == 5|| dataType == 6 || dataType == 14){
+					//console.log(w);
 					//- data_set.data.push({x:moment(w.date_time_for).format('YYYY. MM. DD. HH:ss'), y: w.value});
 					data_set.data.push({x:moment(w.date_time_for).format('YYYY. MM. DD.'), y: w.value});
 				}else if(dataType == 2 || dataType == 3){
 					data_set.data.push({x:w.profile_name, y: w.value});
 				}
 			});
-			//console.log(data_set);
 			dataset_array.push(data_set);	
+			if(dataType == 14){
+				var diff_data_set = {
+					yAxisID: 'B',					
+					data: [
+						//- {
+						//- 	x: -12,
+						//-     y: 70
+						//-     }, {
+						//-     x: 15,
+						//-     y: 35
+						//- }
+						],
+					fill: false,
+					showLine: true,
+					backgroundColor: graph_color_array[1],
+					borderColor: graph_color_array[1],
+					// pointRadius: 0
+				}
+				$.each(d, function(j,w){
+					var prev_value = j > 0 ? d[j-1].value : 0;
+					var diff_value = j > 0 ? w.value - prev_value : 0;
+					diff_data_set.data.push({x:moment(w.date_time_for).format('YYYY. MM. DD.'), y: diff_value});
+				});
+				dataset_array.push(diff_data_set);	
+			}
+			
+			
 			c.data.datasets = dataset_array;
-			console.log(dataset_array);
 			c.update();
 		}
 
@@ -311,7 +352,7 @@ block scripts
 			$('#data_table').html('');
 			$('#data_table_head').html('');
 
-			if(dataType == 0 || dataType == 1 || dataType == 4){
+			if(dataType == 0 || dataType == 1 || dataType == 4|| dataType == 5|| dataType == 6 || dataType == 14){
 				$('#data_table_datetime').html('Idő intervallum: ' + dateStart + ' - ' + dateEnd);
 				$('#data_table_profile').html('Szelvény: ' + $('select[name=profile] option[value="'+profile_id+'"]').text());
 				if(dataType == 0){
@@ -323,7 +364,14 @@ block scripts
 				}else if(dataType == 4){
 					var h1 = $('<div class="col-md-6">'+'Időpont'+'</div>');
 					var h2 = $('<div class="col-md-6">'+'Érték (m3)'+'</div>');
-				}				
+				}else if(dataType == 5 || dataType == 6){
+					var h1 = $('<div class="col-md-6">'+'Időpont'+'</div>');
+					var h2 = $('<div class="col-md-6">'+'Érték (m3/s)'+'</div>');
+				}else if(dataType == 14){
+					var h1 = $('<div class="col-md-4">'+'Időpont'+'</div>');
+					var h2 = $('<div class="col-md-4">'+'Érték (m3)'+'</div>');
+					var h3 = $('<div class="col-md-4">'+'Változás (m3)'+'</div>');
+				}
 			}else if(dataType == 2 || dataType == 3){
 				$('#data_table_datetime').html('Időpont: ' + dateStart);
 				$('#data_table_profile').html('');
@@ -339,6 +387,10 @@ block scripts
 			
 			h1.appendTo($('#data_table_head'));
 			h2.appendTo($('#data_table_head'));
+			if(dataType == 14){
+				h3.appendTo($('#data_table_head'));
+			}
+
 			$.each(d, function(j,w){
 				var bg_color = '';
 				if(j%2)
@@ -346,18 +398,26 @@ block scripts
 				else
 					bg_color = 'white-bg';
 
-				if(dataType == 0 || dataType == 1 || dataType == 4){
+				if(dataType == 0 || dataType == 1 || dataType == 4|| dataType == 5|| dataType == 6){
 					//- var c1 = $('<div class="col-md-6 '+bg_color+'">'+moment(w.date_time_for).format('YYYY. MM. DD. HH:ss')+'</div>');
 					var c1 = $('<div class="col-md-6 '+bg_color+'">'+moment(w.date_time_for).format('YYYY. MM. DD.')+'</div>');
 					var c2 = $('<div class="col-md-6 '+bg_color+'">'+w.value+'</div>');
 				}else if(dataType == 2 || dataType == 3){
 					var c1 = $('<div class="col-md-6 '+bg_color+'">'+w.profile_name+'</div>');					
 					var c2 = $('<div class="col-md-6 '+bg_color+'">'+w.value+'</div>');
+				}else if(dataType == 14){
+					var c1 = $('<div class="col-md-4 '+bg_color+'">'+moment(w.date_time_for).format('YYYY. MM. DD.')+'</div>');
+					var c2 = $('<div class="col-md-4 '+bg_color+'">'+w.value+'</div>');
+					var prev_value = j > 0 ? d[j-1].value : 0;
+					var diff_value = j > 0 ? w.value - prev_value : 0;
+					var c3 = $('<div class="col-md-4 '+bg_color+'">'+diff_value+'</div>');
 				}
 
-				
 				c1.appendTo($('#data_table'));
 				c2.appendTo($('#data_table'));
+				if(dataType == 14){
+					c3.appendTo($('#data_table'));
+				}
 			});
 		}
 	script(src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.js")

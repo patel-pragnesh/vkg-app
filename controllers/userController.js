@@ -14,7 +14,8 @@ exports.logout_get = async function(req, res, next){
 }
 
 exports.login_get = async function(req, res, next){
-	res.render('user/login', {title: 'Bejelentkezés'});
+	 res.render('user/login', {title: 'Bejelentkezés'});
+	//return res.redirect('/users/login');
 }
 
 exports.login_post = async function(req, res, next){

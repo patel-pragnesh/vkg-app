@@ -1,16 +1,6 @@
 var ctx = document.getElementById('myChart');
 ctx.height = 50;
 
-function newDate(days) {
-    return moment().add(days, 'd').toDate();
-}
-
-function newDateString(days) {
-    return moment().add(days, 'd').format();
-}
-
-//console.log(actDataTpye);
-
 if(actDataTpye == 0){
     var chartType= 'line';
     var yAxesLabel = 'Vízhozam (m3/s)';
@@ -42,6 +32,16 @@ if(actDataTpye == 0){
                 fontColor: '#FF0000'
             }
         }
+    }];
+    var yAxexSettings = [{
+        id: 'A',
+        type: 'linear',
+        display: true,
+        scaleLabel: {
+            display: true,
+            labelString: yAxesLabel
+        }
+        
     }];
 }else if(actDataTpye == 1){
     var chartType= 'line';
@@ -75,6 +75,16 @@ if(actDataTpye == 0){
             }
         }
     }];
+    var yAxexSettings = [{
+        id: 'A',
+        type: 'linear',
+        display: true,
+        scaleLabel: {
+            display: true,
+            labelString: yAxesLabel
+        }
+        
+    }];
 }else if(actDataTpye == 2){
     var chartType='scatter';
     var yAxesLabel = 'Vízszint (m)';
@@ -89,6 +99,16 @@ if(actDataTpye == 0){
             stepSize: 5000
         }
     }];
+    var yAxexSettings = [{
+        id: 'A',
+        type: 'linear',
+        display: true,
+        scaleLabel: {
+            display: true,
+            labelString: yAxesLabel
+        }
+        
+    }];
 }else if(actDataTpye == 3){
     var chartType= 'scatter';
     var yAxesLabel = 'Vízhozam (m3/s)';
@@ -102,6 +122,16 @@ if(actDataTpye == 0){
         ticks:{
             stepSize: 5000
         }
+    }];
+    var yAxexSettings = [{
+        id: 'A',
+        type: 'linear',
+        display: true,
+        scaleLabel: {
+            display: true,
+            labelString: yAxesLabel
+        }
+        
     }];
 }else if(actDataTpye == 4){
     var chartType= 'line';
@@ -135,6 +165,151 @@ if(actDataTpye == 0){
             }
         }
     }];
+    var yAxexSettings = [{
+        id: 'A',
+        type: 'linear',
+        display: true,
+        scaleLabel: {
+            display: true,
+            labelString: yAxesLabel
+        }
+        
+    }];
+}else if(actDataTpye == 5){
+    var chartType= 'line';
+    var yAxesLabel = 'Vízkivételek (m3/s)';
+    var xAxesLabel = 'Időpont';
+    var xAxesSettings = [{
+        type: 'time',
+        display: true,
+        scaleLabel: {
+            display: true,
+            labelString: xAxesLabel
+        },
+        time: {
+          parser: 'YYYY-MM-DD HH:mm:ss',
+          unit: 'day',
+          // unit:'hour',
+          displayFormats: {
+             year: 'YYYY',
+             day: 'MM. DD.',
+             // hour: 'YYYY. MM. DD. HH:mm',
+             hour: 'HH:mm',
+             quarter: 'MMM YYYY'
+          },
+          // min: '2017-10-02 18:43:53',
+          // max: '2017-10-09 18:43:53'
+        },
+        ticks: {
+            major: {
+                fontStyle: 'bold',
+                fontColor: '#FF0000'
+            }
+        }
+    }];
+    var yAxexSettings = [{
+        id: 'A',
+        type: 'linear',
+        display: true,
+        scaleLabel: {
+            display: true,
+            labelString: yAxesLabel
+        }
+        
+    }];
+}else if(actDataTpye == 6){
+    var chartType= 'line';
+    var yAxesLabel = 'Vízbeeresztések (m3/s)';
+    var xAxesLabel = 'Időpont';
+    var xAxesSettings = [{
+        type: 'time',
+        display: true,
+        scaleLabel: {
+            display: true,
+            labelString: xAxesLabel
+        },
+        time: {
+          parser: 'YYYY-MM-DD HH:mm:ss',
+          unit: 'day',
+          // unit:'hour',
+          displayFormats: {
+             year: 'YYYY',
+             day: 'MM. DD.',
+             // hour: 'YYYY. MM. DD. HH:mm',
+             hour: 'HH:mm',
+             quarter: 'MMM YYYY'
+          },
+          // min: '2017-10-02 18:43:53',
+          // max: '2017-10-09 18:43:53'
+        },
+        ticks: {
+            major: {
+                fontStyle: 'bold',
+                fontColor: '#FF0000'
+            }
+        }
+    }];
+    var yAxexSettings = [{
+        id: 'A',
+        type: 'linear',
+        display: true,
+        scaleLabel: {
+            display: true,
+            labelString: yAxesLabel
+        }
+        
+    }];
+}else if(actDataTpye == 14){
+    var chartType= 'bar';
+    var yAxesLabel = 'Vízkészlet változás (m3)';
+    var xAxesLabel = 'Időpont';
+    var xAxesSettings = [{
+        type: 'time',
+        display: true,
+        scaleLabel: {
+            display: true,
+            labelString: xAxesLabel
+        },
+        time: {
+          parser: 'YYYY-MM-DD HH:mm:ss',
+          unit: 'day',
+          // unit:'hour',
+          displayFormats: {
+             year: 'YYYY',
+             day: 'MM. DD.',
+             // hour: 'YYYY. MM. DD. HH:mm',
+             hour: 'HH:mm',
+             quarter: 'MMM YYYY'
+          },
+          // min: '2017-10-02 18:43:53',
+          // max: '2017-10-09 18:43:53'
+        },
+        ticks: {
+            major: {
+                fontStyle: 'bold',
+                fontColor: '#FF0000'
+            }
+        }
+    }];
+    var yAxexSettings = [{
+        // type: 'linear',
+        // display: true,
+        // scaleLabel: {
+        //     display: true,
+        //     labelString: yAxesLabel
+        // }        
+        id: 'A',
+        type: 'linear',
+        position: 'left',
+      }, {
+        id: 'B',
+        type: 'linear',
+        position: 'right',
+        // ticks: {
+        //   max: 1,
+        //   min: 0
+        // }
+    }];
 }
 
 var color = Chart.helpers.color;
@@ -153,15 +328,7 @@ var config = {
         },
         scales: {
             xAxes: xAxesSettings,
-            yAxes: [{
-                type: 'linear',
-                display: true,
-                scaleLabel: {
-                    display: true,
-                    labelString: yAxesLabel
-                }
-                
-            }]
+            yAxes: yAxexSettings
         }
     }
 };

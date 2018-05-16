@@ -84,7 +84,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 //TODO: Windows commit
 app.use(common.directorates);
 
-//app.use(common.user);
+
+app.all('*',common.user);
 
 app.use('/', index);
 app.use('/users', users);

@@ -2,6 +2,7 @@ const River = require('../models/river');
 const Profile = require('../models/profile');
 const DataMeta = require('../models/data_meta');
 const Flow = require('../models/flow');
+const FlowInOut = require('../models/flow_in_out');
 const LocationFlow = require('../models/location_flow');
 const Stage = require('../models/stage');
 const LocationStage = require('../models/location_stage');
@@ -27,8 +28,8 @@ exports.river_detail = async function(req, res, next){
 		{id: 2, name: "Vízszint hossz-szelvény", post_link_name: "location_data"},
 		{id: 3, name: "Vízhozam hossz-szelvény", post_link_name: "location_data"},
 		{id: 4, name: "Vízkészlet", post_link_name: "time_data"},
-		{id: 5, name: "Vízkivételek hozamok", post_link_name: "flow_out"},
-		{id: 6, name: "Vízbeeresztés hozamok", post_link_name: "flow_in"},
+		{id: 5, name: "Vízkivételek hozamok", post_link_name: "flow_out_data"},
+		{id: 6, name: "Vízbeeresztés hozamok", post_link_name: "flow_in_data"},
 		//{id: 7, name: "Beszivárgás a mederbe"}, //Peremfeltétel, még nincs
 		//{id: 8, name: "Elszivárgás a mederből"}, //Peremfeltétel, még nincs
 		//{id: 9, name: "Csapadékátlag"},
@@ -36,7 +37,7 @@ exports.river_detail = async function(req, res, next){
 		//{id: 11, name: "Evapotranspiráció"},
 		//{id: 12, name: "Hőmérséklet"},
 		//{id: 13, name: "Zsilipadatok"},
-		//{id: 14, name: "Vízkészlet változása idősor grafikon"},
+		{id: 14, name: "Vízkészlet változása idősor grafikon",post_link_name: "time_data"},
 		//{id: 15, name: "Vízkészlet változás hossz-szelvény"},
 	];
 	let act_data_type_obj = data_types.find(function (obj) { return obj.id ==act_data_type; });
@@ -52,6 +53,7 @@ exports.river_detail = async function(req, res, next){
 	});
 }
 
+//##### Time data #####
 //Ajax hívás az adatbetöltések lekérdezésére modellezésenként
 exports.get_time_data_dataloads_by_modelling_post = async function(req, res){
 	let modelling_id = req.body.modelling_id;
@@ -61,8 +63,12 @@ exports.get_time_data_dataloads_by_modelling_post = async function(req, res){
 		type_filer = 'FLOW';
 	}else if(data_type == 1){
 		type_filer = 'STAGE';
-	}else if(data_type == 4){
+	}else if(data_type == 4 || data_type == 14){
 		type_filer = 'FLOW';
+	}else if(data_type == 5){
+		type_filer = 'FLOWINOUT';
+	}else if(data_type == 6){
+		type_filer = 'FLOWINOUT';
 	}
 	let data_meta_array = await DataMeta.selectUserDescriptions(type_filer, modelling_id);
 	res.json(data_meta_array);
@@ -83,6 +89,8 @@ exports.get_time_data_data_post = async function(req, res){
 	let date_end = req.body.date_end;
 	let dataload = req.body.dataload;
 
+	console.log(data_type);
+	
 	let datapoints = null;
 	let data_type_string = '';
 
@@ -99,11 +107,24 @@ exports.get_time_data_data_post = async function(req, res){
 		data_type_string = 'FLOW';
 		let data_meta = await DataMeta.findByTypeProfileDataload(data_type_string, profile_id,dataload);
 		datapoints = await Flow.findByMetaDataAndDateDailySum(data_meta.id, date_start, date_end);
+	}else if(data_type == 5){	//FLOWINOUT
+		data_type_string = 'FLOWINOUT';
+		let data_meta = await DataMeta.findByTypeProfileDataload(data_type_string, profile_id,dataload);
+		datapoints = await FlowInOut.findByMetaDataAndDateDailyAVG(data_meta.id, date_start, date_end, false);
+	}else if(data_type == 6){	//FLOWINOUT
+		data_type_string = 'FLOWINOUT';
+		let data_meta = await DataMeta.findByTypeProfileDataload(data_type_string, profile_id,dataload);
+		datapoints = await FlowInOut.findByMetaDataAndDateDailyAVG(data_meta.id, date_start, date_end, true);
+	}else if(data_type == 14){	//FLOW-ból számított napi térfogat
+		data_type_string = 'FLOW';
+		let data_meta = await DataMeta.findByTypeProfileDataload(data_type_string, profile_id,dataload);
+		datapoints = await Flow.findByMetaDataAndDateDailySum(data_meta.id, date_start, date_end);
 	}
 	//console.log(datapoints);
 	res.json(datapoints);
 }
 
+//##### Location data #####
 //Ajax hívás az adatbetöltések lekérdezésére modellezésenként
 exports.get_location_data_dataloads_by_modelling_post = async function(req, res){
 	let modelling_id = req.body.modelling_id;

@@ -12,7 +12,9 @@ exports.directorates = async function(req, res, next){
 }
 
 exports.user = async function(req, res, next){
-	if(req.session.userId){
+	if ( /*req.path == '/' || */req.path == '/users/login') return next();
+	if(req.session.userId){ 
+		console.log('User lekérdezése...')
 		//User lekérdezése
 		User.getUser(req.session.userId, function (error, user) {
       		if (error || !user) {

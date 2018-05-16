@@ -243,24 +243,24 @@ exports.data_for_profile_post = async function(req, res, next){
 }
 
 //Vízbeeresztés adatok betöltés megjelenítés
-exports.data_for_flow_in_get = async function(req, res, next){
+exports.data_for_flow_in_out_get = async function(req, res, next){
 
     let countPerPage = 15;
     let page = req.query.page ? req.query.page - 1 : 0;
-    let meta_datas = await DataMeta.findByModellingByType(req.params.id, 'FLOWIN');
+    let meta_datas = await DataMeta.findByModellingByType(req.params.id, 'FLOWINOUT');
     let page_count = meta_datas ? meta_datas.length/countPerPage : 0;
     let meta_datas_page = meta_datas ? meta_datas.slice(page*countPerPage, page * countPerPage + countPerPage) : [];
 
     const m = await Modelling.findById(req.params.id);
-    const form_link = "/modelling_import/"+m.id+"/data_for_flow_in";
-    const data_type = "data_for_flow_in"
-    res.render('modelling_import/data', { title: 'Modellezés vízbeeresztés adatok', modelling: m, 
+    const form_link = "/modelling_import/"+m.id+"/data_for_flow_in_out";
+    const data_type = "data_for_flow_in_out"
+    res.render('modelling_import/data', { title: 'Modellezés vízkivétel és -beeresztés adatok', modelling: m, 
         form_link: form_link, meta_datas: meta_datas_page, page_count: page_count,
         data_type:data_type });
 }
 
 //Vízbeeresztés adatok betöltés mentés
-exports.data_for_flow_in_post = async function(req, res, next){
+exports.data_for_flow_in_out_post = async function(req, res, next){
     let form = new formidable.IncomingForm();
     form.parse(req, function (err, fields, files) {
       let modelling = fields.modelling;
@@ -275,49 +275,9 @@ exports.data_for_flow_in_post = async function(req, res, next){
         console.log('File moved...');
         let dataloader = new DataLoader(newpath);
         await dataloader.readFile();
-        await dataloader.saveDataFlowInFlowOut(modelling,user_description+' '+moment().format("YYYY-MM-DD_HHmmssSSS"),true);
+        await dataloader.saveDataFlowInFlowOut(modelling,user_description+' '+moment().format("YYYY-MM-DD_HHmmssSSS"));
         console.log('ok');
-        res.redirect('/modelling_import/'+modelling+'/data_for_flow_in');
-      });
-    });
-}
-
-//Vízkivétel adatok betöltés megjelenítés
-exports.data_for_flow_out_get = async function(req, res, next){
-
-    let countPerPage = 15;
-    let page = req.query.page ? req.query.page - 1 : 0;
-    let meta_datas = await DataMeta.findByModellingByType(req.params.id, 'FLOWOUT');
-    let page_count = meta_datas ? meta_datas.length/countPerPage : 0;
-    let meta_datas_page = meta_datas ? meta_datas.slice(page*countPerPage, page * countPerPage + countPerPage) : [];
-
-    const m = await Modelling.findById(req.params.id);
-    const form_link = "/modelling_import/"+m.id+"/data_for_flow_out";
-    const data_type = "data_for_flow_out"
-    res.render('modelling_import/data', { title: 'Modellezés vízkivétel adatok', modelling: m, 
-        form_link: form_link, meta_datas: meta_datas_page, page_count: page_count,
-        data_type:data_type });
-}
-
-//Vízkivétel adatok betöltés mentés
-exports.data_for_flow_out_post = async function(req, res, next){
-    let form = new formidable.IncomingForm();
-    form.parse(req, function (err, fields, files) {
-      let modelling = fields.modelling;
-      let user_description = fields.user_description;
-      let oldpath = files.fileUploaded.path;
-      let oldFileName = files.fileUploaded.name;
-      let oldFileNameArray = oldFileName.split('.');
-      oldFileNameArray.pop();
-      let newFileName = oldFileNameArray.join('.');
-      let newpath = __dirname +'/../public/DSS/' + newFileName + '_' + moment().format("YYYY-MM-DD_HHmmssSSS") + '.csv';
-      mv(oldpath, newpath, async function(err){
-        console.log('File moved...');
-        let dataloader = new DataLoader(newpath);
-        await dataloader.readFile();
-        await dataloader.saveDataFlowInFlowOut(modelling,user_description+' '+moment().format("YYYY-MM-DD_HHmmssSSS"),false);
-        console.log('ok');
-        res.redirect('/modelling_import/'+modelling+'/data_for_flow_out');
+        res.redirect('/modelling_import/'+modelling+'/data_for_flow_in_out');
       });
     });
 }

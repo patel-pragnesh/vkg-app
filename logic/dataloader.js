@@ -270,7 +270,7 @@ class DataLoader{
 	    }
 	}
 
-	async saveDataFlowInFlowOut(modelling_id, user_description, isFlowIn){
+	async saveDataFlowInFlowOut(modelling_id, user_description){
 		let that = this;
 		//console.log(that.data[0]);
 		//return;
@@ -288,12 +288,8 @@ class DataLoader{
 				let ti = await TimeInterval.findByName(that.data[i].E);
 				//console.log(ti);
 
-				let type = null;
-				if(isFlowIn){
-					type = 'FLOWIN';
-				}else{
-					type = 'FLOWOUT';
-				}
+				let type = 'FLOWINOUT';
+
 				let fm = new DataMeta(null, that.data[i].A, null, null, ti.id, that.data[i].unit, modelling_id, p.id, that.data[i].F, user_description, type);
 				fm = await fm.save();
 				let date_from = moment("3000-01-01 01:01", "YYYY-MM-DD HH:mm");
@@ -326,15 +322,9 @@ class DataLoader{
 
 				const request_move = new sql.Request(dbConn);
 
-				if(isFlowIn){
-					let result1 = await request_move.query('INSERT INTO dbo.FlowIn(date_time_for, value, data_meta_id, updatedAt, createdAt) '+
+				let result1 = await request_move.query('INSERT INTO dbo.FlowInOut(date_time_for, value, data_meta_id, updatedAt, createdAt) '+
 					'SELECT date_time_for, value, data_meta_id, updatedAt, createdAt FROM dbo.TmpFlow; '+
 					'TRUNCATE TABLE dbo.TmpFlow;');
-				}else{
-					let result1 = await request_move.query('INSERT INTO dbo.FlowOut(date_time_for, value, data_meta_id, updatedAt, createdAt) '+
-					'SELECT date_time_for, value, data_meta_id, updatedAt, createdAt FROM dbo.TmpFlow; '+
-					'TRUNCATE TABLE dbo.TmpFlow;');
-				}
 				
 				pool.close();
 				
