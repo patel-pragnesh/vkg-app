@@ -1,4 +1,4 @@
-const User = require('../models/user');
+var User = require('../models/mongodb_user');
 
 exports.logout_get = async function(req, res, next){
 	if (req.session) {
@@ -26,7 +26,7 @@ exports.login_post = async function(req, res, next){
         		err.status = 401;
         		return next(err);
       		} else {
-        		req.session.userId = user.id;
+        		req.session.userId = user._id;
         		return res.redirect('/');
       		}
     	});
@@ -42,9 +42,9 @@ exports.register_get = async function(req, res, next){
 }
 
 exports.register_post = async function(req, res, next){
-	//confirm that user typed same password twice
+	// confirm that user typed same password twice
   	if (req.body.password !== req.body.password_conf) {
-    	let err = new Error('Passwords do not match.');
+    	var err = new Error('Passwords do not match.');
     	err.status = 400;
     	res.send("passwords dont match");
     	return next(err);
@@ -55,18 +55,21 @@ exports.register_post = async function(req, res, next){
 	    req.body.password &&
 	    req.body.password_conf) {
 
-            let userData = new User(null, req.body.username, 
-                req.body.email, req.body.password, 
-                req.body.password_conf);
+	    var userData = {
+	      email: req.body.email,
+	      username: req.body.username,
+	      password: req.body.password,
+	      password_conf: req.body.password_conf,
+	    }
 
-            userData.save(function (error, user) {
-                if (error) {
-                    return next(error);
-                } else {
-                    req.session.userId = user.id;
-                    return res.redirect('/profile/'+user.id);
-                }
-            });
+	    User.create(userData, function (error, user) {
+	      	if (error) {
+	        	return next(error);
+	      	} else {
+	        	req.session.userId = user._id;
+	        	return res.redirect('/profile/'+user._id);
+	      	}
+	    });
     } else {
     	var err = new Error('All fields required.');
     	err.status = 400;
@@ -75,7 +78,7 @@ exports.register_post = async function(req, res, next){
 }
 
 exports.new_password_get = async function(req, res, next){
-	// res.render('user/remember_password', {title: 'Elfelejtett jelszó'});
+	res.render('user/remember_password', {title: 'Elfelejtett jelszó'});
 }
 
 exports.new_password_post = async function(req, res, next){

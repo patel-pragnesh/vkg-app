@@ -1,12 +1,16 @@
 var express = require('express');
 var router = express.Router();
 const common = require('../controllers/commonController');
+const User = require('../models/user');
 
+// var user_controller = require('../controllers/mongodb_userController');
 var user_controller = require('../controllers/userController');
 
 /* GET users listing. */
 router.get('/profile/:id', function(req, res, next) {
-  res.send('respond with a resource');
+  //res.send('respond with a resource');
+  let user = User.getUser(req.params.id);
+  console.log(user);
 });
 
 /* GET user login. */

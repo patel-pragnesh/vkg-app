@@ -1,6 +1,6 @@
 const Directorate = require('../models/directorate');
 const River = require('../models/river');
-var User = require('../models/mongodb_user');
+var User = require('../models/user');
 
 exports.directorates = async function(req, res, next){
 	let directorates_array = await Directorate.all();
@@ -12,7 +12,7 @@ exports.directorates = async function(req, res, next){
 }
 
 exports.user = async function(req, res, next){
-	if ( /*req.path == '/' || */req.path == '/users/login') return next();
+	if ( /*req.path == '/' || */req.path == '/users/login' || req.path == '/users/register') return next();
 	if(req.session.userId){ 
 		console.log('User lekérdezése...')
 		//User lekérdezése

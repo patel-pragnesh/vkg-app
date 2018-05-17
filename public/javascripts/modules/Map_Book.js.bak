@@ -1,0 +1,15 @@
+define([], function () {
+    return {
+        list: [
+		{
+            "extent": { "spatialReference": { "wkid": 3857 }, "xmin": 2280502, "ymin":6099978, "xmax": 2424043, "ymax": 6209769},
+            "name": "Hernád"
+        },
+		{
+            "extent": { "spatialReference": { "wkid": 3857 }, "xmin": 1777955, "ymin":5820672, "xmax": 1969203, "ymax": 5966954},
+            "name": "Zala"
+        }
+
+		]
+    };
+});

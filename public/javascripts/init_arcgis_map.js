@@ -199,18 +199,19 @@ var map;
     });
 
     function updateProfileSelect(river_stat){      
-      console.log(river_stat);
-      console.log(typeof(river_stat));
-      var river_stat_float = parseFloat(river_stat).toFixed(1);
-      console.log(river_stat_float);
+      //console.log(river_stat);
+      //console.log(typeof(river_stat));
+      var river_stat_float = parseFloat(river_stat.replace(',','.')).toFixed(1);
+      //console.log(river_stat + ' => ' + river_stat_float);
 
       var dd = document.getElementById('profile');
       //console.log('dd hossz: '+dd.length);
-      console.log(dd);
+      //console.log(dd);
       if(dd){
         var findOption = false;
         for (var i = 0; i < dd.options.length; i++) {
           var option_text_float = parseFloat(dd.options[i].text).toFixed(1);
+          //console.log(option_text_float + ' ?=? ' + river_stat_float);
           if (option_text_float === river_stat_float) {
               dd.selectedIndex = i;
               findOption = true;
