@@ -1,13 +1,16 @@
 var express = require('express');
 var path = require('path');
+var fs = require('fs')
 var favicon = require('serve-favicon');
 var logger = require('morgan');
+var path = require('path')
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var sassMiddleware = require('node-sass-middleware');
 var sql = require('mssql');
 var mongoose = require('mongoose');
 var session = require('express-session');
+var configuration = require('./settings');
 // var MongoStore = require('connect-mongo')(session);
 
 //const util = require('util');
@@ -17,14 +20,20 @@ DataMeta = require("./models/data_meta");
 // Modelling = require("./models/modelling");
 //DatabaseHandler = require("./models/database_handler");
 
-global.sqlConfig = {
-  user: 'horcsa',
-  password: 'csacsa',
-  server: 'localhost\\sqlexpress',
-  database: 'vizkeszlet_gazdalkodas',
-  connectionTimeout: 300000,
-  requestTimeout: 300000
-}
+global.sqlConfig = configuration.db;
+
+// async function valami() {
+//   try {
+//       console.log('asd');
+//       const pool = await sql.connect(sqlConfig)
+//       const result = await sql.query`select * from Directorate`
+//       console.dir(result)
+//   } catch (err) {
+//     console.dir(err)
+//   }
+// }
+
+// valami();
 
 const common = require('./controllers/commonController');
 const index = require('./routes/index');
@@ -38,11 +47,11 @@ const test = require('./routes/test');
 var app = express();
 
 //Set up mongoose connection
-var mongoDB = 'mongodb://localhost:27017/vizkeszlet_gazdalkodas';
-mongoose.connect(mongoDB);
-mongoose.Promise = global.Promise;
-var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+// var mongoDB = 'mongodb://localhost:27017/vizkeszlet_gazdalkodas';
+// mongoose.connect(mongoDB);
+// mongoose.Promise = global.Promise;
+// var db = mongoose.connection;
+// db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 //app.set('models', require('./models'));
 
@@ -69,7 +78,13 @@ app.set('view engine', 'pug');
 
 // uncomment after placing your favicon in /public
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
+
+// create a write stream (in append mode)
+var accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), {flags: 'a'});
+// setup the logger
+app.use(logger('combined', {stream: accessLogStream}));
+
+// app.use(logger('combined'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -114,3 +129,4 @@ app.use(function(err, req, res, next) {
 });
 
 module.exports = app;
+rts = app;

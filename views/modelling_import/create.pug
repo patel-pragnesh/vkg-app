@@ -21,7 +21,7 @@ block content
 								if error.param == 'directorate'
 									div.text-danger=error.msg
 					div.form-group
-						label(for="river_id") Vízfolyás
+						label(for="river_id") Modellterület
 						select(id="river", name="river_id" class="form-control" disabled=(rivers ? false : true))
 							if rivers
 								option(value=null) Válasszon

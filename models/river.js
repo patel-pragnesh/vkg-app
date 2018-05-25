@@ -92,7 +92,7 @@ class River{
 			request.input('updatedAt', sql.NVarChar, that.updatedAt);
 			let result = await request.query('INSERT INTO River (name,directorate_id, createdAt, updatedAt) '
 				+'OUTPUT Inserted.id VALUES (@name, @directorate_id, @createdAt, @updatedAt);');
-			console.log(result);
+			//console.log(result);
 			that.id = result.recordset[0]['id'];
 			await transaction.commit();
 			pool.close();
@@ -117,7 +117,7 @@ class River{
 			request.input('updatedAt', sql.NVarChar, that.updatedAt);
 			let result = await request.query('UPDATE River SET '
 				+'name=@name, directorate_id=@directorate_id, updatedAt=@updatedAt WHERE id=@id;');
-			console.log(result);
+			//console.log(result);
 			await transaction.commit();
 			pool.close();
 			return that;

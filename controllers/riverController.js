@@ -16,6 +16,7 @@ exports.index = function(req, res){
 
 exports.river_detail = async function(req, res, next){
 	let river = await River.findById(req.params.id);
+	//console.log(river);
 	let modellings = await Modelling.findByRiverId(req.params.id);
 	let ud = await DataMeta.selectUserDescriptions('FLOW', 8);
 	//let profiles = await Profile.findByRiver(req.params.id);
@@ -89,7 +90,7 @@ exports.get_time_data_data_post = async function(req, res){
 	let date_end = req.body.date_end;
 	let dataload = req.body.dataload;
 
-	console.log(data_type);
+	//console.log(data_type);
 	
 	let datapoints = null;
 	let data_type_string = '';

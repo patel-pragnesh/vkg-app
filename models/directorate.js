@@ -20,8 +20,10 @@ class Directorate{
 
 	static async all(){
 	    try {
-	    	let pool = new sql.ConnectionPool(sqlConfig);
-	    	await pool.connect();
+			let pool = new sql.ConnectionPool(sqlConfig);
+			//console.log(pool);
+			await pool.connect();
+			//console.log('Connected...');
 	        let result = await pool.request().query('select * from Directorate');
 	        pool.close();
 	        if(result.recordset.length != 0){

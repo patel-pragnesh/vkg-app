@@ -74,6 +74,7 @@ block scripts
 	script(type="text/javascript").
 		var post_link_name = "#{post_link_name}";        
 		var dateStart, dateEnd, actDataTpye="#{act_data_type}";	
+		var modellterulet_terkep_nev = "#{river.name}"; //Térkép inicializálás a modellterület nevével
 		var graph_color_array = [
 			"rgba(32,53,10360, .7)",
 			"rgba(53,167,156, .7)",
@@ -108,7 +109,7 @@ block scripts
 					$('#datetimeselect').prop('disabled', false);
 					$('#dataget_btn').prop('disabled', false);
 					if(data){
-						console.log(data);			
+						//console.log(data);			
 						if(data.length){
 							//Adatbetöltések select adatainak frissítése							
 							$.each(data, function(i, v){
@@ -118,7 +119,7 @@ block scripts
 							if(post_link_name == "time_data" || post_link_name == "flow_out_data" || post_link_name == "flow_in_data"){
 								loadDataToProfiles(data[0].description_id, pageload, data_type);
 							}else if(post_link_name == "location_data"){
-								console.log(data[0]);
+								//console.log(data[0]);
 								setDateTimePicker(data[0].date_from, data[0].date_to, pageload, data_type)
 							}
 						}
@@ -127,16 +128,16 @@ block scripts
 						//- 	//- c1.appendTo($('#data_table'));
 						//- }
 					}
-					//- else{
-					//- 	var o1 = $('<option>', {value: ''}).text('Nincs megjelenítendő adat.');
-					//- 	o1.appendTo($('#dataload'));
-					//- 	$('#dataload').prop('disabled', 'disabled');
-					//- 	var o2 = $('<option>', {value: ''}).text('Nincs megjelenítendő adat.');
-					//- 	o2.appendTo($('#profile'));
-					//- 	$('#profile').prop('disabled', 'disabled');
-					//- 	$('#datetimeselect').prop('disabled', 'disabled');
-					//- 	$('#dataget_btn').prop('disabled', 'disabled');
-					//- }
+					else{
+						var o1 = $('<option>', {value: ''}).text('Nincs megjelenítendő adat.');
+						o1.appendTo($('#dataload'));
+						$('#dataload').prop('disabled', 'disabled');
+						var o2 = $('<option>', {value: ''}).text('Nincs megjelenítendő adat.');
+						o2.appendTo($('#profile'));
+						$('#profile').prop('disabled', 'disabled');
+						$('#datetimeselect').prop('disabled', 'disabled');
+						$('#dataget_btn').prop('disabled', 'disabled');
+					}
 			});
 		}
 
@@ -153,7 +154,7 @@ block scripts
 							var o = $('<option>', {value: v.profile_id}).text(v.profile_name);
 							o.appendTo($('#profile'));
 						});
-						console.log('loadDataToProfiles(): ' + data[0].date_from);
+						//console.log('loadDataToProfiles(): ' + data[0].date_from);
 						setDateTimePicker(data[0].date_from, data[0].date_to, pageload, dataType)
 					}else{
 						//- var c1 = $('<div class="col-md-12">Nincs megjelenítendő adat.</div>');
@@ -169,7 +170,7 @@ block scripts
 
 			moment.locale('hu');	
 
-			console.log('dataType: '+dataType);
+			//console.log('dataType: '+dataType);
 			if(dataType == 0 || dataType == 1 || dataType == 4 || dataType == 5 || dataType == 6 || dataType == 14){
 				var isTimePicker = false;
 				var isSingleDatePicker = false;
@@ -192,8 +193,14 @@ block scripts
 			var minDate = moment(mindate).format(format);
 			var maxDate = moment(maxdate).format(format);
 
-			var defaultDateStart = moment(maxDate).startOf('month').format(format);
+			//console.log(maxdate);
+			//console.log(maxDate);
+
+			//- var defaultDateStart = moment(maxdate).startOf('month').format(format);
+			var defaultDateStart = moment(maxdate).subtract(1, 'days').startOf('month').format(format);
+			//console.log(defaultDateStart);
 			var defaultDateEnd = maxDate;
+			//- console.log(defaultDateEnd);
 
 			//Alapértelmezetten az adatlekéréshez inicializálni kell
 			dateStart = defaultDateStart;
@@ -259,7 +266,7 @@ block scripts
 
 		function getData(dStart, dEnd, dataType){
 			//console.log(dStart);
-			console.log('Getting data...')
+			//console.log('Getting data...')
 			var selected_dataload = $('select[name=dataload]').val();
 			var selected_profile = $('select[name=profile]').val();
 			$.post( "/rivers/filter/"+post_link_name+"/data", 
@@ -311,7 +318,7 @@ block scripts
 				if(dataType == 0 || dataType == 1 || dataType == 4|| dataType == 5|| dataType == 6 || dataType == 14){
 					//console.log(w);
 					//- data_set.data.push({x:moment(w.date_time_for).format('YYYY. MM. DD. HH:ss'), y: w.value});
-					data_set.data.push({x:moment(w.date_time_for).format('YYYY. MM. DD.'), y: w.value});
+					data_set.data.push({x:w.date_time_for, y: w.value});
 				}else if(dataType == 2 || dataType == 3){
 					data_set.data.push({x:w.profile_name, y: w.value});
 				}
@@ -338,7 +345,7 @@ block scripts
 				$.each(d, function(j,w){
 					var prev_value = j > 0 ? d[j-1].value : 0;
 					var diff_value = j > 0 ? w.value - prev_value : 0;
-					diff_data_set.data.push({x:moment(w.date_time_for).format('YYYY. MM. DD.'), y: diff_value});
+					diff_data_set.data.push({x:w.date_time_for, y: diff_value});
 				});
 				dataset_array.push(diff_data_set);	
 			}
@@ -399,14 +406,13 @@ block scripts
 					bg_color = 'white-bg';
 
 				if(dataType == 0 || dataType == 1 || dataType == 4|| dataType == 5|| dataType == 6){
-					//- var c1 = $('<div class="col-md-6 '+bg_color+'">'+moment(w.date_time_for).format('YYYY. MM. DD. HH:ss')+'</div>');
-					var c1 = $('<div class="col-md-6 '+bg_color+'">'+moment(w.date_time_for).format('YYYY. MM. DD.')+'</div>');
+					var c1 = $('<div class="col-md-6 '+bg_color+'">'+w.date_time_for+'</div>');
 					var c2 = $('<div class="col-md-6 '+bg_color+'">'+w.value+'</div>');
 				}else if(dataType == 2 || dataType == 3){
 					var c1 = $('<div class="col-md-6 '+bg_color+'">'+w.profile_name+'</div>');					
 					var c2 = $('<div class="col-md-6 '+bg_color+'">'+w.value+'</div>');
 				}else if(dataType == 14){
-					var c1 = $('<div class="col-md-4 '+bg_color+'">'+moment(w.date_time_for).format('YYYY. MM. DD.')+'</div>');
+					var c1 = $('<div class="col-md-4 '+bg_color+'">'+w.date_time_for+'</div>');
 					var c2 = $('<div class="col-md-4 '+bg_color+'">'+w.value+'</div>');
 					var prev_value = j > 0 ? d[j-1].value : 0;
 					var diff_value = j > 0 ? w.value - prev_value : 0;
@@ -429,30 +435,33 @@ block scripts
 				//if you want to host on your own server, download and put in folders then use path like:
 			}
 		}
+	script(src="/javascripts/dojo_config_arcgis_map_v3.js")
 	script(src="https://js.arcgis.com/3.23/")
-	script(src="/javascripts/init_arcgis_map_v2.js")
+	script(src="/javascripts/init_arcgis_map_v3.js")
 	script(type="text/javascript").
 		$(document).ready(function () {
 			var selectedModelling = $('select[name=modelling]').val();
 			loadDataToDataloads(actDataTpye, selectedModelling, true);
 
 			$('select[name=modelling]').change(function(){
-				console.log('Modelling select change...');
+				//console.log('Modelling select change...');
 				loadDataToDataloads(actDataTpye, $(this).val(), false);
 			});
 
 			$('select[name=dataload]').change(function(){
-				console.log('Dataload select change...');
+				//console.log('Dataload select change...');
 				loadDataToProfiles($(this).val(), false,actDataTpye);
 			});
 
-			$('select[name=profile]').change(function(){
-				console.log('Profile select change...');
-				$("div.profile_info").html('');
-			});
+			//- $('select[name=profile]').change(function(){
+			//- 	//console.log('Profile select change...');
+			//- 	$("div.profile_info").html('');
+			//- 	Hernad_szelv_re(57487.5);
+			//- });
 
 			$(".get-data-button").on("click", function(){
-				console.log('Downloading data from server...');
+				//console.log('Downloading data from server...');
 				getData(dateStart, dateEnd, actDataTpye);
 			});
+			//console.log('document_ready');
 		});

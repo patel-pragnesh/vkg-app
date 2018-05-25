@@ -172,7 +172,7 @@ class DataMeta{
 	            	'(Data_meta.date_from >= @date_from AND Data_meta.date_to <= @date_to)'+
 	            	')');
 	        pool.close();
-	        console.log(result.recordset);
+	        //console.log(result.recordset);
 	        if(result.recordset.length != 0){
 	        	let returnArray = [];
 	        	for(let r of result.recordset){
@@ -221,7 +221,7 @@ class DataMeta{
 	}
 
 	static async findByTypeProfileDataload(type, profile_id, dataload){
-		console.log(dataload);
+		//console.log(dataload);
 		//console.log(profile_id);
 		try {
 	    	let pool = new sql.ConnectionPool(sqlConfig);

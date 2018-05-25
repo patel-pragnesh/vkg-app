@@ -17,16 +17,20 @@ const ProfileLoader = require('../logic/profileloader');
 exports.index = async function(req, res, next){
 	let countPerPage = 15;
     let page = req.query.page ? req.query.page - 1 : 0;
+    let page_count = 0;
+    let rivers_page = null
     let rivers = await River.all();
-    let page_count = rivers.length/countPerPage;
-    let rivers_page = rivers.slice(page*countPerPage, page * countPerPage + countPerPage);
-    res.render('river_import/index', {title: 'Vízfolyások', rivers: rivers_page, page_count: page_count});
+    if(rivers){
+        page_count = rivers.length/countPerPage;
+        rivers_page = rivers.slice(page*countPerPage, page * countPerPage + countPerPage);
+    }
+    res.render('river_import/index', {title: 'Modellterületek', rivers: rivers_page, page_count: page_count});
 	
 }
 
 exports.create_get = async function(req, res, next){
     let form_link = "/river_import/create";
-	res.render('river_import/create', {title: 'Új vízfolyás', form_link: form_link});
+	res.render('river_import/create', {title: 'Új modellterület', form_link: form_link});
 }
 
 exports.create_post = [
@@ -57,7 +61,7 @@ exports.create_post = [
 			let rivers = await River.all();
             let page_count = rivers.length/countPerPage;
 			let rivers_page = rivers.slice(page*countPerPage, page * countPerPage + countPerPage);
-		  	res.render('river_import/index', {title: 'Vízfolyások', rivers: rivers_page, page_count: page_count});
+		  	res.render('river_import/index', {title: 'Modellterületek', rivers: rivers_page, page_count: page_count});
         }
     }
 ];
@@ -65,7 +69,7 @@ exports.create_post = [
 exports.update_get = async function(req, res, next){
     const r = await River.findById(req.params.id);
     const form_link = "/river_import/"+r.id+"/update";
-    res.render('river_import/create', { title: 'Vízfolyás módosíítás', river: r, form_link: form_link });
+    res.render('river_import/create', { title: 'Modellterület módosítás', river: r, form_link: form_link });
 }
 
 exports.update_post = [
