@@ -315,7 +315,7 @@ var map, bookmarks;
                 // VIZIG_re(1);
             // }
             //Hernad_szelv_re(57487.5);	//		63064.7
-            //console.log('map_ready'); 
+            //console.log('map_ready');
 
             $('select[name=profile]').change(function(){
                 //console.log('Profile select change...');
