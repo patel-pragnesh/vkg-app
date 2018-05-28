@@ -6,7 +6,7 @@ const moment = require('moment');
 moment.locale('hu');
 
 class Directorate{
-	constructor(id, name, full_name=null, city=null, address=null, phone=null, email=null, createdAt=null, updatedAt=null){
+	constructor(id, name, full_name=null, city=null, address=null, phone=null, email=null, map_id=null, createdAt=null, updatedAt=null){
 		this.id = id;
 		this.name = name;
 		this.full_name = full_name;
@@ -14,6 +14,7 @@ class Directorate{
 		this.address = address;
 		this.phone = phone;
 		this.email = email;
+		this.map_id = map_id;
 		createdAt ? this.createdAt = createdAt : this.createdAt = moment().format("YYYY-MM-DD HH:mm:ss");
 		updatedAt ? this.updatedAt = updatedAt : this.updatedAt = moment().format("YYYY-MM-DD HH:mm:ss");
 	}
@@ -29,7 +30,7 @@ class Directorate{
 	        if(result.recordset.length != 0){
 	        	let returnArray = [];
 	        	for(let r of result.recordset){
-	        		returnArray.push(new Directorate(r.id, r.name, r.full_name, r.city, r.address, r.phone, r.email));
+	        		returnArray.push(new Directorate(r.id, r.name, r.full_name, r.city, r.address, r.phone, r.email,r.map_id));
 	        	}
 	        	return returnArray;
 	        }
@@ -58,6 +59,7 @@ class Directorate{
 	        			result.recordset[0]['address'],
 	        			result.recordset[0]['phone'],
 	        			result.recordset[0]['email'],
+	        			result.recordset[0]['map_id'],
 	        			result.recordset[0]['createdAt'],
 	        			result.recordset[0]['updatedAt']);
 	        else
@@ -77,10 +79,17 @@ class Directorate{
 			await transaction.begin();
 			const request = new sql.Request(transaction);
 			request.input('name', sql.NVarChar, that.name);
+			request.input('full_name', sql.NVarChar, that.full_name);
+			request.input('city', sql.NVarChar, that.city);
+			request.input('address', sql.NVarChar, that.address);
+			request.input('phone', sql.NVarChar, that.phone);
+			request.input('email', sql.NVarChar, that.email);
+			request.input('map_id', sql.Int, that.map_id);
 			request.input('createdAt', sql.NVarChar, that.createdAt);
 			request.input('updatedAt', sql.NVarChar, that.updatedAt);
 			// let result = await request.query("INSERT INTO Directorate (name, createdAt, updatedAt) VALUES (@name, @createdAt, @updatedAt);SELECT SCOPE_IDENTITY() AS id;");
-		    let result = await request.query("INSERT INTO Directorate (name, createdAt, updatedAt) OUTPUT Inserted.id VALUES (@name, @createdAt, @updatedAt);");
+			let result = await request.query("INSERT INTO Directorate (name, full_name, city, address, phone, email, map_id, createdAt, updatedAt) "
+						+"OUTPUT Inserted.id VALUES (@name, @full_name, @city, @address, @phone, @email, @map_id, @createdAt, @updatedAt);");
 			console.log(result);
 			that.id = result.recordset[0]['id'];
 			await transaction.commit();
@@ -100,10 +109,25 @@ class Directorate{
 			let transaction = new sql.Transaction(dbConn);
 			await transaction.begin();
 			const request = new sql.Request(transaction);
-			request.input('id', sql.NVarChar, that.id);
+			request.input('id', sql.Int, that.id);
 			request.input('name', sql.NVarChar, that.name);
+			request.input('full_name', sql.NVarChar, that.full_name);
+			request.input('city', sql.NVarChar, that.city);
+			request.input('address', sql.NVarChar, that.address);
+			request.input('phone', sql.NVarChar, that.phone);
+			request.input('email', sql.NVarChar, that.email);
+			request.input('map_id', sql.Int, that.map_id);
 			request.input('updatedAt', sql.NVarChar, that.updatedAt);
-			let result = await request.query("UPDATE Directorate SET Name=@name, updatedAt=@updatedAt WHERE id=@id;");
+			let result = await request.query("UPDATE Directorate SET "
+											+"name=@name, "
+											+"full_name=@full_name, "
+											+"city=@city, "
+											+"address=@address, "
+											+"phone=@phone, "
+											+"email=@email, "
+											+"map_id=@map_id, "
+											+"updatedAt=@updatedAt "
+											+"WHERE id=@id;");
 			console.log(result);
 			await transaction.commit();
 			pool.close();

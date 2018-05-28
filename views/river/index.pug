@@ -21,7 +21,7 @@ block content
 			if(post_link_name == "time_data" || post_link_name == "flow_out_data" || post_link_name == "flow_in_data")
 				div.col-md-12
 					div.form-group
-						label(for="profile") Profilok
+						label(for="profile") Szelvények
 						select(name="profile" id="profile" class="form-control")
 			div.col-md-12
 				div.form-group
@@ -437,7 +437,7 @@ block scripts
 		}
 	script(src="/javascripts/dojo_config_arcgis_map_v3.js")
 	script(src="https://js.arcgis.com/3.23/")
-	script(src="/javascripts/init_arcgis_map_v3.js")
+	script(src="/javascripts/init_arcgis_map_v4.js")
 	script(type="text/javascript").
 		$(document).ready(function () {
 			var selectedModelling = $('select[name=modelling]').val();

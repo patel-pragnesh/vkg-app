@@ -15,9 +15,9 @@ block body
 						each d in directorates
 							li
 								if d.rivers
-									a(href="#homeSubmenu_"+d.id data-toggle="collapse" aria-expanded="false")=d.name
+									a(href="#homeSubmenu_"+d.id id="directorate_link_"+d.id data-map=d.map_id data-toggle="collapse" aria-expanded="false")=d.name
 								else
-									a(href="#homeSubmenu_"+d.id data-toggle="collapse")=d.name
+									a(href="#homeSubmenu_"+d.id id="directorate_link_"+d.id data-map=d.map_id data-toggle="collapse")=d.name
 								if d.rivers
 									ul(id="homeSubmenu_"+d.id, class="collapse list-unstyled")
 										each r in d.rivers
