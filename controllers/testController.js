@@ -9,6 +9,14 @@ exports.index = function(req, res, next){
  //    function newDateString(days) {
  //        return moment().add(days, 'd').format();
  //    }
+
+	io.on('connection', function (socket) {
+		socket.emit('news', { hello: 'world' });
+		socket.on('my other event', function (data) {
+			console.log(data);
+		});
+	});
+	
  	let days = 1;
  	let date = moment().add(days, 'd').format();
  	console.log(date)

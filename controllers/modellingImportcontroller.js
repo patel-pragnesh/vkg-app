@@ -1,8 +1,10 @@
+const { fork } = require('child_process');
 const { body,validationResult } = require('express-validator/check');
 const { sanitizeBody } = require('express-validator/filter');
 const formidable = require('formidable');
 const fs = require('fs');
 const mv = require('mv');
+const uniqid = require('uniqid');
 const moment = require('moment');
 moment.locale('hu');
 
@@ -134,7 +136,12 @@ exports.modelling_detail = async function(req, res, next){
 
 //Idősor adatok betöltés megjelenítés
 exports.data_for_time_get = async function(req, res, next){
+    if(req.session.data_for_time == null){
+        req.session.data_for_time = uniqid();
+    }
 
+    console.log('session_socket_id:',req.session.socket_id);
+    console.log('session_data_for_time_id:',req.session.data_for_time);
     let countPerPage = 15;
     let page = req.query.page ? req.query.page - 1 : 0;
     //console.log('page:' + page);
@@ -154,8 +161,10 @@ exports.data_for_time_get = async function(req, res, next){
 
 //Idősor adatok betöltés mentés
 exports.data_for_time_post = async function(req, res, next){
+    console.log('sessionID:',req.sessionID);
     let form = new formidable.IncomingForm();
     form.parse(req, function (err, fields, files) {
+      let socketId = fields.socketId;
       let modelling = fields.modelling;
       let user_description = fields.user_description;
       let oldpath = files.fileUploaded.path;
@@ -166,9 +175,28 @@ exports.data_for_time_post = async function(req, res, next){
       let newpath = __dirname +'/../public/DSS/' + newFileName + '_' + moment().format("YYYY-MM-DD_HHmmssSSS") + '.csv';
       mv(oldpath, newpath, async function(err){
         console.log('File moved...');
-        let dataloader = new DataLoader(newpath);
-        await dataloader.readFile();
-        await dataloader.saveData(modelling,user_description+' '+moment().format("YYYY-MM-DD_HHmmssSSS"));
+        //let dataloader = new DataLoader(newpath);
+        //await dataloader.readFile();
+        //await dataloader.saveData(modelling,user_description+' '+moment().format("YYYY-MM-DD_HHmmssSSS"));
+        
+        // io.on('connection', function (socket) {
+        //     client = socket.id;
+        //     console.log(client);
+        // });
+
+        // Child process a feladat futtatására
+        const datasaver = fork('./logic/dataloader_fork.js');
+        datasaver.on('message', (msg) => {
+            console.log('Message from datasaver: ', msg);
+            //if (io.sockets.connected[socketId]) {
+            //    io.sockets.connected[socketId].emit('progress', msg);
+            //}
+            // io.emit('progress', msg);
+
+        });
+
+        datasaver.send({file_path: newpath, modelling: modelling, user_description: user_description});
+
         console.log('ok');
         res.redirect('/modelling_import/'+modelling+'/data_for_time');
       });

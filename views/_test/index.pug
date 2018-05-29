@@ -11,5 +11,12 @@ block content
 		div.col-xs-12
 			canvas(id="testChart")
 block scripts
-	script(src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.js")
-	script(src="/javascripts/test_chart.js")
+	//- script(src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.js")
+	//- script(src="/javascripts/test_chart.js")
+	script(src="/js/socket.io.js")
+	script(type="text/javascript").
+		var socket = io('http://localhost:3000');
+		socket.on('news', function(data){
+			console.log(data);
+			socket.emit('my other event', {my: 'data'});
+		});

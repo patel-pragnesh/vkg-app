@@ -32,3 +32,8 @@ exports.user = async function(req, res, next){
 	}
 	
 }
+
+// exports.setSessionID = function(req, res, next){
+// 	req.session.myId = "valami";
+// 	next();
+// }

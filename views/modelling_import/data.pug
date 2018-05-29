@@ -60,6 +60,7 @@ block content
 													div.text-danger=error.msg
 						div.panel-footer
 							input(type="hidden" name="modelling" value=modelling.id)
+							input(type="hidden" id="socketId" name="socketId" value="")
 							input(type="submit" class="btn btn-primary pull-right" value="Mentés")
 							div.clearfix
 			div.col-md-12
@@ -112,4 +113,20 @@ block content
 									li
 										a(href="/modelling_import/"+modelling.id+"/"+data_type+"?page="+i)=i
 							div.clearfix
+block scripts
+	script(src="/js/socket.io.js")
+	script(type="text/javascript").
+		var socket = io('http://localhost:3000');
+		var clientSocketId = null;
+		socket.on('connected', function(data){
+			//TODO: Itt kell a progressbart frissíteni
+			console.log(data);
+			$('#socketId').val(data.socketId);
+			//socket.emit('my other event', {my: 'data'});
+		});
+		socket.on('progress', function(data){
+			//TODO: Itt kell a progressbart frissíteni
+			console.log(data);
+			//socket.emit('my other event', {my: 'data'});
+		});
 

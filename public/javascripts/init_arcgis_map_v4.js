@@ -168,7 +168,7 @@ var map, bookmarks;
 		map.infoWindow.resize(340, 300);
 		map.infoWindow.set("anchor", "top");
 
-		dojo.connect(map, "onLoad", function(map) {
+		// dojo.connect(map, "onLoad", function(map) {
 			geocoder = new Geocoder({ 
 				maxLocations: 10,
 				map: map,
@@ -185,9 +185,9 @@ var map, bookmarks;
 			},"search");
 			geocoder.startup();
 
-			on(registry.byId('sliderOpacity'), 'change', changeOpacity);
-			on(registry.byId('sliderOpacity1'), 'change', changeOpacity1);
-		});
+			// on(registry.byId('sliderOpacity'), 'change', changeOpacity);
+			// on(registry.byId('sliderOpacity1'), 'change', changeOpacity1);
+		// });
 
 		markerSymbol = new esri.symbol.SimpleMarkerSymbol(esri.symbol.SimpleMarkerSymbol.STYLE_SQUARE, 14, new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID, new dojo.Color([255, 0, 0]), 1), new dojo.Color([0, 255, 0, 0.25]));
 		lineSymbol = new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID, new dojo.Color([255,0,0]), 4);
@@ -302,17 +302,36 @@ var map, bookmarks;
 			dojo.byId("info").innerHTML = mp.x.toFixed(3) + ", " + mp.y.toFixed(3);
 		}
 
+		function changeOpacity(op) {
+			var newOp = (op / 100);
+			featLayer1.setOpacity(newOp);
+//			alert("hi");
+		}
+
+		function changeOpacity1(op) {
+			var newOp = (op / 100);
+			featLayer2.setOpacity(newOp);
+		}
+
 		function mapReady() {
 			map.on("click", executeIdentifyTask);
 			//create identify tasks and setup parameters
 			identifyTask = new IdentifyTask("https://geoportal.vizugy.hu/arcgis/rest/services/VKG/VKG_modellteruletek/MapServer");
 			identifyParams = new IdentifyParameters();
+			//on(registry.byId('sliderOpacity'), 'change', changeOpacity);
+			//on(registry.byId('sliderOpacity1'), 'change', changeOpacity1);
 			map.on("mouse-move", showCoordinates);
 			map.on("mouse-drag", showCoordinates);
 
 //			VIZIG_re(4);
 //			Modellter_re("Hortobágy-Berettyó");
 //			Hernad_szelv_re(57487.5);	//		63064.7
+			//VIZIG_hatar_ra(8);
+
+			// Modellterületre lépéskor térkép frissítés
+			if(typeof(modellterulet_terkep_nev) != "undefined"){
+				Modellter_re(modellterulet_terkep_nev);
+			}
 
             // Főoldalon az igazgatóság választásakor térkép frissítés
             $("a[id^='directorate_link_']").click(function(){
@@ -410,17 +429,6 @@ var map, bookmarks;
 					map.centerAndZoom(graphic.geometry, 15);
 				}
 			});
-		}
-
-		function changeOpacity(op) {
-			var newOp = (op / 100);
-			featLayer1.setOpacity(newOp);
-//			alert("hi");
-		}
-
-		function changeOpacity1(op) {
-			var newOp = (op / 100);
-			featLayer2.setOpacity(newOp);
 		}
 
 		function executeIdentifyTask(event) {

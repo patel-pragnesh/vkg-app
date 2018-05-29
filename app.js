@@ -16,7 +16,7 @@ var configuration = require('./settings');
 //const util = require('util');
 
 // Directorate = require("./models/directorate");
-DataMeta = require("./models/data_meta");
+//DataMeta = require("./models/data_meta");
 // Modelling = require("./models/modelling");
 //DatabaseHandler = require("./models/database_handler");
 
@@ -46,6 +46,15 @@ const test = require('./routes/test');
 
 var app = express();
 
+
+
+// io.on('connection', function (socket) {
+//   socket.emit('news', { hello: 'world' });
+//   socket.on('my other event', function (data) {
+//     console.log(data);
+//   });
+// });
+
 //Set up mongoose connection
 // var mongoDB = 'mongodb://localhost:27017/vizkeszlet_gazdalkodas';
 // mongoose.connect(mongoDB);
@@ -67,6 +76,9 @@ app.use(session({
   secret: 'work hard',
   resave: true,
   saveUninitialized: false,
+  cookie:{
+    maxAge: 7*24*60*60*1000 // 7 days
+  }
   // store: new MongoStore({
   //   mongooseConnection: db
   // })
@@ -98,6 +110,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //TODO: Windows commit
 app.use(common.directorates);
+// app.use(common.setSessionID);
 
 
 //app.all('*',common.user);

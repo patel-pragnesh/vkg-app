@@ -22,8 +22,12 @@ class DataLoader{
 		this.data = [];
 	}
 
+	async test(){
+		console.log('child process test');
+	}
+
 	//DSSVue-val DSSutl Write Data File formátumban exportált adatok beolvasása
-	async readFile(){
+	async readFile(process){
 		let that = this;
 
 		try{
@@ -35,7 +39,8 @@ class DataLoader{
 			//console.log(line_array);
 			let data_counter = 1;
 			while(line_array[0] != 'END FILE\r'){ 
-				console.log(data_counter);
+				//console.log(data_counter);
+				process.send(data_counter);
 				let series = line_array.splice(0, line_array.indexOf('END DATA\r')+1);
 
 				let A = null;
@@ -174,13 +179,14 @@ class DataLoader{
 		// }
 	}
 
-	async saveData(modelling_id, user_description){
+	async saveData(process, modelling_id, user_description){
 		let that = this;
 		//console.log(that.data[0]);
 		//return;
 		try{
 			const m = await Modelling.findById(modelling_id);
 			for(let i=0; i<that.data.length; i++){
+				process.send(i);
 				let p = await Profile.findByNameRiver(that.data[i].B, m.river_id);
 
 				//Ha nem létezik még a szelvény a vízfolyásra, akkor létrehoz
