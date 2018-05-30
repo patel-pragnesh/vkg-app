@@ -9,7 +9,7 @@ var bodyParser = require('body-parser');
 var sassMiddleware = require('node-sass-middleware');
 var sql = require('mssql');
 var mongoose = require('mongoose');
-var session = require('express-session');
+//var session = require('express-session');
 var configuration = require('./settings');
 // var MongoStore = require('connect-mongo')(session);
 
@@ -46,15 +46,6 @@ const test = require('./routes/test');
 
 var app = express();
 
-
-
-// io.on('connection', function (socket) {
-//   socket.emit('news', { hello: 'world' });
-//   socket.on('my other event', function (data) {
-//     console.log(data);
-//   });
-// });
-
 //Set up mongoose connection
 // var mongoDB = 'mongodb://localhost:27017/vizkeszlet_gazdalkodas';
 // mongoose.connect(mongoDB);
@@ -62,27 +53,18 @@ var app = express();
 // var db = mongoose.connection;
 // db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
-//app.set('models', require('./models'));
-
-//TESZT
-// DataMeta.findByDate(12, 'FLOW', '2000-01-01 00:00:00', '2000-01-02 09:00:00').then(function(d){
-//     console.log(d);
-//   });
-
-
-
-//use sessions for tracking logins
-app.use(session({
+// Use sessions for tracking logins
+app.session = require('express-session')({
   secret: 'work hard',
   resave: true,
   saveUninitialized: false,
   cookie:{
     maxAge: 7*24*60*60*1000 // 7 days
   }
-  // store: new MongoStore({
-  //   mongooseConnection: db
-  // })
-}));
+});
+
+// Use express-session middleware for express
+app.use(app.session);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -108,11 +90,12 @@ app.use(sassMiddleware({
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-//TODO: Windows commit
 app.use(common.directorates);
-// app.use(common.setSessionID);
 
+// A Session egyedi azonosítójának beállítása
+app.use(common.setSessionID);
 
+// Felhasználói azonosítás
 //app.all('*',common.user);
 
 app.use('/', index);

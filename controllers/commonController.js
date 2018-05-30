@@ -1,3 +1,4 @@
+const uniqid = require('uniqid');
 const Directorate = require('../models/directorate');
 const River = require('../models/river');
 var User = require('../models/user');
@@ -33,7 +34,10 @@ exports.user = async function(req, res, next){
 	
 }
 
-// exports.setSessionID = function(req, res, next){
-// 	req.session.myId = "valami";
-// 	next();
-// }
+exports.setSessionID = function(req, res, next){
+	if(req.session.session_uniqid == null){
+		req.session.session_uniqid = uniqid();
+	}
+	console.log('commonController.setSessionID', req.session.session_uniqid);
+	next();
+}

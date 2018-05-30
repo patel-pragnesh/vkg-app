@@ -4,7 +4,6 @@ const { sanitizeBody } = require('express-validator/filter');
 const formidable = require('formidable');
 const fs = require('fs');
 const mv = require('mv');
-const uniqid = require('uniqid');
 const moment = require('moment');
 moment.locale('hu');
 
@@ -136,20 +135,13 @@ exports.modelling_detail = async function(req, res, next){
 
 //Idősor adatok betöltés megjelenítés
 exports.data_for_time_get = async function(req, res, next){
-    if(req.session.data_for_time == null){
-        req.session.data_for_time = uniqid();
-    }
-
-    console.log('session_socket_id:',req.session.socket_id);
-    console.log('session_data_for_time_id:',req.session.data_for_time);
+    //console.log('session_uniqid:',req.session.session_uniqid);
+    console.log(clients);
     let countPerPage = 15;
     let page = req.query.page ? req.query.page - 1 : 0;
-    //console.log('page:' + page);
     let meta_datas = await DataMeta.findByModelling(req.params.id);
     let page_count = meta_datas ? meta_datas.length/countPerPage : 0;
-    //console.log('page_count: '+page_count)
-    let meta_datas_page = meta_datas ? meta_datas.slice(page*countPerPage, page * countPerPage + countPerPage) : [];
-    
+    let meta_datas_page = meta_datas ? meta_datas.slice(page*countPerPage, page * countPerPage + countPerPage) : [];    
 
     const m = await Modelling.findById(req.params.id);
     const form_link = "/modelling_import/"+m.id+"/data_for_time";
@@ -188,10 +180,9 @@ exports.data_for_time_post = async function(req, res, next){
         const datasaver = fork('./logic/dataloader_fork.js');
         datasaver.on('message', (msg) => {
             console.log('Message from datasaver: ', msg);
-            //if (io.sockets.connected[socketId]) {
-            //    io.sockets.connected[socketId].emit('progress', msg);
-            //}
-            // io.emit('progress', msg);
+            if (io.sockets.connected[socketId]) {
+               io.sockets.connected[socketId].emit('progress', msg);
+            }
 
         });
 
