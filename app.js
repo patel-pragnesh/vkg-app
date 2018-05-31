@@ -93,6 +93,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(common.directorates);
 
 // A Session egyedi azonosítójának beállítása
+var session_clients = {};
+app.set('session_clients', session_clients);
 app.use(common.setSessionID);
 
 // Felhasználói azonosítás

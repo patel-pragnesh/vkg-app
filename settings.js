@@ -5,8 +5,8 @@ module.exports = {
     server: '127.0.0.1',
     //port: 1433,
     database: 'vizkeszlet_gazdalkodas',
-    connectionTimeout: 10000,
-    requestTimeout: 10000,
+    connectionTimeout: 300000,
+    requestTimeout: 300000,
     options:{
       instanceName: 'sqlexpress',
       encrypt:false

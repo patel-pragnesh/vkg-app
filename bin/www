@@ -33,17 +33,30 @@ var clients = [];
 io.on('connection', function(socket){ 
   console.log('CLient connecting...');
 
-  console.log("session_uniqid (socket connection): "+socket.handshake.session.session_uniqid);
+  if(!clients[socket.handshake.session.session_uniqid]){
+    clients[socket.handshake.session.session_uniqid] = [];
+  }
 
-  socket.emit('connected', { socketId: socket.handshake.session.session_uniqid });
+  clients[socket.handshake.session.session_uniqid].push(socket.id);
 
-  clients[socket.handshake.session.session_uniqid] = socket.id;
+  //console.log(clients);
+
+  //console.log("session_uniqid (socket connection): "+socket.handshake.session.session_uniqid);
+
+  //socket.emit('connected', { socketId: socket.handshake.session.session_uniqid });
 
   socket.on('disconnect', function() {
     console.log('Client disconnecting...');
-    delete clients[socket.handshake.session.session_uniqid];
+    var index = clients[socket.handshake.session.session_uniqid].indexOf(socket.id);
+    if (index > -1) {
+      clients[socket.handshake.session.session_uniqid].splice(index, 1);
+    }
+    //delete clients[socket.handshake.session.session_uniqid];
   });
 });
+
+app.set('socketio', io);
+app.set('socket_clients', clients);
 
 /**
  * Listen on provided port, on all network interfaces.

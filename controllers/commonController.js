@@ -36,8 +36,10 @@ exports.user = async function(req, res, next){
 
 exports.setSessionID = function(req, res, next){
 	if(req.session.session_uniqid == null){
-		req.session.session_uniqid = uniqid();
-	}
+        req.session.session_uniqid = uniqid();
+        let session_clients = req.app.get('session_clients');
+        session_clients[req.session.session_uniqid] = {isDataLoadProgress: false};  
+    }
 	console.log('commonController.setSessionID', req.session.session_uniqid);
 	next();
 }

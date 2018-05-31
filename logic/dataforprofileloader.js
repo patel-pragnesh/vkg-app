@@ -4,6 +4,7 @@ const readline = require('readline');
 const sql = require('mssql');
 const moment = require('moment');
 moment.locale('hu');
+const uniqid = require('uniqid');
 
 // Convert fs.readFile into Promise version of same    
 const readFile = util.promisify(fs.readFile);
@@ -19,17 +20,33 @@ const Description = require('../models/description');
 class DataForProfileLoader{
 	constructor(file_path){
 		this.file_path = file_path;
+		this.progress = 0;
+		this.progressStep = 0;
 		this.data = [];
 	}
 
-	async readFile(){
+	async readFile(process){
 		let that = this;
 		try{
 			let data_from_file = await readFile(that.file_path, 'latin1');
 			let line_array = data_from_file.split('\n');
+			let count = 0;
+			line_array.forEach(function(element){
+				if(element == 'END DATA\r'){
+					count++;
+				}
+			});
+			//console.log(count);
+			that.progressStep = 100 / (count*2);
 			let data = [];
-			
+			let ic = 1;
 			while(line_array[0] != 'END FILE\r'){ 
+				//console.log(count,'/',ic);
+				ic++;
+				// Send message to progressbar
+				that.progress += that.progressStep;
+				process.send(that.progress.toFixed(0));
+
 				let series = line_array.splice(0, line_array.indexOf('END DATA\r')+1);
 
 				let type=null;
@@ -84,8 +101,12 @@ class DataForProfileLoader{
 		}
 	}
 
-	async saveData(modelling_id, description_id){
+	async saveData(process, modelling_id, description_id){
 		let that = this;
+
+		// Egyedi azonosító az aktuálsi adatbetöltéshez (több együttes betöltésnél meg kell különböztetni)
+		let dataloadUniqId = uniqid();
+
 		console.log("A fájl összesen "+that.data.length + " db időpontot tartalmaz.");
 		const modelling = await Modelling.findById(modelling_id);
 
@@ -103,7 +124,11 @@ class DataForProfileLoader{
 
 			let data_to_insert = [];
 			for(let i=0; i<that.data.length; i++){
-				console.log("Adabetöltés: "+(i+1)+' / '+that.data.length);
+				//console.log("Adabetöltés: "+(i+1)+' / '+that.data.length);
+
+				// Send message to progressbar
+				that.progress += that.progressStep;
+				process.send(that.progress.toFixed(0));
 
 				let tableLocationFlow = new sql.Table('TmpLocationFlow') // or temporary table, e.g. #temptable
 				//tableLocationFlow.create = true
@@ -112,7 +137,8 @@ class DataForProfileLoader{
 				tableLocationFlow.columns.add('modelling_id', sql.Int, {nullable: true});
 				tableLocationFlow.columns.add('additional_description_id', sql.Int, {nullable: true});
 				tableLocationFlow.columns.add('description_id', sql.Int, {nullable: true});
-				tableLocationFlow.columns.add('value', sql.Float, {nullable: true});			
+				tableLocationFlow.columns.add('value', sql.Float, {nullable: true});
+				tableLocationFlow.columns.add('uniqid', sql.NVarChar, {nullable: true});		
 				tableLocationFlow.columns.add('updatedAt', sql.NVarChar, {nullable: true});
 				tableLocationFlow.columns.add('createdAt', sql.NVarChar, {nullable: true});
 
@@ -123,7 +149,8 @@ class DataForProfileLoader{
 				tableLocationStage.columns.add('modelling_id', sql.Int, {nullable: true});
 				tableLocationStage.columns.add('additional_description_id', sql.Int, {nullable: true});
 				tableLocationStage.columns.add('description_id', sql.Int, {nullable: true});
-				tableLocationStage.columns.add('value', sql.Float, {nullable: true});			
+				tableLocationStage.columns.add('value', sql.Float, {nullable: true});
+				tableLocationStage.columns.add('uniqid', sql.NVarChar, {nullable: true});			
 				tableLocationStage.columns.add('updatedAt', sql.NVarChar, {nullable: true});
 				tableLocationStage.columns.add('createdAt', sql.NVarChar, {nullable: true});
 
@@ -168,9 +195,9 @@ class DataForProfileLoader{
 
 					let ca = moment().format("YYYY-MM-DD HH:mm:ss");
 					if(d.type == "location_flow"){
-							tableLocationFlow.rows.add(date_time.id, profile.id, modelling.id, additional_description.id, description_id, v.value, ca, ca);
+							tableLocationFlow.rows.add(date_time.id, profile.id, modelling.id, additional_description.id, description_id, v.value, dataloadUniqId, ca, ca);
 					}else if(d.type == "location_elev"){
-							tableLocationStage.rows.add(date_time.id, profile.id, modelling.id, additional_description.id, description_id, v.value, ca, ca);
+							tableLocationStage.rows.add(date_time.id, profile.id, modelling.id, additional_description.id, description_id, v.value, dataloadUniqId, ca, ca);
 					}
 
 				});
@@ -183,13 +210,13 @@ class DataForProfileLoader{
 			    let request_move_location_flow = new sql.Request(dbConn);
 	    		let result_move_location_flow = await request_move_location_flow.query('INSERT INTO '+
 	    			'dbo.LocationFlow(date_time_id, profile_id, modelling_id, additional_description_id, description_id, value, updatedAt, createdAt) '+
-	    			'SELECT date_time_id, profile_id, modelling_id, additional_description_id, description_id, value, updatedAt, createdAt FROM dbo.TmpLocationFlow; '+
+	    			'SELECT date_time_id, profile_id, modelling_id, additional_description_id, description_id, value, updatedAt, createdAt FROM dbo.TmpLocationFlow WHERE uniqid=\''+dataloadUniqId+'\'; '+
 	    			'TRUNCATE TABLE dbo.TmpLocationFlow;');
 
 	    		let request_move_location_stage = new sql.Request(dbConn);
 		    	let result_move_location_stage = await request_move_location_stage.query('INSERT INTO '+
 		    		'dbo.LocationStage(date_time_id, profile_id, modelling_id, additional_description_id, description_id, value, updatedAt, createdAt) '+
-		    		'SELECT date_time_id, profile_id,modelling_id, additional_description_id, description_id, value, updatedAt, createdAt FROM dbo.TmpLocationStage; '+
+		    		'SELECT date_time_id, profile_id,modelling_id, additional_description_id, description_id, value, updatedAt, createdAt FROM dbo.TmpLocationStage WHERE uniqid=\''+dataloadUniqId+'\'; '+
 		    		'TRUNCATE TABLE dbo.TmpLocationStage;');
 
 			}

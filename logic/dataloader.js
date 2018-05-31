@@ -4,6 +4,7 @@ const readline = require('readline');
 const sql = require('mssql');
 const moment = require('moment');
 moment.locale('hu');
+const uniqid = require('uniqid');
 
 // Convert fs.readFile into Promise version of same    
 const readFile = util.promisify(fs.readFile);
@@ -19,12 +20,14 @@ const Profile = require('../models/profile');
 class DataLoader{
 	constructor(file_path){
 		this.file_path = file_path;
+		this.progress = 0;
+		this.progressStep = 0;
 		this.data = [];
 	}
 
-	async test(){
-		console.log('child process test');
-	}
+	// async test(){
+	// 	console.log('child process test');
+	// }
 
 	//DSSVue-val DSSutl Write Data File formátumban exportált adatok beolvasása
 	async readFile(process){
@@ -32,15 +35,22 @@ class DataLoader{
 
 		try{
 			let data_from_file = await readFile(that.file_path, 'latin1');
-			//console.log(data_from_file);
 			let line_array = data_from_file.split('\n');
-			//console.log(line_array);
+			let count = 0;
+			line_array.forEach(function(element){
+				if(element == 'END DATA\r'){
+					count++;
+				}
+			});
+			that.progressStep = 100 / (count*2);
+
 			let data = [];
-			//console.log(line_array);
 			let data_counter = 1;
-			while(line_array[0] != 'END FILE\r'){ 
-				//console.log(data_counter);
-				process.send(data_counter);
+			while(line_array[0] != 'END FILE\r'){
+
+				// Send message to progressbar
+				that.progress += that.progressStep;
+				process.send(that.progress.toFixed(0));
 				let series = line_array.splice(0, line_array.indexOf('END DATA\r')+1);
 
 				let A = null;
@@ -54,7 +64,7 @@ class DataLoader{
 				let value_count = null;
 				let values = [];
 
-				//Első sor feldolgozása
+				// Első sor feldolgozása
 				let first_row_array = series[0].split('/');
 				A = first_row_array[1];
 				B = parseFloat(first_row_array[2]).toFixed(1);
@@ -62,7 +72,7 @@ class DataLoader{
 				E = first_row_array[5];
 				F = first_row_array[6];
 
-				//Negyedik sor feldolgozás -> unit, type
+				// Negyedik sor feldolgozás -> unit, type
 				//let unit_unformat = series[3].match(/(Units: ([\S]{1,}))/g);
 				//let type_unformat = series[3].match(/Type: ([\S]{1,})/g);
 
@@ -73,22 +83,16 @@ class DataLoader{
 				unit = matchUnit[1];
 				type = matchType[1];
 
-				//Harmadik sor feldolgozása -> Érték párok száma
+				// Harmadik sor feldolgozása -> Érték párok száma
 				let regExValueCount = /Number: ([\S]{1,})/ig;				
 				let matchValueCount = regExValueCount.exec(series[2]);
 				value_count = matchValueCount[1];
 				
-				//Csak FLOW vagy STAGE betöltése
+				// Csak FLOW vagy STAGE betöltése
 				if(C !='FLOW' && C != 'STAGE'){
 					console.log('Rossz típus...');
 					return null;
 				}
-
-				// let date_time_unformat = series[0].match(/[0-9]{2}[A-Z]{3}[0-9]{4} [0-9]{4}/g);
-				// if(date_time_unformat){
-				// 	moment.locale('en');
-				// 	date_time = moment(date_time_unformat, 'DDMMMYYYY HHmm').format('YYYY-MM-DD HH:mm:ss');
-				// }
 
 				if(type && value_count){
 					let counter = 1;
@@ -181,12 +185,16 @@ class DataLoader{
 
 	async saveData(process, modelling_id, user_description){
 		let that = this;
-		//console.log(that.data[0]);
-		//return;
 		try{
+			// Egyedi azonosító az aktuálsi adatbetöltéshez (több együttes betöltésnél meg kell különböztetni)
+			let dataloadUniqId = uniqid();
+			
 			const m = await Modelling.findById(modelling_id);
 			for(let i=0; i<that.data.length; i++){
-				process.send(i);
+
+				// Send message to progressbar
+				that.progress += that.progressStep;
+				process.send(that.progress.toFixed(0));
 				let p = await Profile.findByNameRiver(that.data[i].B, m.river_id);
 
 				//Ha nem létezik még a szelvény a vízfolyásra, akkor létrehoz
@@ -194,9 +202,9 @@ class DataLoader{
 					p = new Profile(null, that.data[i].B, m.river_id);
 					p = await p.save();
 				}
-				//console.log(p);
+				
 				let ti = await TimeInterval.findByName(that.data[i].E);
-				//console.log(ti);
+				
 				let fm = new DataMeta(null, that.data[i].A, null, null, ti.id, that.data[i].unit, modelling_id, p.id, that.data[i].F, user_description, that.data[i].C);
 				fm = await fm.save();
 				let date_from = moment("3000-01-01 01:01", "YYYY-MM-DD HH:mm");
@@ -212,16 +220,17 @@ class DataLoader{
 					table.columns.add('date_time_for', sql.NVarChar, {nullable: true});
 					table.columns.add('value', sql.Float, {nullable: true});
 					table.columns.add('data_meta_id', sql.Int, {nullable: true});
+					table.columns.add('uniqid', sql.NVarChar, {nullable: true});
 					table.columns.add('updatedAt', sql.NVarChar, {nullable: true});
 					table.columns.add('createdAt', sql.NVarChar, {nullable: true});
 
 				    that.data[i].values.forEach(async function(v){
-						//console.log(v.datetime);
+						
 				    	date_from = moment(v.datetime, "YYYY-MM-DD HH:mm") < date_from ? moment(v.datetime, "YYYY-MM-DD HH:mm") : date_from;
 						date_to = moment(v.datetime, "YYYY-MM-DD HH:mm") > date_to ? moment(v.datetime, "YYYY-MM-DD HH:mm") : date_to;
 
 						let ca = moment().format("YYYY-MM-DD HH:mm:ss");
-						table.rows.add(v.datetime, v.val, fm.id, ca, ca);
+						table.rows.add(v.datetime, v.val, fm.id, dataloadUniqId, ca, ca);
 
 					});
 
@@ -230,7 +239,7 @@ class DataLoader{
 
 				    const request_move = new sql.Request(dbConn);
 			    	let result1 = await request_move.query('INSERT INTO dbo.Flow(date_time_for, value, data_meta_id, updatedAt, createdAt) '+
-			    		'SELECT date_time_for, value, data_meta_id, updatedAt, createdAt FROM dbo.TmpFlow; '+
+			    		'SELECT date_time_for, value, data_meta_id, updatedAt, createdAt FROM dbo.TmpFlow WHERE uniqid=\''+dataloadUniqId+'\'; '+
 			    		'TRUNCATE TABLE dbo.TmpFlow;');
 				    pool.close();
 				}else if(that.data[i].C == 'STAGE'){
@@ -242,6 +251,7 @@ class DataLoader{
 					table.columns.add('date_time_for', sql.NVarChar, {nullable: true});
 					table.columns.add('value', sql.Float, {nullable: true});
 					table.columns.add('data_meta_id', sql.Int, {nullable: true});
+					table.columns.add('uniqid', sql.NVarChar, {nullable: true});
 					table.columns.add('updatedAt', sql.NVarChar, {nullable: true});
 					table.columns.add('createdAt', sql.NVarChar, {nullable: true});
 
@@ -251,7 +261,7 @@ class DataLoader{
 						date_to = moment(v.datetime, "YYYY-MM-DD HH:mm") > date_to ? moment(v.datetime, "YYYY-MM-DD HH:mm") : date_to;
 
 						let ca = moment().format("YYYY-MM-DD HH:mm:ss");
-						table.rows.add(v.datetime, v.val, fm.id, ca, ca);
+						table.rows.add(v.datetime, v.val, fm.id, dataloadUniqId, ca, ca);
 
 					});
 
@@ -260,7 +270,7 @@ class DataLoader{
 
 				    const request_move = new sql.Request(dbConn);
 			    	let result1 = await request_move.query('INSERT INTO dbo.Stage(date_time_for, value, data_meta_id, updatedAt, createdAt) '+
-			    		'SELECT date_time_for, value, data_meta_id, updatedAt, createdAt FROM dbo.TmpStage; '+
+			    		'SELECT date_time_for, value, data_meta_id, updatedAt, createdAt FROM dbo.TmpStage WHERE uniqid=\''+dataloadUniqId+'\'; '+
 			    		'TRUNCATE TABLE dbo.TmpStage;');
 				    pool.close();
 				}
@@ -278,9 +288,10 @@ class DataLoader{
 
 	async saveDataFlowInFlowOut(modelling_id, user_description){
 		let that = this;
-		//console.log(that.data[0]);
-		//return;
 		try{
+			// Egyedi azonosító az aktuálsi adatbetöltéshez (több együttes betöltésnél meg kell különböztetni)
+			let dataloadUniqId = uniqid();
+
 			const m = await Modelling.findById(modelling_id);
 			for(let i=0; i<that.data.length; i++){
 				let p = await Profile.findByNameRiver(that.data[i].B, m.river_id);
@@ -311,6 +322,7 @@ class DataLoader{
 				table.columns.add('date_time_for', sql.NVarChar, {nullable: true});
 				table.columns.add('value', sql.Float, {nullable: true});
 				table.columns.add('data_meta_id', sql.Int, {nullable: true});
+				table.columns.add('uniqid', sql.NVarChar, {nullable: true});
 				table.columns.add('updatedAt', sql.NVarChar, {nullable: true});
 				table.columns.add('createdAt', sql.NVarChar, {nullable: true});
 
@@ -319,7 +331,7 @@ class DataLoader{
 					date_to = moment(v.datetime, "YYYY-MM-DD HH:mm") > date_to ? moment(v.datetime, "YYYY-MM-DD HH:mm") : date_to;
 
 					let ca = moment().format("YYYY-MM-DD HH:mm:ss");
-					table.rows.add(v.datetime, v.val, fm.id, ca, ca);
+					table.rows.add(v.datetime, v.val, fm.id, dataloadUniqId, ca, ca);
 
 				});
 
@@ -329,7 +341,7 @@ class DataLoader{
 				const request_move = new sql.Request(dbConn);
 
 				let result1 = await request_move.query('INSERT INTO dbo.FlowInOut(date_time_for, value, data_meta_id, updatedAt, createdAt) '+
-					'SELECT date_time_for, value, data_meta_id, updatedAt, createdAt FROM dbo.TmpFlow; '+
+					'SELECT date_time_for, value, data_meta_id, updatedAt, createdAt FROM dbo.TmpFlow WHERE uniqid=\''+dataloadUniqId+'\'; '+
 					'TRUNCATE TABLE dbo.TmpFlow;');
 				
 				pool.close();

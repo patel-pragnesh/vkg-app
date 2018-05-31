@@ -18,6 +18,8 @@ const Description = require('../models/description');
 const DataLoader = require('../logic/dataloader');
 const DataForProfileLoader = require('../logic/dataforprofileloader');
 
+const sessionSocketHelpers = require('../logic/sessionSocketHelpers');
+
 exports.index = async function(req, res, next){
 	let countPerPage = 15;
     let page = req.query.page ? req.query.page - 1 : 0;
@@ -135,25 +137,25 @@ exports.modelling_detail = async function(req, res, next){
 
 //Idősor adatok betöltés megjelenítés
 exports.data_for_time_get = async function(req, res, next){
-    //console.log('session_uniqid:',req.session.session_uniqid);
-    console.log(clients);
     let countPerPage = 15;
     let page = req.query.page ? req.query.page - 1 : 0;
     let meta_datas = await DataMeta.findByModelling(req.params.id);
     let page_count = meta_datas ? meta_datas.length/countPerPage : 0;
     let meta_datas_page = meta_datas ? meta_datas.slice(page*countPerPage, page * countPerPage + countPerPage) : [];    
 
+    // A session-re folyamatban levő adatbetöltés ellenörzése
+    let isDataLoadProgress = sessionSocketHelpers.isDataLoadProgress(req);    
+
     const m = await Modelling.findById(req.params.id);
     const form_link = "/modelling_import/"+m.id+"/data_for_time";
     const data_type = "data_for_time"
     res.render('modelling_import/data', { title: 'Modellezés vízhozam, vízszint adatok', modelling: m, 
         form_link: form_link, meta_datas: meta_datas_page, page_count: page_count,
-        data_type:data_type });
+        data_type:data_type, isDataLoadProgress: isDataLoadProgress});
 }
 
 //Idősor adatok betöltés mentés
 exports.data_for_time_post = async function(req, res, next){
-    console.log('sessionID:',req.sessionID);
     let form = new formidable.IncomingForm();
     form.parse(req, function (err, fields, files) {
       let socketId = fields.socketId;
@@ -167,24 +169,18 @@ exports.data_for_time_post = async function(req, res, next){
       let newpath = __dirname +'/../public/DSS/' + newFileName + '_' + moment().format("YYYY-MM-DD_HHmmssSSS") + '.csv';
       mv(oldpath, newpath, async function(err){
         console.log('File moved...');
-        //let dataloader = new DataLoader(newpath);
-        //await dataloader.readFile();
-        //await dataloader.saveData(modelling,user_description+' '+moment().format("YYYY-MM-DD_HHmmssSSS"));
-        
-        // io.on('connection', function (socket) {
-        //     client = socket.id;
-        //     console.log(client);
-        // });
 
         // Child process a feladat futtatására
         const datasaver = fork('./logic/dataloader_fork.js');
         datasaver.on('message', (msg) => {
-            console.log('Message from datasaver: ', msg);
-            if (io.sockets.connected[socketId]) {
-               io.sockets.connected[socketId].emit('progress', msg);
-            }
+            //console.log('Message from datasaver: ', msg);
+
+            sessionSocketHelpers.sendProgressToClients(req, msg);
 
         });
+
+        // Az aktuális sessionben adatfeltöltés folyamatban beállítása
+        sessionSocketHelpers.setDataLoadProgress(req);
 
         datasaver.send({file_path: newpath, modelling: modelling, user_description: user_description});
 
@@ -202,9 +198,7 @@ exports.data_for_profile_get = async function(req, res, next){
     let page_count = 0;
     let page = req.query.page ? req.query.page - 1 : 0;
     let location_flows = await LocationFlow.findByModellingGroupByUserDescription(req.params.id);
-    //let location_flows = [];
     let location_stages = await LocationStage.findByModellingGroupByUserDescription(req.params.id);
-    // let location_stages = [];
     let locations = [];
     if(location_flows){
         locations = location_flows.concat(location_stages);
@@ -213,19 +207,20 @@ exports.data_for_profile_get = async function(req, res, next){
     }
     
     let locations_page = [];
-    //console.log(locations);
     if(locations){
         page_count = locations.length/countPerPage;
         locations_page = locations.slice(page*countPerPage, page * countPerPage + countPerPage);
-        //console.log(locations_page);
     } 
+
+    // A session-re folyamatban levő adatbetöltés ellenörzése
+    let isDataLoadProgress = sessionSocketHelpers.isDataLoadProgress(req); 
 
     const m = await Modelling.findById(req.params.id);
     const form_link = "/modelling_import/"+m.id+"/data_for_profile";
     const data_type = "data_for_profile"
     res.render('modelling_import/data', { title: 'Modellezés hossz-szelvény adatok', 
         modelling: m, form_link: form_link, locations_page: locations_page, 
-        page_count: page_count, data_type:data_type });
+        page_count: page_count, data_type:data_type, isDataLoadProgress:isDataLoadProgress });
 }
 
 //Szelvény adatok betöltés mentés
@@ -242,19 +237,21 @@ exports.data_for_profile_post = async function(req, res, next){
       let newpath = __dirname +'/../public/DATAPROFILE/' + newFileName + ' ' + moment().format("YYYY-MM-DD_HHmmssSSS") + '.csv';
       mv(oldpath, newpath, async function(err){
         console.log('File moved to ' + newpath);
-        let dataloader = new DataForProfileLoader(newpath);
-        let success_file_read = await dataloader.readFile();
-        if(success_file_read){
-            //Betöltés elindítás, de a klinesnek a hosszú idő miatt nem kell megvárni...
-            let description = new Description(null, user_description+'_'+moment().format("YYYY-MM-DD_HHmmssSSS"), null, null, null, null);
-            description = await description.save();
-            await dataloader.saveData(modelling, description.id);
-            console.log('Data is inserted to db.'); 
-            res.redirect('/modelling_import/'+modelling+'/data_for_profile');
-        }else{
-            console.log('Error reading file.');
-            res.redirect('/modelling_import/'+modelling+'/data_for_profile?error=error_loading_data');
-        }
+
+        // Child process a feladat futtatására
+        const datasaverforprofile = fork('./logic/dataforprofileloader_fork.js');
+        datasaverforprofile.on('message', (msg) => {
+            //console.log('Message from datasaver: ', msg);
+            sessionSocketHelpers.sendProgressToClients(req, msg);
+        });
+
+        // Az aktuális sessionben adatfeltöltés folyamatban beállítása
+        sessionSocketHelpers.setDataLoadProgress(req);
+
+        datasaverforprofile.send({file_path: newpath, modelling: modelling, user_description: user_description});
+
+        console.log('ok');
+        res.redirect('/modelling_import/'+modelling+'/data_for_profile');
             
       });
     });

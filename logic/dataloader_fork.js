@@ -12,5 +12,5 @@ process.on('message', async function(data){
     let dataloader = new DataLoader(data.file_path);
     await dataloader.readFile(process);
     await dataloader.saveData(process, data.modelling, data.user_description+' '+moment().format("YYYY-MM-DD_HHmmssSSS"));
-    process.send('SavesToDB');
+    process.send('SavedToDB');
 });
