@@ -118,6 +118,7 @@ class DataLoader{
 			return that;
 		}catch(err){
 			console.log(err);
+			return null;
 		}
 	}
 
@@ -188,7 +189,7 @@ class DataLoader{
 		try{
 			// Egyedi azonosító az aktuálsi adatbetöltéshez (több együttes betöltésnél meg kell különböztetni)
 			let dataloadUniqId = uniqid();
-			
+
 			const m = await Modelling.findById(modelling_id);
 			for(let i=0; i<that.data.length; i++){
 

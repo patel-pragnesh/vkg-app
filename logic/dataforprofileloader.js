@@ -98,6 +98,7 @@ class DataForProfileLoader{
 			return that;
 		}catch(err){
 			console.log(err);
+			return null;
 		}
 	}
 

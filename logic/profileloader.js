@@ -5,6 +5,8 @@ const sql = require('mssql');
 const moment = require('moment');
 moment.locale('hu');
 
+const uniqid = require('uniqid');
+
 // Convert fs.readFile into Promise version of same    
 const readFile = util.promisify(fs.readFile);
 
@@ -36,6 +38,9 @@ class ProfileLoader{
 	async saveData(r_id){
 		let that = this;
 		try{
+			// Egyedi azonosító az aktuálsi adatbetöltéshez (több együttes betöltésnél meg kell különböztetni)
+			let dataloadUniqId = uniqid();
+
 			//Már létező profil adatok lekérdezése
 			let profiles = await Profile.findByRiver(r_id);
 
@@ -54,13 +59,14 @@ class ProfileLoader{
 				table.create = true
 				table.columns.add('name', sql.NVarChar, {nullable: true});
 				table.columns.add('river_id', sql.Int, {nullable: true});
+				table.columns.add('uniqid', sql.NVarChar, {nullable: true});
 				table.columns.add('updatedAt', sql.NVarChar, {nullable: true});
 				table.columns.add('createdAt', sql.NVarChar, {nullable: true});
 
 				for(let i=0; i<that.data.length; i++){
 					
 			    	let ca = moment().format("YYYY-MM-DD HH:mm:ss");
-					table.rows.add(that.data[i].profile, r_id, ca, ca);
+					table.rows.add(that.data[i].profile, r_id, dataloadUniqId, ca, ca);
 
 				}
 
@@ -69,7 +75,7 @@ class ProfileLoader{
 
 			    const request_move = new sql.Request(dbConn);
 		    	let result1 = await request_move.query('INSERT INTO dbo.Profile(name, river_id, updatedAt, createdAt) '+
-		    		'SELECT name, river_id, updatedAt, createdAt FROM dbo.TmpProfile; '+
+		    		'SELECT name, river_id, updatedAt, createdAt FROM dbo.TmpProfile WHERE uniqid=\''+dataloadUniqId+'\'; '+
 		    		'TRUNCATE TABLE dbo.TmpProfile;');
 			    pool.close();
 				

@@ -22,7 +22,7 @@ process.on('message', async function(data){
         //console.log('Data is inserted to db.'); 
         //res.redirect('/modelling_import/'+modelling+'/data_for_profile');
     }else{
-        process.send('Error reading file.');
+        process.send('Nem megfelelő a fájl formátuma.');
         //console.log('Error reading file.');
         //res.redirect('/modelling_import/'+modelling+'/data_for_profile?error=error_loading_data');
     }

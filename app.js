@@ -11,7 +11,7 @@ var sql = require('mssql');
 var mongoose = require('mongoose');
 //var session = require('express-session');
 var configuration = require('./settings');
-// var MongoStore = require('connect-mongo')(session);
+// var MongoStore = require('connect-mongo')(session);ű
 
 //const util = require('util');
 

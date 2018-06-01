@@ -101,7 +101,7 @@ block content
 												td=m_d.unit
 												td=m_d.profile_name
 												td
-													a(href="/modelling_import/meta_data/"+m_d.id+"/delete" class="btn btn-info pull-right mr5")
+													a(href="/modelling_import/meta_data/"+m_d.id+"/delete" class="btn btn-info pull-right mr5 show-overlay")
 														span.glyphicon.glyphicon-erase
 								else if (locations_page)
 									thead
@@ -115,7 +115,7 @@ block content
 												//- td=l_f.count
 												td=l_f.user_description
 												td
-													a(href="/modelling_import/"+l_f.location_type+"/"+modelling.id+"/"+l_f.description_id+"/delete" class="btn btn-info pull-right mr5")
+													a(href="/modelling_import/"+l_f.location_type+"/"+modelling.id+"/"+l_f.description_id+"/delete" class="btn btn-info pull-right mr5 show-overlay")
 														span.glyphicon.glyphicon-erase
 						div.panel-footer
 							ul.pagination.m0.pull-right
@@ -126,7 +126,3 @@ block content
 block scripts
 	script(src="/js/socket.io.js")
 	script(src="/javascripts/progressbar_socket.js")
-		
-			
-			
-

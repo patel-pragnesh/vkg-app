@@ -316,7 +316,7 @@ exports.location_flow_delete_get = async function(req, res, next){
 exports.location_stage_delete_get = async function(req, res, next){    
     let modelling_id = req.params.modelling_id;
     let description_id = req.params.description_id;
-    console.log('Deleting location-stage by description_id: ' + description_id);
+    //console.log('Deleting location-stage by description_id: ' + description_id);
     await LocationStage.deleteByDescriptionId(description_id);
     await Description.deleteById(description_id);
     res.redirect('/modelling_import/'+modelling_id+'/data_for_profile');

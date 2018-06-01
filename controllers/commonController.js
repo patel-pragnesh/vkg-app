@@ -1,4 +1,5 @@
 const uniqid = require('uniqid');
+var cluster = require('cluster');
 const Directorate = require('../models/directorate');
 const River = require('../models/river');
 var User = require('../models/user');
@@ -39,7 +40,8 @@ exports.setSessionID = function(req, res, next){
         req.session.session_uniqid = uniqid();
         let session_clients = req.app.get('session_clients');
         session_clients[req.session.session_uniqid] = {isDataLoadProgress: false};  
-    }
-	console.log('commonController.setSessionID', req.session.session_uniqid);
+	}
+	console.log('Request is running on worker with id ==> ' + cluster.worker.id);
+	//console.log('commonController.setSessionID', req.session.session_uniqid);
 	next();
 }

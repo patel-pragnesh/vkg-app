@@ -8,7 +8,7 @@ socket.on('progress', function(current_progress){
         $("#dynamic")
             .css("width", current_progress + "%")
             .attr("aria-valuenow", current_progress)
-            .text(current_progress + "% Complete");
+            .text(current_progress + "% Kész");
     }else{
         location.reload();
     }

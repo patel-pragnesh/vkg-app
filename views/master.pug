@@ -25,6 +25,7 @@ html
 		script(src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js")
 		script(src="/js/moment.js")
 		script(src="/js/daterangepicker.js")
+		script(src="/js/loadingoverlay.min.js")
 		script(type="text/javascript").
 			$(document).ready(function () {
 				$("#sidebar").mCustomScrollbar({
@@ -40,5 +41,8 @@ html
 					$('#mySidenav').toggleClass('open');
 					$('.row.river').toggleClass('narrow');
 				});
+				$('.show-overlay').click(function(){
+					$.LoadingOverlay("show");
+				})
 			});	
 		block scripts
