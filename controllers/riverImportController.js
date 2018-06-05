@@ -9,6 +9,7 @@ moment.locale('hu');
 const Directorate = require('../models/directorate');
 // const Modelling = require('../models/modelling');
 const River = require('../models/river');
+const Profile = require('../models/profile');
 // const DataMeta = require('../models/data_meta');
 
 const KmlLoader = require('../logic/kmlloader');
@@ -140,9 +141,9 @@ exports.modelling_detail = async function(req, res, next){
 // }
 
 exports.profiles_get = async function(req, res, next){
-    const r = await River.findById(req.params.id);
+    const river = await River.findById(req.params.id);
     const form_link = "/river_import/"+r.id+"/profiles";
-    res.render('river_import/data', { title: 'Vízfolyás profil adatok', river: r, form_link: form_link});
+    res.render('river_import/data', { title: 'Vízfolyás profil adatok', river: river, form_link: form_link});
 }
 
 exports.profiles_post = async function(req, res, next){
@@ -164,6 +165,32 @@ exports.profiles_post = async function(req, res, next){
         res.redirect('/river_import/'+river+'/profiles');
       });
     });
+    
+}
+
+exports.reach_create_get = async function(req, res, next){
+    let parent_river_id = req.params.id;
+
+    // Szülő vízfolyás lekérdezése
+    const parent_river = await River.findById(parent_river_id);
+
+    // Szülő vízfolyás profilok lekérdezése
+    const parent_river_profiles = await Profile.findByRiver(parent_river_id);
+
+    let form_link = "/"+parent_river_id+"/reach/create";
+
+	res.render('river_import/reach', {title: 'Új reach', form_link: form_link, parent_river_profiles: parent_river_profiles});
+}
+
+exports.reach_create_post = async function(req, res, next){
+    
+}
+
+exports.reach_update_get = async function(req, res, next){
+
+}
+
+exports.reach_update_post = async function(req, res, next){
     
 }
 

@@ -35,6 +35,18 @@ router.get('/:id/profiles', /*common.user,*/ riverImportcontroller.profiles_get)
 /* POST request to update profile data for River. */
 router.post('/:id/profiles', /*common.user,*/ riverImportcontroller.profiles_post);
 
+/* GET request to create reach for River. */
+router.get('/:id/reach/create', /*common.user,*/ riverImportcontroller.reach_create_get);
+
+/* POST request to create reach for River. */
+router.post('/:id/reach/create', /*common.user,*/ riverImportcontroller.reach_create_post);
+
+/* GET request to create reach for River. */
+router.get('/:id/reach/:reach_id/update', /*common.user,*/ riverImportcontroller.reach_update_get);
+
+/* POST request to create reach for River. */
+router.post('/:id/reach/:reach_id/update', /*common.user,*/ riverImportcontroller.reach_update_post);
+
 /* GET request to delete for River. */
 router.get('/:id/delete', /*common.user,*/ riverImportcontroller.meta_data_delete_get);
 

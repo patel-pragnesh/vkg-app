@@ -41,7 +41,7 @@ exports.setSessionID = function(req, res, next){
         let session_clients = req.app.get('session_clients');
         session_clients[req.session.session_uniqid] = {isDataLoadProgress: false};  
 	}
-	console.log('Request is running on worker with id ==> ' + cluster.worker.id);
+	//console.log('Request is running on worker with id ==> ' + cluster.worker.id);
 	//console.log('commonController.setSessionID', req.session.session_uniqid);
 	next();
 }
