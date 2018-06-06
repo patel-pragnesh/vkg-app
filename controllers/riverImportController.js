@@ -39,7 +39,7 @@ exports.create_post = [
 	// Validate fields.
     body('name').isLength({ min: 1 }).trim().withMessage('A megnevezés megadása kötelező'),
         // .isAlphanumeric('hu-HU').withMessage('Name has non-alphanumeric characters.'),
-    body('directorate').isInt({ min: 0 }).trim().withMessage('Igazgatóság választása'),
+    body('directorate').isInt({ min: 0 }).trim().withMessage('Igazgatóság választása kötelező'),
 
     async (req, res, next) =>{
 
@@ -172,19 +172,55 @@ exports.reach_create_get = async function(req, res, next){
     let parent_river_id = req.params.id;
 
     // Szülő vízfolyás lekérdezése
-    const parent_river = await River.findById(parent_river_id);
+    //const parent_river = await River.findById(parent_river_id);
 
     // Szülő vízfolyás profilok lekérdezése
     const parent_river_profiles = await Profile.findByRiver(parent_river_id);
 
-    let form_link = "/"+parent_river_id+"/reach/create";
+    let form_link = "/river_import/"+parent_river_id+"/reach/create";
 
-	res.render('river_import/reach', {title: 'Új reach', form_link: form_link, parent_river_profiles: parent_river_profiles});
+	res.render('river_import/reach', {title: 'Új reach', form_link: form_link, parent_river_id:parent_river_id, parent_river_profiles: parent_river_profiles});
 }
 
-exports.reach_create_post = async function(req, res, next){
+exports.reach_create_post = [
+
+    // Validate fields.
+    body('name').isLength({ min: 1 }).trim().withMessage('A megnevezés megadása kötelező'),
+    body('parent_connect_profile').isInt(body.new_or_exists == 'exists' ? { min: 1 } : { min: -1}).trim().withMessage('Szelvény választása kötelező'),
+    body('parent_connect_profile_name').isLength(body.new_or_exists == 'new' ? { min: 1 } : { min: 0}).trim().withMessage('Szelvény megadása kötelező'),
+
+    async (req, res, next) =>{
+        
+        // Extract the validation errors from a request.
+        const errors = validationResult(req);
+
+        console.log(req.body);
+
+        if (!errors.isEmpty()) {
+            // There are errors. Render form again with sanitized values/errors messages.
+            console.log(errors.array());
+            // Szülő vízfolyás profilok lekérdezése
+            const parent_river_profiles = await Profile.findByRiver(req.body.parent_river_id);
+
+            res.render('river_import/reach', { title: 'Új reach', river: req.body, parent_river_profiles:parent_river_profiles, errors: errors.array() });
+            return;
+        }
+        else {
+            // //Modellezés mentése
+            // const r = new River(null,req.body.name,req.body.directorate);
+            // await r.save();
+
+            // //Modellezések megjelenítése
+            // let countPerPage = 15;
+            // let page = req.query.page ? req.query.page - 1 : 0;
+            // let rivers = await River.all();
+            // let page_count = rivers.length/countPerPage;
+            // let rivers_page = rivers.slice(page*countPerPage, page * countPerPage + countPerPage);
+            res.render('river_import/index', {title: 'Modellterületek', rivers: rivers_page, page_count: page_count});
+        }
+    }
     
-}
+]
 
 exports.reach_update_get = async function(req, res, next){
 

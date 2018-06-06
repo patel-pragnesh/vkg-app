@@ -24,7 +24,7 @@ block content
 							input(type="radio" id="rb_exists" name="new_or_exists" value="exists" checked="checked")
 							|Létező szelvény választása
 						select(id="parent_connect_profile" name="parent_connect_profile" class="form-control mb10")
-							option(value=null) Válasszon
+							option(value=-1) Válasszon
 							each prp in parent_river_profiles
 								option(value=prp.id selected=(undefined===river ? false : prp.id == river.parent_connect_profile_id))=prp.name
 						if errors
@@ -34,9 +34,15 @@ block content
 						label(for="rb_new")
 							input(type="radio" id="rb_new" name="new_or_exists" value="new")
 							|Új szelvény választása
-						input(type="text" id="parent_connect_profile_name" name="parent_connect_profile_name" placeholder="Szelvény megnevezése" class="form-control")
+						input(type="text" id="parent_connect_profile_name" name="parent_connect_profile_name" placeholder="Szelvény megnevezése" class="form-control" value='')
+						if errors
+							for error in errors
+								if error.param == 'parent_connect_profile_name'
+									div.text-danger=error.msg
 					div.form-group
 						input(type="submit" name="submit_button" class="btn btn-primary pull-right" value="Mentés")
 						a(href="/river_import" class="btn btn-default pull-right mr5") Mégse
+					if parent_river_id
+						input(type="hidden" name="parent_river_id" value=parent_river_id)
 					if river
 						input(type="hidden" name="id" value=river.id)
